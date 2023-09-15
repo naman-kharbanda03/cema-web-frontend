@@ -1,13 +1,34 @@
-import React from 'react';
-import ReactDOM from 'react-dom/client';
-import './index.css';
-import App from './App';
-import reportWebVitals from './reportWebVitals';
+import React from "react";
+import ReactDOM from "react-dom/client";
 
-const root = ReactDOM.createRoot(document.getElementById('root'));
+import "./asset/css/bootstrap.min.css";
+import "./asset/css/bootstrap5.min.css";
+import "./asset/css/animate.min.css";
+import "./asset/css/iconfont.css";
+import "./asset/css/themify-icons.css";
+import "./asset/css/all.min.css";
+import "./asset/css/font-awesome.css";
+import "./asset/css/elegant.css";
+import "./asset/css/slick.css";
+import "./asset/css/slick-theme.css";
+import "./asset/css/mmenu.min.css";
+
+import Popper from "popper.js";
+
+import "./asset/css/app.css";
+import "./asset/css/responsive.css";
+
+import App from "./App";
+import reportWebVitals from "./reportWebVitals";
+
+import { BrowserRouter } from "react-router-dom";
+
+const root = ReactDOM.createRoot(document.getElementById("root"));
 root.render(
   <React.StrictMode>
-    <App />
+    <BrowserRouter>
+      <App />
+    </BrowserRouter>
   </React.StrictMode>
 );
 

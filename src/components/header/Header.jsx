@@ -1,0 +1,660 @@
+import React from "react";
+import logo from "../../asset/images/logo.png";
+import product_1 from "../../asset/images/product/1.jpg";
+import product_3 from "../../asset/images/product/3.jpg";
+import { Link } from "react-router-dom";
+
+const Header = () => {
+  return (
+    <header id="site-header" className="site-header header-v2 large-height">
+      <div id="header-topbar" className="topbar-v1 hidden-sm hidden-xs">
+        <div className="topbar-inner">
+          <div className="section-padding">
+            <div className="section-container large p-l-r">
+              <div className="row">
+                <div className="col-md-6 topbar-left">
+                  <div className="block block-html">
+                    <div className="email hidden-xs">
+                      <i className="ti-email" />
+                      <a href="mailto:support@cema.online">
+                        support@cema.online
+                      </a>
+                    </div>
+                    <div className="currency has-n-select d-inline-block">
+                      <select name="currency" id="currency">
+                        <option value="KWD">KWD</option>
+                        <option value="USD">USD</option>
+                      </select>
+                    </div>
+                    <div className="language has-n-select d-inline-block">
+                      <select name="language" id="language">
+                        <option value="english">English</option>
+                        <option value="arabic">Arabic</option>
+                      </select>
+                    </div>
+                  </div>
+                </div>
+                <div className="col-md-6 topbar-right">
+                  <ul id="topbar-menu" className="menu">
+                    <li>
+                      <div className="input-group">
+                        <input
+                          type="text"
+                          className="form-control"
+                          placeholder="Delivery Location"
+                          aria-label="Recipient's username"
+                          aria-describedby="basic-addon2"
+                        />
+                        <span className="input-group-text" id="basic-addon2">
+                          <i className="fa-solid fa-magnifying-glass" />
+                        </span>
+                      </div>
+                    </li>
+                    <li className="menu-item">
+                      <a href="#">Gift Cards</a>
+                    </li>
+                    <li className="menu-item">
+                      <a href="#">FAQs</a>
+                    </li>
+                    <li className="menu-item">
+                      <Link to="/contact">Contact</Link>
+                    </li>
+                  </ul>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div className="header-mobile">
+        <div className="section-padding">
+          <div className="section-container large">
+            <div className="row">
+              <div className="col-xl-4 col-lg-4 col-md-4 col-sm-3 col-3 header-left">
+                <div className="navbar-header">
+                  <button
+                    type="button"
+                    id="show-megamenu"
+                    className="navbar-toggle"
+                  />
+                </div>
+              </div>
+              <div className="col-xl-4 col-lg-4 col-md-4 col-sm-6 col-6 header-center">
+                <div className="site-logo">
+                  <Link to="/">
+                    <img
+                      width={400}
+                      height={79}
+                      src={logo}
+                      alt="cema – Furniture HTML Theme"
+                    />
+                  </Link>
+                </div>
+              </div>
+              <div className="col-xl-4 col-lg-4 col-md-4 col-sm-3 col-3 header-right">
+                <div className="cema-topcart dropdown">
+                  <div className="dropdown mini-cart top-cart">
+                    <div className="remove-cart-shadow" />
+                    <a
+                      className="dropdown-toggle cart-icon"
+                      href="#"
+                      role="button"
+                      data-toggle="dropdown"
+                      aria-haspopup="true"
+                      aria-expanded="false"
+                    >
+                      <div className="icons-cart">
+                        <i className="icon-large-paper-bag" />
+                        <span className="cart-count">2</span>
+                      </div>
+                    </a>
+                    <div className="dropdown-menu cart-popup">
+                      <div className="cart-empty-wrap">
+                        <ul className="cart-list">
+                          <li className="empty">
+                            <span>No products in the cart.</span>
+                            <a className="go-shop" href="javascript:;">
+                              GO TO SHOP
+                              <i aria-hidden="true" className="arrow_right" />
+                            </a>
+                          </li>
+                        </ul>
+                      </div>
+                      <div className="cart-list-wrap">
+                        <ul className="cart-list">
+                          <li className="mini-cart-item">
+                            <a
+                              href="#"
+                              className="remove"
+                              title="Remove this item"
+                            >
+                              <i className="icon_close" />
+                            </a>
+                            <a href="#" className="product-image">
+                              <img
+                                width={600}
+                                height={600}
+                                src={product_3}
+                                alt
+                              />
+                            </a>
+                            <a href="#" className="product-name">
+                              Chair Oak Matt Lacquered
+                            </a>
+                            <div className="quantity">Qty: 1</div>
+                            <div className="price">KD150.00</div>
+                          </li>
+                          <li className="mini-cart-item">
+                            <a
+                              href="#"
+                              className="remove"
+                              title="Remove this item"
+                            >
+                              <i className="icon_close" />
+                            </a>
+                            <a href="#" className="product-image">
+                              <img
+                                width={600}
+                                height={600}
+                                src={product_1}
+                                alt
+                              />
+                            </a>
+                            <a href="#" className="product-name">
+                              Zunkel Schwarz
+                            </a>
+                            <div className="quantity">Qty: 1</div>
+                            <div className="price">KD100.00</div>
+                          </li>
+                        </ul>
+                        <div className="total-cart">
+                          <div className="title-total">Total:</div>
+                          <div className="total-price">
+                            <span>KD100.00</span>
+                          </div>
+                        </div>
+                        <div className="free-ship">
+                          <div className="title-ship">
+                            Buy <strong>KD400</strong> more to enjoy{" "}
+                            <strong>FREE Shipping</strong>
+                          </div>
+                          <div className="total-percent">
+                            <div className="percent" style={{ width: "20%" }} />
+                          </div>
+                        </div>
+                        <div className="buttons">
+                          <a
+                            href="shop-cart.html"
+                            className="button btn view-cart btn-primary"
+                          >
+                            View cart
+                          </a>
+                          <a
+                            href="shop-checkout.html"
+                            className="button btn checkout btn-default"
+                          >
+                            Check out
+                          </a>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div className="header-mobile-fixed">
+          {/* Shop */}
+          <div className="shop-page">
+            <a href="javascript:;">
+              <i className="wpb-icon-shop" />
+            </a>
+          </div>
+          {/* Login */}
+          <div className="my-account">
+            <div className="login-header">
+              <a href="page-my-account.html">
+                <i className="wpb-icon-user" />
+              </a>
+            </div>
+          </div>
+          {/* Search */}
+          <div className="search-box">
+            <div className="search-toggle">
+              <i className="wpb-icon-magnifying-glass" />
+            </div>
+          </div>
+          {/* Wishlist */}
+          <div className="wishlist-box">
+            <a href="#">
+              <i className="wpb-icon-heart" />
+            </a>
+          </div>
+        </div>
+      </div>
+      <div className="header-desktop">
+        <div className="header-wrapper">
+          <div className="section-padding">
+            <div className="section-container large p-l-r">
+              <div className="row">
+                <div className="col-xl-5 col-lg-5 col-md-12 col-sm-12 col-12 header-left">
+                  <div className="site-navigation">
+                    <nav id="main-navigation">
+                      <ul id="menu-main-menu" className="menu">
+                        <li className="level-0 menu-item">
+                          <a href="#">
+                            <span className="menu-item-text">New Arrivals</span>
+                          </a>
+                        </li>
+                        <li className="level-0 menu-item">
+                          <a href="#">
+                            <span className="menu-item-text">Best Sellers</span>
+                          </a>
+                        </li>
+                        <li className="level-0 menu-item menu-item-has-children mega-menu mega-menu-fullwidth">
+                          <a href="javascript:;">
+                            <span className="menu-item-text">Products</span>
+                          </a>
+                          <div className="sub-menu">
+                            <div className="row">
+                              <div className="col-md-4">
+                                <div className="menu-section">
+                                  <h2 className="sub-menu-title">Furniture</h2>
+                                  <ul className="menu-list">
+                                    <li>
+                                      <a href="javascript:;">
+                                        <span className="menu-item-text">
+                                          Tables &amp; desks
+                                        </span>
+                                      </a>
+                                    </li>
+                                    <li>
+                                      <a href="javascript:;">
+                                        <span className="menu-item-text">
+                                          Bookcases &amp; shelving units
+                                        </span>
+                                      </a>
+                                    </li>
+                                    <li>
+                                      <a href="javascript:;">
+                                        <span className="menu-item-text">
+                                          Cabinets &amp; cupboards
+                                        </span>
+                                      </a>
+                                    </li>
+                                    <li>
+                                      <a href="javascript:;l">
+                                        <span className="menu-item-text">
+                                          TV &amp; media furniture
+                                        </span>
+                                      </a>
+                                    </li>
+                                    <li>
+                                      <a href="javascript:;">
+                                        <span className="menu-item-text">
+                                          Beds
+                                        </span>
+                                      </a>
+                                    </li>
+                                  </ul>
+                                </div>
+                              </div>
+                              <div className="col-md-4">
+                                <div className="menu-section">
+                                  <h2 className="sub-menu-title">Decoration</h2>
+                                  <ul className="menu-list">
+                                    <li>
+                                      <a href="javascript:;">
+                                        <span className="menu-item-text">
+                                          Frames &amp; pictures
+                                        </span>
+                                      </a>
+                                    </li>
+                                    <li>
+                                      <a href="javascript:;">
+                                        <span className="menu-item-text">
+                                          Plants &amp; flowers
+                                        </span>
+                                      </a>
+                                    </li>
+                                    <li>
+                                      <a href="javascript:;">
+                                        <span className="menu-item-text">
+                                          Storage boxes &amp; baskets
+                                        </span>
+                                      </a>
+                                    </li>
+                                    <li>
+                                      <a href="javascript:;l">
+                                        <span className="menu-item-text">
+                                          Flower pots &amp; planters
+                                        </span>
+                                      </a>
+                                    </li>
+                                    <li>
+                                      <a href="javascript:;">
+                                        <span className="menu-item-text">
+                                          Vases &amp; bowls
+                                        </span>
+                                      </a>
+                                    </li>
+                                  </ul>
+                                </div>
+                              </div>
+                              <div className="col-md-4">
+                                <div className="menu-section">
+                                  <h2 className="sub-menu-title">Lighting</h2>
+                                  <ul className="menu-list">
+                                    <li>
+                                      <a href="javascript:;">
+                                        <span className="menu-item-text">
+                                          Lamps
+                                        </span>
+                                      </a>
+                                    </li>
+                                    <li>
+                                      <a href="javascript:;">
+                                        <span className="menu-item-text">
+                                          Decorative lighting
+                                        </span>
+                                      </a>
+                                    </li>
+                                    <li>
+                                      <a href="javascript:;">
+                                        <span className="menu-item-text">
+                                          Integrated lighting
+                                        </span>
+                                      </a>
+                                    </li>
+                                    <li>
+                                      <a href="javascript:;l">
+                                        <span className="menu-item-text">
+                                          Smart lighting
+                                        </span>
+                                      </a>
+                                    </li>
+                                    <li>
+                                      <a href="javascript:;">
+                                        <span className="menu-item-text">
+                                          Bathroom lighting
+                                        </span>
+                                      </a>
+                                    </li>
+                                  </ul>
+                                </div>
+                              </div>
+                            </div>
+                          </div>
+                        </li>
+                        <li className="level-0 menu-item">
+                          <Link to="/contact">
+                            <span className="menu-item-text">Contact</span>
+                          </Link>
+                        </li>
+                      </ul>
+                    </nav>
+                  </div>
+                </div>
+                <div className="col-xl-2 col-lg-2 col-md-12 col-sm-12 col-12 text-center header-center">
+                  <div className="site-logo">
+                    <Link to="/">
+                      <img
+                        width={400}
+                        height={79}
+                        src={logo}
+                        alt="cema – Furniture HTML Theme"
+                      />
+                    </Link>
+                  </div>
+                </div>
+                <div className="col-xl-5 col-lg-5 col-md-12 col-sm-12 col-12 header-right">
+                  <div className="header-page-link">
+                    {/* Login */}
+                    <div className="login-header">
+                      <Link className="active-login" to="/login">
+                        Login
+                      </Link>
+                      <div className="form-login-register">
+                        <div className="box-form-login">
+                          <div className="active-login" />
+                          <div className="box-content">
+                            <div className="form-login active">
+                              <form
+                                id="login_ajax"
+                                method="post"
+                                className="login"
+                              >
+                                <h2>Sign in</h2>
+                                <p className="status" />
+                                <div className="content">
+                                  <div className="username">
+                                    <input
+                                      type="text"
+                                      required="required"
+                                      className="input-text"
+                                      name="username"
+                                      id="username"
+                                      placeholder="Your name"
+                                    />
+                                  </div>
+                                  <div className="password">
+                                    <input
+                                      className="input-text"
+                                      required="required"
+                                      type="password"
+                                      name="password"
+                                      id="password"
+                                      placeholder="Password"
+                                    />
+                                  </div>
+                                  <div className="rememberme-lost">
+                                    <div className="rememberme">
+                                      <input
+                                        name="rememberme"
+                                        type="checkbox"
+                                        id="rememberme"
+                                        defaultValue="forever"
+                                      />
+                                      <label
+                                        htmlFor="rememberme"
+                                        className="inline"
+                                      >
+                                        Remember me
+                                      </label>
+                                    </div>
+                                    <div className="lost_password">
+                                      <a href="forgot-password.html">
+                                        Lost your password?
+                                      </a>
+                                    </div>
+                                  </div>
+                                  <div className="button-login">
+                                    <input
+                                      type="submit"
+                                      className="button"
+                                      name="login"
+                                      defaultValue="Login"
+                                    />
+                                  </div>
+                                  <div className="button-next-reregister">
+                                    Create An Account
+                                  </div>
+                                </div>
+                              </form>
+                            </div>
+                            <div className="form-register">
+                              <form method="post" className="register">
+                                <h2>REGISTER</h2>
+                                <div className="content">
+                                  <div className="email">
+                                    <input
+                                      type="email"
+                                      className="input-text"
+                                      placeholder="Email"
+                                      name="email"
+                                      id="reg_email"
+                                      defaultValue
+                                    />
+                                  </div>
+                                  <div className="password">
+                                    <input
+                                      type="password"
+                                      className="input-text"
+                                      placeholder="Password"
+                                      name="password"
+                                      id="reg_password"
+                                    />
+                                  </div>
+                                  <div className="button-register">
+                                    <input
+                                      type="submit"
+                                      className="button"
+                                      name="register"
+                                      defaultValue="Register"
+                                    />
+                                  </div>
+                                  <div className="button-next-login">
+                                    Already has an account
+                                  </div>
+                                </div>
+                              </form>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                    {/* Search */}
+                    <div className="search-box">
+                      <div className="search-toggle">
+                        <i className="ti-search" />
+                      </div>
+                    </div>
+                    {/* Wishlist */}
+                    <div className="wishlist-box">
+                      <Link to="/wish-list">
+                        <i className="ti-heart" />
+                      </Link>
+                      <span className="count-wishlist">1</span>
+                    </div>
+                    {/* Cart */}
+                    <div className="cema-topcart dropdown light">
+                      <div className="dropdown mini-cart top-cart">
+                        <div className="remove-cart-shadow" />
+                        <Link
+                          className="dropdown-toggle cart-icon"
+                          to="/cart"
+                          role="button"
+                          data-toggle="dropdown"
+                          aria-haspopup="true"
+                          aria-expanded="false"
+                        >
+                          <div className="icons-cart">
+                            <i className="ti-bag" />
+                            <span className="cart-count">2</span>
+                          </div>
+                        </Link>
+                        <div className="dropdown-menu cart-popup">
+                          <div className="cart-empty-wrap">
+                            <ul className="cart-list">
+                              <li className="empty">
+                                <span>No products in the cart.</span>
+                                <a className="go-shop" href="javascript:;">
+                                  GO TO SHOP
+                                  <i
+                                    aria-hidden="true"
+                                    className="arrow_right"
+                                  />
+                                </a>
+                              </li>
+                            </ul>
+                          </div>
+                          <div className="cart-list-wrap">
+                            <ul className="cart-list">
+                              <li className="mini-cart-item">
+                                <a
+                                  href="#"
+                                  className="remove"
+                                  title="Remove this item"
+                                >
+                                  <i className="icon_close" />
+                                </a>
+                                <a href="#" className="product-image">
+                                  <img
+                                    width={600}
+                                    height={600}
+                                    src={product_3}
+                                    alt
+                                  />
+                                </a>
+                                <a href="#" className="product-name">
+                                  Chair Oak Matt Lacquered
+                                </a>
+                                <div className="quantity">Qty: 1</div>
+                                <div className="price">KD150.00</div>
+                              </li>
+                              <li className="mini-cart-item">
+                                <a
+                                  href="#"
+                                  className="remove"
+                                  title="Remove this item"
+                                >
+                                  <i className="icon_close" />
+                                </a>
+                                <a href="#" className="product-image">
+                                  <img
+                                    width={600}
+                                    height={600}
+                                    src={product_1}
+                                    alt
+                                  />
+                                </a>
+                                <a href="#" className="product-name">
+                                  Zunkel Schwarz
+                                </a>
+                                <div className="quantity">Qty: 1</div>
+                                <div className="price">KD100.00</div>
+                              </li>
+                            </ul>
+                            <div className="total-cart">
+                              <div className="title-total">Total:</div>
+                              <div className="total-price">
+                                <span>KD100.00</span>
+                              </div>
+                            </div>
+                            <div className="free-ship">
+                              <div className="title-ship">
+                                Buy <strong>KD400</strong> more to enjoy{" "}
+                                <strong>FREE Shipping</strong>
+                              </div>
+                            </div>
+                            <div className="buttons">
+                              <a
+                                href="shop-cart.html"
+                                className="button btn view-cart btn-primary"
+                              >
+                                View cart
+                              </a>
+                              <a
+                                href="shop-checkout.html"
+                                className="button btn checkout btn-default"
+                              >
+                                Check out
+                              </a>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </header>
+  );
+};
+
+export default Header;
