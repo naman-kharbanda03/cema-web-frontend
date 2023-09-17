@@ -7,6 +7,8 @@ import Login from "./pages/login/Login";
 import ForgotPassword from "./pages/forgot-password/ForgotPassword";
 import Contact from "./pages/contact/Contact";
 import Cart from "./pages/cart/Cart";
+import Listing from "./pages/listing/Listing";
+import MyAccount from "./pages/my-account/MyAccount";
 
 function App() {
   return (
@@ -21,6 +23,8 @@ function App() {
         <Route path="/forgot-password" element={<ForgotPassword />} />
         <Route path="/cart" element={<Cart />} />
         <Route path="/contact" element={<Contact />} />
+        <Route path="/listing" element={<Listing />} />
+        <Route path="/my-account" element={<MyAccount />} />
       </Routes>
       <Footer />
 
