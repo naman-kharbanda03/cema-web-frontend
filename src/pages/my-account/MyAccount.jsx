@@ -1,6 +1,78 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
+import { Link } from "react-router-dom";
 
 const MyAccount = () => {
+  const [orderDetails, setOrderDetails] = useState("");
+  const [address, setAddress] = useState("");
+  const [billingAddress, setBillingAddress] = useState("");
+
+  const [activeTab, setActiveTab] = useState("dashboard");
+
+  const handleTabChange = (tab) => {
+    setActiveTab(tab);
+  };
+  const apiUrl = "https://cema-backend.plasium.com/api/orders";
+  // const authToken = localStorage.getItem("accessToken");
+  const authToken =
+    "eyJ0eXAiOiJKV1QiLCJhbGciOiJSUzI1NiJ9.eyJhdWQiOiIyIiwianRpIjoiZWI3ZjZmMDA1MTFlY2M0MjcxYmFmY2YzMzdmZWE2YmU5MTJkMTU3OTI4OTliNWY1YzkzYmY2YjMzODJiYWVmZjRiYTRhNmJiMTdlNWNiM2IiLCJpYXQiOjE2OTUzMDY4ODQuOTA2NDI5LCJuYmYiOjE2OTUzMDY4ODQuOTA2NDMxLCJleHAiOjE3MjY5MjkyODQuODg4MTAyLCJzdWIiOiIxMiIsInNjb3BlcyI6W119.Le1I7477zogRCjNHeiWloPwrPYS7KWCAUxJY6ZZ6_waY8IBX4JEjmbcwqfr6l9vsUKlrpcIHGe7yf5jvat9F0D9Qz9JGcvcdHJ0bn1NU4HX-tqwIhipcdxKoVoCPPvby0sPbATIIN72oxV_qiB86NKLwVDpE4dgxbQmYRYyHbdi9-nhgyEZJvOSFqEeGlw94Nq6m1FIplB7pgz-3PQk7-hW_k1Im6V1qz6TbA736MFXJgorv9Y-bneXwzZE_ZrVL23u4dV2tie4ijyU3DLWOU7PUvCe-yAA5Iy4WfIwNMZblKLfuqO46djfivI-EP9FZFKrCYEUS6bzc12knlsbteawXHijITtYTyxgTPUdkRPLxnojKLIm3rdsGvDmtILGLNIHAdgYeXkqqMdHAFo9wpmjV-jfHaROB0AWUIVwfPSObdYCeeCAATZKAQX88qPDcr-9dhs_y6mb7IcdEyyOFt4pzRIc5V1O-dGHYaSZmiL_zxqpPUlQ3dsrwC40d57sCDY-_jJnreuLJXw3NqzIDFMtpTevUTXcC4VRZig68HzvI8a96bLo6DftiPf1_7-MHyPyUCDImVKeiY1FHxUDSO5Glzniyx5biZqU0BQwWK3Y0MEdfEwfmUuia8yYCNYpcDAGGRmVxkXxcoSLXVyUuURJAuNS0_QVc_aKGCgLHxS4";
+
+  useEffect(() => {
+    fetch(apiUrl, {
+      method: "GET",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${authToken}`,
+      },
+    })
+      .then((response) => {
+        if (!response.ok) throw new Error("Network Issue");
+        return response.json();
+      })
+      .then((data) => {
+        console.log(data);
+      })
+      .catch((error) => console.error("Problem with fetch operations", error));
+  }, []);
+
+  // useEffect(() => {
+  //   const fetchData = async () => {
+  //     try {
+  //       const response = await fetch(apiUrl, {
+  //         method: "GET",
+  //         headers: {
+  //           "Content-Type": "application/json",
+  //           Authorization: `Bearer ${authToken}`,
+  //         },
+  //       });
+
+  //       if (!response.ok) {
+  //         throw new Error("Network Issue");
+  //       }
+
+  //       const data = await response.json();
+  //       console.log(data);
+
+  //       const response2 = await fetch(apiUrl, {
+  //         method: "GET",
+  //         headers: {
+  //           "Content-Type": "application/json",
+  //           Authorization: `Bearer ${authToken}`,
+  //         },
+  //       });
+  //       if (!response2.ok) {
+  //         throw new Error("Network Issue");
+  //       }
+
+  //       const data2 = await response.json();
+  //       console.log(data2);
+  //     } catch (error) {
+  //       console.error("Problem with fetch operations", error);
+  //     }
+  //   };
+
+  //   fetchData();
+  // }, []);
+
   return (
     <>
       <div id="site-main" className="site-main">
@@ -27,54 +99,68 @@ const MyAccount = () => {
                         <ul className="nav nav-tabs">
                           <li className="nav-item">
                             <a
-                              className="nav-link active"
+                              className={`nav-link ${
+                                activeTab === "dashboard" ? "active" : ""
+                              }`}
                               data-toggle="tab"
                               href="#dashboard"
                               role="tab"
+                              onClick={() => handleTabChange("dashboard")}
                             >
                               Dashboard
                             </a>
                           </li>
                           <li className="nav-item">
                             <a
-                              className="nav-link"
+                              className={`nav-link ${
+                                activeTab === "orders" ? "active" : ""
+                              }`}
                               data-toggle="tab"
                               href="#orders"
                               role="tab"
+                              onClick={() => handleTabChange("orders")}
                             >
                               Orders
                             </a>
                           </li>
                           <li className="nav-item">
                             <a
-                              className="nav-link"
+                              className={`nav-link ${
+                                activeTab === "addresses" ? "active" : ""
+                              }`}
                               data-toggle="tab"
                               href="#addresses"
                               role="tab"
+                              onClick={() => handleTabChange("addresses")}
                             >
                               Addresses
                             </a>
                           </li>
                           <li className="nav-item">
                             <a
-                              className="nav-link"
+                              className={`nav-link ${
+                                activeTab === "account-details" ? "active" : ""
+                              }`}
                               data-toggle="tab"
                               href="#account-details"
                               role="tab"
+                              onClick={() => handleTabChange("account-details")}
                             >
                               Account details
                             </a>
                           </li>
                           <li className="nav-item">
-                            <a className="nav-link" href="page-login.html">
-                              Logout
+                            <a className="nav-link" href="">
+                              <Link to="/login">Log out</Link>
                             </a>
                           </li>
                         </ul>
                       </nav>
                       <div className="my-account-content tab-content">
                         <div
-                          className="tab-pane fade show active"
+                          className={`tab-pane fade ${
+                            activeTab === "dashboard" ? "show active" : ""
+                          }`}
                           id="dashboard"
                           role="tabpanel"
                         >
@@ -82,7 +168,8 @@ const MyAccount = () => {
                             <p>
                               Hello <strong>Rosie</strong> (not{" "}
                               <strong>Rosie</strong>?{" "}
-                              <a href="page-login.html">Log out</a>)
+                              <Link to="/login">Log out</Link>
+                              {/* <a href="page-login.html">Log out</a> */})
                             </p>
                             <p>
                               From your account dashboard you can view your{" "}
@@ -97,7 +184,9 @@ const MyAccount = () => {
                           </div>
                         </div>
                         <div
-                          className="tab-pane fade"
+                          className={`tab-pane fade ${
+                            activeTab === "orders" ? "show active" : ""
+                          }`}
                           id="orders"
                           role="tabpanel"
                         >
@@ -153,7 +242,9 @@ const MyAccount = () => {
                           </div>
                         </div>
                         <div
-                          className="tab-pane fade"
+                          className={`tab-pane fade ${
+                            activeTab === "addresses" ? "show active" : ""
+                          }`}
                           id="addresses"
                           role="tabpanel"
                         >
@@ -200,7 +291,9 @@ const MyAccount = () => {
                           </div>
                         </div>
                         <div
-                          className="tab-pane fade"
+                          className={`tab-pane fade ${
+                            activeTab === "account-details" ? "show active" : ""
+                          }`}
                           id="account-details"
                           role="tabpanel"
                         >

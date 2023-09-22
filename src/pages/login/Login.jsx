@@ -1,8 +1,96 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import PageTitle from "../../components/page-tittle/PageTitle";
 
 const Login = () => {
+  const [loginData, setLoginData] = useState({
+    email: "",
+    password: "",
+  });
+  const [error, setError] = useState("");
+  const [response, setResponse] = useState("");
+
+  const [registerData, setRegisterData] = useState({
+    name: "",
+    email: "",
+    mobile: "",
+    password: "",
+  });
+
+  const handleChange = (event, formType) => {
+    const { name, value } = event.target;
+    if (formType === "login") {
+      setLoginData((prevLoginData) => ({
+        ...prevLoginData,
+        [name]: value,
+      }));
+    } else if (formType === "register") {
+      setRegisterData({ ...registerData, [name]: value });
+    }
+  };
+
+  const handleLogin = (e) => {
+    e.preventDefault(); // login logic is executed without causing the page to refresh when the form is submitted
+
+    const formData = new FormData();
+    formData.append("email", registerData.email);
+    formData.append("password", registerData.password);
+
+    fetch("https://cema-backend.plasium.com/api/login", {
+      method: "POST",
+      headers: {
+        // "Content-Type": "application/json",
+        // Add any other headers your API requires
+      },
+      body: formData,
+    })
+      .then((response) => response.json())
+      .then((data) => {
+        // this.setState({ responseMessage: data.message }); // Handle the response data
+        console.log(data);
+        localStorage.setItem("tokenType", data.token_type); // Store the token in localStorage
+        localStorage.setItem("accessToken", data.access_token);
+        localStorage.setItem("expiresIn", data.expires_in);
+        localStorage.setItem("refreshToken", data.refresh_token);
+        // const token = data.token; // Replace 'token' with the actual property name in your API response
+        // localStorage.setItem('token', token);  // Store the token in localStorage
+      })
+      .catch((error) => {
+        console.error("Error:", error);
+      });
+  };
+
+  const handleRegister = function (e) {
+    e.preventDefault();
+
+    const formData = new FormData();
+    formData.append("name", registerData.name);
+    formData.append("email", registerData.email);
+    formData.append("mobile", registerData.mobile);
+    formData.append("password", registerData.password);
+
+    fetch("https://cema-backend.plasium.com/api/register", {
+      method: "POST",
+      headers: {
+        // "Content-Type": "application/json",
+        // Add any other headers your API requires
+      },
+      // body: JSON.stringify(registerData), // Convert the data to JSON format
+      body: formData,
+    })
+      .then((response) => response.json())
+      .then((data) => {
+        console.log(data);
+        localStorage.setItem("tokenType", data.token_type); // Store the token in localStorage
+        localStorage.setItem("accessToken", data.access_token);
+        localStorage.setItem("expiresIn", data.expires_in);
+        localStorage.setItem("refreshToken", data.refresh_token);
+      })
+      .catch((error) => {
+        console.error("Error:", error);
+      });
+  };
+
   return (
     <>
       <div id="site-main" className="site-main">
@@ -22,16 +110,17 @@ const Login = () => {
                           <div className="box-content">
                             <div className="form-login">
                               <form method="post" className="login">
-                                <div className="username">
+                                <div className="email">
                                   <label>
-                                    Username or email address{" "}
+                                    E-mail address{" "}
                                     <span className="required">*</span>
                                   </label>
                                   <input
                                     type="text"
                                     className="input-text"
-                                    name="username"
-                                    id="username"
+                                    name="email"
+                                    id="email"
+                                    onChange={(e) => handleChange(e, "login")}
                                   />
                                 </div>
                                 <div className="password">
@@ -42,6 +131,7 @@ const Login = () => {
                                     className="input-text"
                                     type="password"
                                     name="password"
+                                    onChange={(e) => handleChange(e, "login")}
                                   />
                                 </div>
                                 <div className="rememberme-lost">
@@ -67,6 +157,7 @@ const Login = () => {
                                     className="button"
                                     name="login"
                                     defaultValue="Login"
+                                    onClick={handleLogin}
                                   />
                                 </div>
                               </form>
@@ -79,7 +170,40 @@ const Login = () => {
                           <h2 className="register">Register</h2>
                           <div className="box-content">
                             <div className="form-register">
-                              <form method="post" className="register">
+                              <form
+                                method="post"
+                                className="register"
+                                onSubmit={handleRegister}
+                              >
+                                <div className="name">
+                                  <label>
+                                    Name <span className="required">*</span>
+                                  </label>
+                                  <input
+                                    type="text"
+                                    className="input-text"
+                                    name="name"
+                                    onChange={(e) =>
+                                      handleChange(e, "register")
+                                    }
+                                  />
+                                </div>
+                                <br />
+                                <div className="mobile-phone">
+                                  <label>
+                                    Mobile Number{" "}
+                                    <span className="required">*</span>
+                                  </label>
+                                  <input
+                                    type="number"
+                                    className="input-text"
+                                    name="mobile"
+                                    onChange={(e) =>
+                                      handleChange(e, "register")
+                                    }
+                                  />
+                                </div>
+                                <br />
                                 <div className="email">
                                   <label>
                                     Email address{" "}
@@ -89,6 +213,9 @@ const Login = () => {
                                     type="email"
                                     className="input-text"
                                     name="email"
+                                    onChange={(e) =>
+                                      handleChange(e, "register")
+                                    }
                                   />
                                 </div>
                                 <div className="password">
@@ -99,6 +226,9 @@ const Login = () => {
                                     type="password"
                                     className="input-text"
                                     name="password"
+                                    onChange={(e) =>
+                                      handleChange(e, "register")
+                                    }
                                   />
                                 </div>
                                 <div className="button-register">
