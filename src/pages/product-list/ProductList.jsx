@@ -1,11 +1,15 @@
 import React from "react";
 import PageTitle from "../../components/page-tittle/PageTitle";
 
+
+
+
 const ProductList = () => {
   return (
     <div id="site-main" className="site-main">
       <div id="main-content" className="main-content">
         <div id="primary" className="content-area">
+
           <PageTitle current={"Wall & Living"} />
 
           <div id="content" className="site-content" role="main">
@@ -13,6 +17,8 @@ const ProductList = () => {
               <div className="section-container p-l-r">
                 <div class="row">
                   <div class="col-xl-3 col-lg-3 col-md-12 col-12 sidebar left-sidebar md-b-50">
+
+                    {/* Categories */}
                     <div class="block block-product-cats">
                       <div class="block-title">
                         <h2>Categories</h2>
@@ -55,6 +61,7 @@ const ProductList = () => {
                       </div>
                     </div>
 
+                    {/* Price */}
                     <div className="block block-product-filter">
                       <div className="block-title">
                         <h2>Price</h2>
@@ -75,6 +82,7 @@ const ProductList = () => {
                       </div>
                     </div>
 
+                    {/* Size  */}
                     <div className="block block-product-filter clearfix">
                       <div className="block-title">
                         <h2>Size</h2>
@@ -94,6 +102,7 @@ const ProductList = () => {
                       </div>
                     </div>
 
+                    {/* Brands  */}
                     <div className="block block-product-filter clearfix">
                       <div className="block-title">
                         <h2>Brands</h2>
@@ -129,6 +138,7 @@ const ProductList = () => {
                       </div>
                     </div>
 
+                    {/* Feature Products  */}
                     <div className="block block-products">
                       <div className="block-title">
                         <h2>Feature Product</h2>
@@ -214,6 +224,7 @@ const ProductList = () => {
                           Showing all 21 results
                         </div>
                       </div>
+
                       <div className="products-topbar-right">
                         <div className="products-sort dropdown">
                           <span
@@ -301,6 +312,7 @@ const ProductList = () => {
                       </div>
                     </div>
 
+                    {/* Grid Version  */}
                     <div className="tab-content">
                       <div
                         className="tab-pane fade"
@@ -1056,6 +1068,8 @@ const ProductList = () => {
                           </div>
                         </div>
                       </div>
+
+                      {/* List Version  */}
                       <div
                         className="tab-pane fade show active"
                         id="layout-list"
