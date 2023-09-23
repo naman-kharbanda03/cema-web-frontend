@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import PageTitle from "../../components/page-tittle/PageTitle";
 
 const Login = () => {
@@ -9,6 +9,8 @@ const Login = () => {
   });
   const [error, setError] = useState("");
   const [response, setResponse] = useState("");
+  const [isAuthenticated, setIsAuthentcated] = useState(false);
+  const navigate = useNavigate();
 
   const [registerData, setRegisterData] = useState({
     name: "",
@@ -33,8 +35,8 @@ const Login = () => {
     e.preventDefault(); // login logic is executed without causing the page to refresh when the form is submitted
 
     const formData = new FormData();
-    formData.append("email", registerData.email);
-    formData.append("password", registerData.password);
+    formData.append("email", loginData.email);
+    formData.append("password", loginData.password);
 
     fetch("https://cema-backend.plasium.com/api/login", {
       method: "POST",
@@ -48,12 +50,13 @@ const Login = () => {
       .then((data) => {
         // this.setState({ responseMessage: data.message }); // Handle the response data
         console.log(data);
-        localStorage.setItem("tokenType", data.token_type); // Store the token in localStorage
-        localStorage.setItem("accessToken", data.access_token);
-        localStorage.setItem("expiresIn", data.expires_in);
-        localStorage.setItem("refreshToken", data.refresh_token);
-        // const token = data.token; // Replace 'token' with the actual property name in your API response
-        // localStorage.setItem('token', token);  // Store the token in localStorage
+        if (data.access_token) {
+          localStorage.setItem("tokenType", data.token_type); // Store the token in localStorage
+          localStorage.setItem("accessToken", data.access_token);
+          localStorage.setItem("expiresIn", data.expires_in);
+          localStorage.setItem("refreshToken", data.refresh_token);
+          return navigate("/");
+        } else if (data.status === "fail") alert(data.msg);
       })
       .catch((error) => {
         console.error("Error:", error);
@@ -81,10 +84,13 @@ const Login = () => {
       .then((response) => response.json())
       .then((data) => {
         console.log(data);
-        localStorage.setItem("tokenType", data.token_type); // Store the token in localStorage
-        localStorage.setItem("accessToken", data.access_token);
-        localStorage.setItem("expiresIn", data.expires_in);
-        localStorage.setItem("refreshToken", data.refresh_token);
+        if (data.access_token) {
+          localStorage.setItem("tokenType", data.token_type); // Store the token in localStorage
+          localStorage.setItem("accessToken", data.access_token);
+          localStorage.setItem("expiresIn", data.expires_in);
+          localStorage.setItem("refreshToken", data.refresh_token);
+          return navigate("/");
+        } else if (data.status === "fail") alert(data.msg);
       })
       .catch((error) => {
         console.error("Error:", error);
