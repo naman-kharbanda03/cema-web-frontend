@@ -1,4 +1,5 @@
 import React from "react";
+import { Link } from "react-router-dom";
 
 const Product = () => {
     return (
@@ -11,7 +12,7 @@ const Product = () => {
                                 <div className="hot">Hot</div>
                             </div>
                             <div className="product-thumb-hover">
-                                <a href="shop-details.html">
+                                <Link href="shop-details.html" to="/shop-details">
                                     <img
                                         width="600"
                                         height="600"
@@ -26,7 +27,7 @@ const Product = () => {
                                         className="hover-image back"
                                         alt=""
                                     />
-                                </a>
+                                </Link>
                             </div>
                             <span
                                 className="product-quickview"

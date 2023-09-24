@@ -35,26 +35,6 @@ const ProductList = () => {
                                 Furniture <span className="count">4</span>
                               </a>
                             </li>
-                            <li>
-                              <a href="shop-grid-left.html">
-                                Home Décor <span className="count">3</span>
-                              </a>
-                            </li>
-                            <li>
-                              <a href="shop-grid-left.html">
-                                Lighting <span className="count">6</span>
-                              </a>
-                            </li>
-                            <li>
-                              <a href="shop-grid-left.html">
-                                Office <span className="count">2</span>
-                              </a>
-                            </li>
-                            <li>
-                              <a href="shop-grid-left.html">
-                                Outdoor <span className="count">4</span>
-                              </a>
-                            </li>
                           </ul>
                         </div>
                       </div>
