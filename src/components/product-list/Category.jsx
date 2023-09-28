@@ -1,11 +1,12 @@
 import React from "react";
 
-const Category = () => {
+const Category = (props) => {
+    const category = props.current;
     return (
         <>
             <li className="">
                 <a href="shop-grid-left.html">
-                    Bed & Bath <span className="count">9</span>
+                    {category.title.en} <span className="count">9</span>
                 </a>
             </li>
         </>

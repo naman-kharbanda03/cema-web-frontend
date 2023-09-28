@@ -1,12 +1,99 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
+import Button from "../../components/Button";
 import PageTitle from "../../components/page-tittle/PageTitle";
+import PreLoader from "../../components/pre-loader/PreLoader";
 import Category from "../../components/product-list/Category";
 import Product from "../../components/product-list/product/Product";
-
+import apiConfig from "../../config/apiConfig";
 
 
 
 const ProductList = () => {
+
+  const [productList, setProductList] = useState([]);
+  const [filteredProductList, setFilteredProductList] = useState([]);
+  const [categoryDetails, setCategoryDetails] = useState({
+    category: {},
+    products: []
+  });
+  const [categoryList, setCategoryList] = useState({
+    categories: []
+  });
+  const [productsLoaded, setProductsLoaded] = useState(false);
+
+  const [selectedSize, setSelectedSize] = useState('All');
+  const [selectedPrice, setSelectedPrice] = useState('');
+  const [selectedBrand, setSelectedBrand] = useState('All');
+
+  const handleSizeChange = (event) => {
+    console.log(event.target.getAttribute('value'));
+    const newSize = event.target.getAttribute('value');
+
+    setSelectedSize(newSize);
+    // Filter products based on selected size, price range, and brand
+    filterProducts(newSize, selectedPrice, selectedBrand);
+  };
+
+  const handleBrandChange = (event) => {
+    const newBrand = event.target.value;
+    setSelectedBrand(newBrand);
+
+    // Filter products based on selected size, price range, and brand
+    filterProducts(selectedSize, selectedPrice, newBrand);
+  };
+
+  const filterProducts = (size, price, brand) => {
+    let filtered = productList;
+    // Filter by size
+    if (size !== 'All') {
+      filtered = filtered.filter((product) => product.type === size);
+    }
+
+    // Filter by price range
+    if (price !== '') {
+      filtered = filtered.filter((product) => product.price <= parseInt(price));
+    }
+
+    // Filter by brand
+    if (brand !== 'All') {
+      filtered = filtered.filter((product) => product.brand === brand);
+    }
+
+    // Update the filtered products state
+    setFilteredProductList(filtered);
+  };
+
+  const fetchDetails = (apiUrl, setState) => {
+    fetch(apiUrl, {
+      method: "GET"
+    })
+      .then((response) => {
+        if (!response.ok) throw new Error("Network Issue");
+        return response.json();
+      })
+      .then((data) => {
+        console.log(data);
+        setState(data);
+        return data;
+      })
+      .catch((error) => console.error("Problem with fetch operations", error));
+  };
+
+  useEffect(() => {
+    const categoryListAPI = apiConfig.categoryListAPI;
+    const categoryDetailsAPI = apiConfig.productsListAPI;
+    fetchDetails(categoryDetailsAPI, setCategoryDetails);
+    fetchDetails(categoryListAPI, setCategoryList);
+  }, []);
+
+  useEffect(() => {
+    setProductList(categoryDetails.products);
+    setFilteredProductList(categoryDetails.products);
+    setProductsLoaded(true);
+  }, [categoryDetails])
+
+
+
   return (
     <div id="site-main" className="site-main">
       <div id="main-content" className="main-content">
@@ -28,8 +115,9 @@ const ProductList = () => {
                       <div class="block-content">
                         <div className="product-cats-list">
                           <ul>
-                            <Category />
-                            <Category />
+                            {categoryList.categories.map(category => (
+                              <Category current={category} />
+                            ))}
                             <li>
                               <a href="shop-grid-left.html">
                                 Furniture <span className="count">4</span>
@@ -52,7 +140,6 @@ const ProductList = () => {
                               <input
                                 id="price-filter"
                                 name="price"
-                                value="0;100"
                               />
                             </div>
                             <div className="layout-slider-settings"></div>
@@ -66,16 +153,16 @@ const ProductList = () => {
                       <div className="block-title">
                         <h2>Size</h2>
                       </div>
-                      <div className="block-content">
-                        <ul className="filter-items text">
+                      <div className="block-content" >
+                        <ul className="filter-items text" onClick={handleSizeChange}>
                           <li>
-                            <span>L</span>
+                            <span value="l"  >L</span>
                           </li>
                           <li>
-                            <span>M</span>
+                            <span value="m" >M</span>
                           </li>
                           <li>
-                            <span>S</span>
+                            <span value="s" >S</span>
                           </li>
                         </ul>
                       </div>
@@ -114,6 +201,28 @@ const ProductList = () => {
                             </span>
                           </li>
                         </ul>
+                      </div>
+                    </div>
+
+                    {/* Filter Button */}
+                    <div className="products-list list">
+                      <div className="product-wapper">
+                        <div className="products-content">
+                          <div className="product-button">
+                            <div
+                              className="btn-add-to-cart"
+                              data-title=" Filter"
+                            >
+                              <a
+                                rel="nofollow"
+                                href="#"
+                                className="product-btn button"
+                              >
+                                Filter
+                              </a>
+                            </div>
+                          </div>
+                        </div>
                       </div>
                     </div>
 
@@ -200,7 +309,7 @@ const ProductList = () => {
                     <div className="products-topbar clearfix">
                       <div className="products-topbar-left">
                         <div className="products-count">
-                          Showing all 21 results
+                          Showing all {filteredProductList.length} results
                         </div>
                       </div>
 
@@ -290,6 +399,7 @@ const ProductList = () => {
                         </ul>
                       </div>
                     </div>
+
 
                     {/* Grid Version  */}
                     <div className="tab-content">
@@ -1055,9 +1165,9 @@ const ProductList = () => {
                         role="tabpanel"
                       >
                         <div className="products-list list">
-                          <Product />
-                          <Product />
-                          <Product />
+                          {filteredProductList.map(product => (
+                            <Product current={product} />
+                          ))}
                         </div>
                       </div>
                     </div>

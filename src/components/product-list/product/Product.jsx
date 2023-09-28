@@ -1,12 +1,16 @@
 import React from "react";
 import { Link } from "react-router-dom";
 
-const Product = () => {
+const Product = (props) => {
+    const product = props.current;
+
     return (
         <>
             <div className="products-entry clearfix product-wapper">
                 <div className="row">
                     <div className="col-md-4">
+
+                        {/* Products Thumb  */}
                         <div className="products-thumb">
                             <div className="product-lable">
                                 <div className="hot">Hot</div>
@@ -16,7 +20,7 @@ const Product = () => {
                                     <img
                                         width="600"
                                         height="600"
-                                        src="images/product/6.jpg"
+                                        src={product.thumbpath + "/" + product.images}
                                         className="post-image"
                                         alt=""
                                     />
@@ -45,9 +49,9 @@ const Product = () => {
                     <div className="col-md-8">
                         <div className="products-content">
                             <h3 className="product-title">
-                                <a href="shop-details.html">Dining Table</a>
+                                <a href="shop-details.html">{product.productname.en}</a>
                             </h3>
-                            <span className="price">KD150.00</span>
+                            <span className="price">{product.symbol}{product.mainprice}</span>
                             <div className="rating">
                                 <div className="star star-5"></div>
                                 <div className="review-count">

@@ -1,18 +1,14 @@
 import React, { useEffect } from "react";
 
-function PreLoader (){
-    useEffect(()=>{
-        const 
-    },[]);
-
-    return(
+function PreLoader() {
+    return (
         <>
             <div className="page-preloader">
                 <div className="loader">
                     <div></div>
                     <div></div>
                 </div>
-            </div> 
+            </div>
         </>
     )
 }
