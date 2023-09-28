@@ -48,9 +48,12 @@ const Product = (props) => {
                     </div>
                     <div className="col-md-8">
                         <div className="products-content">
-                            <h3 className="product-title">
-                                <a href="shop-details.html">{product.productname.en}</a>
-                            </h3>
+                            <Link href="shop-details.html" to="/shop-details">
+
+                                <h3 className="product-title">
+                                    <a href="shop-details.html">{product.productname.en}</a>
+                                </h3>
+                            </Link>
                             <span className="price">{product.symbol}{product.mainprice}</span>
                             <div className="rating">
                                 <div className="star star-5"></div>
