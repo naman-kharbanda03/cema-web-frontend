@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import PageTitle from "../../components/page-tittle/PageTitle";
 import CartProduct from "../../components/cart-product/CartProduct";
 import { useShoppingCart } from "../../context/ShoppingCartContext";
+import { Link } from "react-router-dom";
 
 const Cart = () => {
 
@@ -139,12 +140,14 @@ const Cart = () => {
                           </div>
                         </div>
                         <div className="proceed-to-checkout">
-                          <a
-                            href="shop-checkout.html"
-                            className="checkout-button button"
-                          >
-                            Proceed to checkout
-                          </a>
+                          <Link to="/shop-checkout" >
+                            <div
+                              href="shop-checkout.html"
+                              className="checkout-button button"
+                            >
+                              Proceed to checkout
+                            </div>
+                          </Link>
                         </div>
                       </div>
                     </div>
