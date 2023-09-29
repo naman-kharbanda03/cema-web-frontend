@@ -54,19 +54,24 @@ export const ShoppingCartProvider = ({ children }) => {
             }
         });
     };
-    const decreseItem = (id, amt) => {
+    const decreaseItem = (id) => {
         setCartItems(currItems => {
-            if (currItems.find(item => item.Uid === id).quantity === 1) {
-                return currItems.filter(item => item.Uid !== id);
+            const foundItem = currItems.find(item => item.Uid === id);
+            if (foundItem === undefined) {
+                return currItems;
             }
             else {
-                currItems.map(item => {
-                    if (item.Uid === id) {
-                        return { ...item, quantity: item.quantity - amt };
-                    } else {
-                        return item;
-                    }
-                })
+                if (foundItem.quantity === 1) {
+                    return currItems.filter(item => item.Uid !== id);
+                }
+                else {
+                    return currItems.map(item => {
+                        if (item.Uid === id) {
+                            return { ...item, quantity: item.quantity - 1 }
+                        }
+                        else return item;
+                    })
+                }
             }
         });
 
@@ -81,7 +86,7 @@ export const ShoppingCartProvider = ({ children }) => {
         <ShoppingCartContext.Provider value={{
             getQuantity,
             increaseItem,
-            decreseItem,
+            decreaseItem,
             removeItem,
             cartItems
         }}>

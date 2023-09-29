@@ -1,24 +1,19 @@
-import React from "react";
+import React, { useState } from "react";
 import greyImage from "../../asset/images/product/1-2.jpg";
+import PageTitle from "../../components/page-tittle/PageTitle";
+import { useShoppingCart } from "../../context/ShoppingCartContext";
 
-const ShopDetails = () => {
+const ShopDetails = (product) => {
+
+  const { increaseItem, decreaseItem } = useShoppingCart();
+  const [quant, setQuant] = useState(0);
+
   return (
     <div id="site-main" className="site-main">
       <div id="main-content" className="main-content">
         <div id="primary" className="content-area">
-          <div id="title" className="page-title">
-            <div className="section-container">
-              <div className="content-title-heading">
-                <h1 className="text-title-heading">Bora Armchair</h1>
-              </div>
-              <div className="breadcrumbs">
-                <a href="index.html">Home</a>
-                <span className="delimiter"></span>
-                <a href="shop-grid-left.html">Shop</a>
-                <span className="delimiter"></span>Bora Armchair
-              </div>
-            </div>
-          </div>
+
+          <PageTitle current={"Bora Armchair"} />
 
           <div id="content" className="site-content" role="main">
             <div
@@ -232,7 +227,7 @@ const ShopDetails = () => {
                         <div className="buttons">
                           <div className="add-to-cart-wrap">
                             <div className="quantity">
-                              <button type="button" className="plus">
+                              <button type="button" className="plus" onClick={() => { setQuant(count => count + 1) }}>
                                 +
                               </button>
                               <input
@@ -242,18 +237,18 @@ const ShopDetails = () => {
                                 min="0"
                                 max=""
                                 name="quantity"
-                                value="1"
                                 title="Qty"
+                                value={quant}
                                 size="4"
                                 placeholder=""
                                 inputmode="numeric"
                                 autocomplete="off"
                               />
-                              <button type="button" className="minus">
+                              <button type="button" className="minus" onClick={() => { setQuant(count => count - 1) }}>
                                 -
                               </button>
                             </div>
-                            <div className="btn-add-to-cart">
+                            <div className="btn-add-to-cart" onClick={() => increaseItem(1, quant)}>
                               <a href="#" className="button" tabindex="0">
                                 Add to cart
                               </a>
