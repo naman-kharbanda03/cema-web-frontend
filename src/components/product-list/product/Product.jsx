@@ -1,8 +1,11 @@
 import React from "react";
 import { Link } from "react-router-dom";
+import { useShoppingCart } from "../../../context/ShoppingCartContext";
 
 const Product = (props) => {
     const product = props.current;
+    const { increaseItem, getQuantity } = useShoppingCart();
+    // console.log(getQuantity(1));
 
     return (
         <>
@@ -65,6 +68,7 @@ const Product = (props) => {
                                 <div
                                     className="btn-add-to-cart"
                                     data-title="Add to cart"
+                                    onClick={() => increaseItem(product.productid, 1)}
                                 >
                                     <a
                                         rel="nofollow"

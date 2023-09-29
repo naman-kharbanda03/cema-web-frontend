@@ -8,7 +8,7 @@ import apiConfig from "../../config/apiConfig";
 
 
 
-const ProductList = () => {
+const ProductList = (category) => {
 
   const [productList, setProductList] = useState([]);
   const [filteredProductList, setFilteredProductList] = useState([]);

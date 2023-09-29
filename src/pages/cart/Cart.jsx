@@ -1,8 +1,17 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import PageTitle from "../../components/page-tittle/PageTitle";
 import CartProduct from "../../components/cart-product/CartProduct";
+import { useShoppingCart } from "../../context/ShoppingCartContext";
 
 const Cart = () => {
+
+  const [orderIDs, setOrderIDs] = useState([{}]);
+  const { getQuantity,
+    increaseItem,
+    decreseItem,
+    removeItem, cartItems } = useShoppingCart();
+
+
   return (
     <div id="site-main" className="site-main">
       <div id="main-content" className="main-content">

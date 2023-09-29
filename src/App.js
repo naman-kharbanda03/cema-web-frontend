@@ -13,6 +13,7 @@ import ProductList from "./pages/product-list/ProductList";
 import ShopCheckout from "./pages/shop-checkout/ShopCheckout";
 import ShopWishlist from "./pages/shop-wishlist/ShopWishlist";
 import ShopDetails from "./pages/shop-details/ShopDetails";
+import { ShoppingCartProvider } from "./context/ShoppingCartContext";
 
 function App() {
   return (
@@ -20,22 +21,24 @@ function App() {
       id="page"
       className="min-vh-100 d-flex flex-column border-danger hfeed page-wrapper"
     >
-      <Header />
-      <Routes>
-        <Route path="/" element={<Home />} />
-        <Route path="/login" element={<Login />} />
-        <Route path="/forgot-password" element={<ForgotPassword />} />
-        <Route path="/cart" element={<Cart />} />
-        <Route path="/contact" element={<Contact />} />
-        <Route path="/listings" element={<Listing />} />
-        <Route path="/my-account" element={<MyAccount />} />
-        <Route path="/product-list" element={<ProductList />} />
-        <Route path="/shop-checkout" element={<ShopCheckout />} />
-        <Route path="/shop-wishlist" element={<ShopWishlist />} />
-        <Route path="/shop-details" element={<ShopDetails />} />
-      </Routes>
-      <Footer />
-      <BackToTop />
+      <ShoppingCartProvider>
+        <Header />
+        <Routes>
+          <Route path="/" element={<Home />} />
+          <Route path="/login" element={<Login />} />
+          <Route path="/forgot-password" element={<ForgotPassword />} />
+          <Route path="/cart" element={<Cart />} />
+          <Route path="/contact" element={<Contact />} />
+          <Route path="/listings" element={<Listing />} />
+          <Route path="/my-account" element={<MyAccount />} />
+          <Route path="/product-list" element={<ProductList />} />
+          <Route path="/shop-checkout" element={<ShopCheckout />} />
+          <Route path="/shop-wishlist" element={<ShopWishlist />} />
+          <Route path="/shop-details" element={<ShopDetails />} />
+        </Routes>
+        <Footer />
+        <BackToTop />
+      </ShoppingCartProvider>
     </div>
   );
 }

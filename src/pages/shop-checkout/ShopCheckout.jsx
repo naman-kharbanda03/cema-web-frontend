@@ -1,23 +1,14 @@
 import React from "react";
+import PageTitle from "../../components/page-tittle/PageTitle";
 
 const ShopCheckout = () => {
   return (
     <div id="site-main" className="site-main">
       <div id="main-content" className="main-content">
         <div id="primary" className="content-area">
-          <div id="title" className="page-title">
-            <div className="section-container">
-              <div className="content-title-heading">
-                <h1 className="text-title-heading">Checkout</h1>
-              </div>
-              <div className="breadcrumbs">
-                <a href="index.html">Home</a>
-                <span className="delimiter"></span>
-                <a href="shop-grid-left.html">Shop</a>
-                <span className="delimiter"></span>Shopping Cart
-              </div>
-            </div>
-          </div>
+
+          {/* Page Title */}
+          <PageTitle current={"Shop Checkout"} />
 
           <div id="content" className="site-content" role="main">
             <div className="section-padding">
