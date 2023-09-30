@@ -1,14 +1,21 @@
 import React from "react";
+import { Link } from "react-router-dom";
 
 const Category = (props) => {
     const category = props.current;
     return (
         <>
-            <li className="">
-                <a href="shop-grid-left.html">
-                    {category.title.en} <span className="count">9</span>
-                </a>
-            </li>
+            <Link to={{
+                pathname: '/products',
+                search: `?category=${category.title.en}&id=${category.id}`
+            }} >
+                <li className="">
+                    <a href="">
+                        {category.title.en} <span className="count">{category.products_count}</span>
+                    </a>
+                </li>
+            </Link>
+
         </>
     );
 }

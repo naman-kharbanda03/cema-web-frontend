@@ -1,29 +1,119 @@
 import React, { useEffect, useState } from "react";
+import { useLocation } from "react-router-dom";
 import Button from "../../components/Button";
 import PageTitle from "../../components/page-tittle/PageTitle";
 import PreLoader from "../../components/pre-loader/PreLoader";
+import Brands from "../../components/product-list/Brands";
 import Category from "../../components/product-list/Category";
 import Product from "../../components/product-list/product/Product";
 import apiConfig from "../../config/apiConfig";
+import Error from "../error/Error";
 
 
 
-const ProductList = (category) => {
+const ProductList = () => {
 
+  const location = useLocation();
+  const queryParams = new URLSearchParams(location.search);
+  const category = queryParams.get('category');
+
+
+  const [categoryList, setCategoryList] = useState([]);
   const [productList, setProductList] = useState([]);
   const [filteredProductList, setFilteredProductList] = useState([]);
+  const [brands, setBrands] = useState([]);
+
   const [categoryDetails, setCategoryDetails] = useState({
     category: {},
     products: []
   });
-  const [categoryList, setCategoryList] = useState({
-    categories: []
-  });
+  const [categories, setCategories] = useState({});
   const [productsLoaded, setProductsLoaded] = useState(false);
 
   const [selectedSize, setSelectedSize] = useState('All');
   const [selectedPrice, setSelectedPrice] = useState('');
   const [selectedBrand, setSelectedBrand] = useState('All');
+
+
+
+  const fetchDetails = (categoryListAPI, categoryDetailsAPI, brandsAPI) => {
+    // const productListAPI = apiConfig.productListAPI;
+
+
+    fetch(categoryListAPI, {
+      method: "GET"
+    })
+      .then((response) => {
+        if (!response.ok) throw new Error("Network Issue");
+        return response.json();
+      })
+      .then((datar) => {
+        setCategoryList(datar.categories.data);
+        return datar;
+      })
+      .catch((error) => console.error("Problem with fetch operations", error));
+
+    fetch(categoryDetailsAPI, {
+      method: "GET"
+    })
+      .then((response) => {
+        if (!response.ok) throw new Error("Network Issue");
+        return response.json();
+      })
+      .then((datar) => {
+        if (datar.status) return "";
+        else {
+          setProductList(datar.products);
+          return datar;
+        }
+
+      })
+      .catch((error) => console.error("Problem with fetch operations", error));
+
+    fetch(brandsAPI, {
+      method: "GET"
+    })
+      .then((response) => {
+        if (!response.ok) throw new Error("Network Issue");
+        return response.json();
+      })
+      .then((datar) => {
+        if (datar.status) return "";
+        else {
+          console.log(datar)
+          setBrands(datar);
+          return datar;
+        }
+
+      })
+      .catch((error) => console.error("Problem with fetch operations", error));
+  };
+
+  useEffect(() => {
+    const queryParams = new URLSearchParams(location.search);
+    const categoryID = queryParams.get('id');
+
+    const categoryDetailsAPI = `https://cema-backend.plasium.com/api/category/${categoryID}?currency=INR`;
+    const categoryListAPI = apiConfig.categoryListAPI;
+    const brandsAPI = apiConfig.brandsAPI;
+    const productListAPI = apiConfig.productListAPI;
+
+    if (categoryID) {
+      fetchDetails(categoryListAPI, categoryDetailsAPI, brandsAPI);
+    }
+  }, [location.search]);
+
+  useEffect(() => {
+    console.log(categoryList, brands);
+  }, [categoryList, brands]);
+
+  useEffect(() => {
+    // setProductList(categoryDetails.products);
+    setFilteredProductList(productList);
+    setProductsLoaded(true);
+  }, [productList])
+
+
 
   const handleSizeChange = (event) => {
     console.log(event.target.getAttribute('value'));
@@ -34,8 +124,9 @@ const ProductList = (category) => {
     filterProducts(newSize, selectedPrice, selectedBrand);
   };
 
-  const handleBrandChange = (event) => {
-    const newBrand = event.target.value;
+  const handleBrandChange = (newBrand) => {
+    // const newBrand = event.target.value;
+    console.log(newBrand);
     setSelectedBrand(newBrand);
 
     // Filter products based on selected size, price range, and brand
@@ -63,35 +154,6 @@ const ProductList = (category) => {
     setFilteredProductList(filtered);
   };
 
-  const fetchDetails = (apiUrl, setState) => {
-    fetch(apiUrl, {
-      method: "GET"
-    })
-      .then((response) => {
-        if (!response.ok) throw new Error("Network Issue");
-        return response.json();
-      })
-      .then((data) => {
-        console.log(data);
-        setState(data);
-        return data;
-      })
-      .catch((error) => console.error("Problem with fetch operations", error));
-  };
-
-  useEffect(() => {
-    const categoryListAPI = apiConfig.categoryListAPI;
-    const categoryDetailsAPI = apiConfig.productsListAPI;
-    fetchDetails(categoryDetailsAPI, setCategoryDetails);
-    fetchDetails(categoryListAPI, setCategoryList);
-  }, []);
-
-  useEffect(() => {
-    setProductList(categoryDetails.products);
-    setFilteredProductList(categoryDetails.products);
-    setProductsLoaded(true);
-  }, [categoryDetails])
-
 
 
   return (
@@ -99,7 +161,7 @@ const ProductList = (category) => {
       <div id="main-content" className="main-content">
         <div id="primary" className="content-area">
 
-          <PageTitle current={"Wall & Living"} />
+          <PageTitle current={category} />
 
           <div id="content" className="site-content" role="main">
             <div className="section-padding">
@@ -115,14 +177,9 @@ const ProductList = (category) => {
                       <div class="block-content">
                         <div className="product-cats-list">
                           <ul>
-                            {categoryList.categories.map(category => (
+                            {categoryList.map(category => (
                               <Category current={category} />
                             ))}
-                            <li>
-                              <a href="shop-grid-left.html">
-                                Furniture <span className="count">4</span>
-                              </a>
-                            </li>
                           </ul>
                         </div>
                       </div>
@@ -175,31 +232,7 @@ const ProductList = (category) => {
                       </div>
                       <div className="block-content">
                         <ul className="filter-items image">
-                          <li>
-                            <span>
-                              <img src="images/brand/1.jpg" alt="Brand" />
-                            </span>
-                          </li>
-                          <li>
-                            <span>
-                              <img src="images/brand/2.jpg" alt="Brand" />
-                            </span>
-                          </li>
-                          <li>
-                            <span>
-                              <img src="images/brand/3.jpg" alt="Brand" />
-                            </span>
-                          </li>
-                          <li>
-                            <span>
-                              <img src="images/brand/4.jpg" alt="Brand" />
-                            </span>
-                          </li>
-                          <li>
-                            <span>
-                              <img src="images/brand/5.jpg" alt="Brand" />
-                            </span>
-                          </li>
+                          {brands.map(brand => <Brands brand={brand} bf={handleBrandChange} />)}
                         </ul>
                       </div>
                     </div>
@@ -227,7 +260,7 @@ const ProductList = (category) => {
                     </div>
 
                     {/* Feature Products  */}
-                    <div className="block block-products">
+                    {/* <div className="block block-products">
                       <div className="block-title">
                         <h2>Feature Product</h2>
                       </div>
@@ -302,7 +335,7 @@ const ProductList = (category) => {
                           </li>
                         </ul>
                       </div>
-                    </div>
+                    </div> */}
                   </div>
 
                   <div className="col-xl-9 col-lg-9 col-md-12 col-12">
@@ -313,7 +346,7 @@ const ProductList = (category) => {
                         </div>
                       </div>
 
-                      <div className="products-topbar-right">
+                      {/* <div className="products-topbar-right">
                         <div className="products-sort dropdown">
                           <span
                             className="sort-toggle dropdown-toggle"
@@ -397,7 +430,7 @@ const ProductList = (category) => {
                             </a>
                           </li>
                         </ul>
-                      </div>
+                      </div> */}
                     </div>
 
 
@@ -1203,7 +1236,7 @@ const ProductList = (category) => {
                           </a>
                         </li>
                       </ul>
-                    </nav>
+                    </nav>z
                   </div>
                 </div>
               </div>

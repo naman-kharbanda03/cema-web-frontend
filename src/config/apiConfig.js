@@ -3,7 +3,9 @@ const secretKey = "1dc7843e-e42c-4154-a02d-d80ab6d81095";
 
 const apiConfig = {
   categoryListAPI: `${BASE_URL}/api/categories?secret=${secretKey}`,
-  productsListAPI: `${BASE_URL}/api/category/1?secret=${secretKey}&currency=INR`,
+  categoryDetailsAPI: `${BASE_URL}/api/category/1?secret=${secretKey}&currency=INR`,
+  productListAPI: `${BASE_URL}/api/products?per_page=10&page=1`,
+  brandsAPI: `${BASE_URL}/api/brands`,
 };
 
 export default apiConfig;
