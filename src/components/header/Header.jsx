@@ -4,7 +4,8 @@ import product_1 from "../../asset/images/product/1.jpg";
 import product_3 from "../../asset/images/product/3.jpg";
 import { Link } from "react-router-dom";
 
-const Header = () => {
+const Header = (props) => {
+  console.log(props);
   return (
     <header id="site-header" className="site-header header-v2 large-height">
       <div id="header-topbar" className="topbar-v1 hidden-sm hidden-xs">
@@ -20,23 +21,23 @@ const Header = () => {
                         support@cema.online
                       </a>
                     </div>
-                    <div className="currency has-n-select d-inline-block">
+                    {/* <div className="currency has-n-select d-inline-block">
                       <select name="currency" id="currency">
                         <option value="KWD">KWD</option>
                         <option value="USD">USD</option>
                       </select>
-                    </div>
-                    <div className="language has-n-select d-inline-block">
+                    </div> */}
+                    {/* <div className="language has-n-select d-inline-block">
                       <select name="language" id="language">
                         <option value="english">English</option>
                         <option value="arabic">Arabic</option>
                       </select>
-                    </div>
+                    </div> */}
                   </div>
                 </div>
                 <div className="col-md-6 topbar-right">
                   <ul id="topbar-menu" className="menu">
-                    <li>
+                    {/* <li>
                       <div className="input-group">
                         <input
                           type="text"
@@ -49,13 +50,13 @@ const Header = () => {
                           <i className="fa-solid fa-magnifying-glass" />
                         </span>
                       </div>
-                    </li>
-                    <li className="menu-item">
+                    </li> */}
+                    {/* <li className="menu-item">
                       <a href="#">Gift Cards</a>
-                    </li>
-                    <li className="menu-item">
+                    </li> */}
+                    {/* <li className="menu-item">
                       <a href="#">FAQs</a>
-                    </li>
+                    </li> */}
                     <li className="menu-item">
                       <Link to="/contact">Contact</Link>
                     </li>
@@ -412,10 +413,11 @@ const Header = () => {
                   <div className="header-page-link">
                     {/* Login */}
                     <div className="login-header">
-                      <Link className="active-login" to="/login">
+                      {props.auth ? <Link to='/account'> My Account</Link> : <Link className="active-login" to="/login">
                         Login
-                      </Link>
-                      <div className="form-login-register">
+                      </Link>}
+
+                      {/* <div className="form-login-register">
                         <div className="box-form-login">
                           <div className="active-login" />
                           <div className="box-content">
@@ -522,14 +524,14 @@ const Header = () => {
                             </div>
                           </div>
                         </div>
-                      </div>
+                      </div> */}
                     </div>
                     {/* Search */}
-                    <div className="search-box">
+                    {/* <div className="search-box">
                       <div className="search-toggle">
                         <i className="ti-search" />
                       </div>
-                    </div>
+                    </div> */}
                     {/* Wishlist */}
                     <div className="wishlist-box">
                       <Link to="/wish-list">

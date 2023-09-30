@@ -4,6 +4,7 @@ import { useShoppingCart } from "../../../context/ShoppingCartContext";
 
 const Product = (props) => {
     const product = props.current;
+    // console.log(product.thumbpath + '/' + product.images[0].image);
     const { increaseItem, getQuantity } = useShoppingCart();
     // console.log(getQuantity(1));
 
@@ -23,14 +24,14 @@ const Product = (props) => {
                                     <img
                                         width="600"
                                         height="600"
-                                        src={product.thumbpath + "/" + product.images}
+                                        src={product.thumbpath + "/" + product.images[0].image}
                                         className="post-image"
                                         alt=""
                                     />
                                     <img
                                         width="600"
                                         height="600"
-                                        src="images/product/6-2.jpg"
+                                        // src={product.thumbpath + "/" + product.images[1].image}
                                         className="hover-image back"
                                         alt=""
                                     />
@@ -68,7 +69,7 @@ const Product = (props) => {
                                 <div
                                     className="btn-add-to-cart"
                                     data-title="Add to cart"
-                                    onClick={() => increaseItem(product.productid, 1)}
+                                    onClick={() => increaseItem(product.id, 1)}
                                 >
                                     <a
                                         rel="nofollow"

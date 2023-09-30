@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import PageTitle from "../../components/page-tittle/PageTitle";
 
-const Login = () => {
+const Login = (props) => {
   const [loginData, setLoginData] = useState({
     email: "",
     password: "",
@@ -55,6 +55,7 @@ const Login = () => {
           localStorage.setItem("accessToken", data.access_token);
           localStorage.setItem("expiresIn", data.expires_in);
           localStorage.setItem("refreshToken", data.refresh_token);
+          props.auth(true);
           return navigate("/");
         } else if (data.status === "fail") alert(data.msg);
       })
@@ -89,6 +90,8 @@ const Login = () => {
           localStorage.setItem("accessToken", data.access_token);
           localStorage.setItem("expiresIn", data.expires_in);
           localStorage.setItem("refreshToken", data.refresh_token);
+          props.auth(true);
+
           return navigate("/");
         } else if (data.status === "fail") alert(data.msg);
       })

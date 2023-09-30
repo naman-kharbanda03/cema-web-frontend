@@ -14,27 +14,33 @@ import ShopCheckout from "./pages/shop-checkout/ShopCheckout";
 import ShopWishlist from "./pages/shop-wishlist/ShopWishlist";
 import ShopDetails from "./pages/shop-details/ShopDetails";
 import { ShoppingCartProvider } from "./context/ShoppingCartContext";
+import Error from "./pages/error/Error";
+import { useEffect, useState } from "react";
 
 function App() {
+  const [isLoggedIn, setIsLoggedIn] = useState(false);
+  useEffect(() => console.log(isLoggedIn), [isLoggedIn]);
   return (
     <div
       id="page"
       className="min-vh-100 d-flex flex-column border-danger hfeed page-wrapper"
     >
       <ShoppingCartProvider>
-        <Header />
+        <Header auth={isLoggedIn} />
         <Routes>
           <Route path="/" element={<Home />} />
-          <Route path="/login" element={<Login />} />
+          <Route path="/login" element={<Login auth={setIsLoggedIn} />} />
           <Route path="/forgot-password" element={<ForgotPassword />} />
           <Route path="/cart" element={<Cart />} />
           <Route path="/contact" element={<Contact />} />
           <Route path="/listings" element={<Listing />} />
-          <Route path="/my-account" element={<MyAccount />} />
-          <Route path="/product-list" element={<ProductList />} />
+          <Route path="/account" element={<MyAccount />} />
+          <Route path="/products" element={<ProductList />} />
           <Route path="/shop-checkout" element={<ShopCheckout />} />
-          <Route path="/shop-wishlist" element={<ShopWishlist />} />
-          <Route path="/shop-details" element={<ShopDetails />} />
+          <Route path="/wishlist" element={<ShopWishlist />} />
+          <Route path="/product-details" element={<ShopDetails />} />
+          <Route path="/new-arrivals" element={<ProductList />} />
+          <Route path="/best-seller" element={<ProductList />} />
         </Routes>
         <Footer />
         <BackToTop />

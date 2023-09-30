@@ -13,7 +13,6 @@ export const ShoppingCartProvider = ({ children }) => {
         quantity: null
     }]);
     useEffect(() => {
-        console.log(cartItems);
     }, [cartItems]);
 
     const getQuantity = (id) => {
