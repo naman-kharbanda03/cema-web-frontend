@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 
 import Sliders from "../../components/slider/Slider";
 import Banner from "../../components/banner/Banner";
@@ -7,8 +7,26 @@ import ProductSlider from "../../components/slider/ProductSlider";
 import Banner2 from "../../components/banner/Banner2";
 import BestSellerSlider from "../../components/slider/BestSellerSlider";
 import { Link } from "react-router-dom";
+import apiConfig from "../../config/apiConfig";
 
 const Home = () => {
+
+  useEffect(() => {
+    const categoryListAPI = apiConfig.categoryListAPI;
+    fetch(categoryListAPI, {
+      method: "GET"
+    })
+      .then((response) => {
+        if (!response.ok) throw new Error("Network Issue");
+        return response.json();
+      })
+      .then((data) => {
+        console.log(data);
+        return data;
+      })
+      .catch((error) => console.error("Problem with fetch operations", error));
+  }, []);
+
   return (
     <>
       <div id="site-main" className="site-main">
