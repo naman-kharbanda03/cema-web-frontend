@@ -34,7 +34,7 @@ function App() {
           <Route path="/cart" element={<Cart />} />
           <Route path="/contact" element={<Contact />} />
           <Route path="/listings" element={<Listing />} />
-          <Route path="/account" element={<MyAccount />} />
+          <Route path="/account" element={<MyAccount auth={setIsLoggedIn} />} />
           <Route path="/products" element={<ProductList />} />
           <Route path="/shop-checkout" element={<ShopCheckout />} />
           <Route path="/wishlist" element={<ShopWishlist />} />

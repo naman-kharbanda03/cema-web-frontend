@@ -7,7 +7,7 @@ import Dashboard from "../../components/my-account/dashboard/Dashboard";
 import OrdersTable from "../../components/my-account/ordersTable/OrdersTable";
 import PageTitle from "../../components/page-tittle/PageTitle";
 
-const MyAccount = () => {
+const MyAccount = (props) => {
   const [orderDetails, setOrderDetails] = useState([]);
   const [activeTab, setActiveTab] = useState("dashboard");
 
@@ -114,7 +114,7 @@ const MyAccount = () => {
                           </li>
                           <li className="nav-item">
                             <a className="nav-link" href="">
-                              <Link to="/login">Log out</Link>
+                              <Link to="/login" onClick={() => props.auth(false)} >Log out</Link>
                             </a>
                           </li>
                         </ul>
@@ -125,7 +125,7 @@ const MyAccount = () => {
                           id="dashboard"
                           role="tabpanel"
                         >
-                          <Dashboard />
+                          <Dashboard auth={props.auth} />
                         </div>
                         <div
                           className={`tab-pane fade ${activeTab === "orders" ? "show active" : ""}`}

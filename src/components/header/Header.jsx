@@ -7,11 +7,10 @@ import { Link, useNavigate } from "react-router-dom";
 const Header = (props) => {
   const navigate = useNavigate();
   const handleNavigate = () => {
-    const name = 'New Arrivals'; 
+    const name = 'New Arrivals';
     navigate('/listings?products=new_arrival', { state: { name } });
   };
 
-  console.log(props);
   return (
     <header id="site-header" className="site-header header-v2 large-height">
       <div id="header-topbar" className="topbar-v1 hidden-sm hidden-xs">
@@ -250,19 +249,21 @@ const Header = (props) => {
                     <nav id="main-navigation">
                       <ul id="menu-main-menu" className="menu">
                         <li className="level-0 menu-item" onClick={handleNavigate}>
-                        <Link to = "">
+                          <Link to="">
                             <span className="menu-item-text">New Arrivals</span>
-                          
+
                           </Link>
                         </li>
                         <li className="level-0 menu-item">
-                        <Link to = "listings?best-sellers">
+                          <Link to="listings?best-sellers">
                             <span className="menu-item-text">Best Sellers</span>
                           </Link>
                         </li>
                         <li className="level-0 menu-item menu-item-has-children mega-menu mega-menu-fullwidth">
                           <a href="javascript:;">
-                            <span className="menu-item-text">Products</span>
+                            <Link to="/products">
+                              <span className="menu-item-text">Products</span>
+                            </Link>
                           </a>
                           <div className="sub-menu">
                             <div className="row">

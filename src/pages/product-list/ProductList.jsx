@@ -39,7 +39,6 @@ const ProductList = () => {
   const fetchDetails = (categoryListAPI, categoryDetailsAPI, brandsAPI) => {
     // const productListAPI = apiConfig.productListAPI;
 
-
     fetch(categoryListAPI, {
       method: "GET"
     })
@@ -92,15 +91,19 @@ const ProductList = () => {
   useEffect(() => {
     const queryParams = new URLSearchParams(location.search);
     const categoryID = queryParams.get('id');
+    let categoryDetailsAPI = "";
 
-    const categoryDetailsAPI = `https://cema-backend.plasium.com/api/category/${categoryID}?currency=INR`;
+    if (categoryID === null) {
+      categoryDetailsAPI = `https://cema-backend.plasium.com/api/category/0?currency=INR`;
+    }
+    else {
+      categoryDetailsAPI = `https://cema-backend.plasium.com/api/category/${categoryID}?currency=INR`;
+    }
     const categoryListAPI = apiConfig.categoryListAPI;
     const brandsAPI = apiConfig.brandsAPI;
     const productListAPI = apiConfig.productListAPI;
 
-    if (categoryID) {
-      fetchDetails(categoryListAPI, categoryDetailsAPI, brandsAPI);
-    }
+    fetchDetails(categoryListAPI, categoryDetailsAPI, brandsAPI);
   }, [location.search]);
 
   useEffect(() => {
@@ -237,27 +240,6 @@ const ProductList = () => {
                       </div>
                     </div>
 
-                    {/* Filter Button */}
-                    <div className="products-list list">
-                      <div className="product-wapper">
-                        <div className="products-content">
-                          <div className="product-button">
-                            <div
-                              className="btn-add-to-cart"
-                              data-title=" Filter"
-                            >
-                              <a
-                                rel="nofollow"
-                                href="#"
-                                className="product-btn button"
-                              >
-                                Filter
-                              </a>
-                            </div>
-                          </div>
-                        </div>
-                      </div>
-                    </div>
 
                     {/* Feature Products  */}
                     {/* <div className="block block-products">
@@ -441,7 +423,7 @@ const ProductList = () => {
                         id="layout-grid"
                         role="tabpanel"
                       >
-                        <div className="products-list grid">
+                        {/* <div className="products-list grid">
                           <div className="row">
                             <div className="col-xl-4 col-lg-4 col-md-4 col-sm-6">
                               <div className="products-entry clearfix product-wapper">
@@ -1188,7 +1170,7 @@ const ProductList = () => {
                               </div>
                             </div>
                           </div>
-                        </div>
+                        </div> */}
                       </div>
 
                       {/* List Version  */}
@@ -1236,7 +1218,7 @@ const ProductList = () => {
                           </a>
                         </li>
                       </ul>
-                    </nav>z
+                    </nav>
                   </div>
                 </div>
               </div>

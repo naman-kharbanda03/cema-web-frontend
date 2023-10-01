@@ -1,14 +1,14 @@
 import React from "react";
 import { Link } from "react-router-dom";
 
-const Dashboard = () => {
+const Dashboard = (props) => {
     return (
         <>
             <div className="my-account-dashboard">
                 <p>
                     Hello <strong>Rosie</strong> (not{" "}
                     <strong>Rosie</strong>?{" "}
-                    <Link to="/login">Log out</Link>
+                    <Link to="/login" onClick={() => props.auth(false)}>Log out</Link>
                 </p>
                 <p>
                     From your account dashboard you can view your{" "}
