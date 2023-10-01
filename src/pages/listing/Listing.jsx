@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import PageTitle from "../../components/page-tittle/PageTitle";
 
 import P613 from "../../asset/images/product/6-13.png";
@@ -10,15 +10,45 @@ import P68 from "../../asset/images/product/6-8.png";
 import P69 from "../../asset/images/product/6-9.png";
 import P610 from "../../asset/images/product/6-10.png";
 import P615 from "../../asset/images/product/6-15.png";
+import { Link, useLocation } from "react-router-dom";
 
 const Listing = () => {
+  const [data, setData] = useState();
+  const url = new URL(window.location.href);
+  const params = new URLSearchParams(url.search);
+  const products = params.get("products");
+  const location = useLocation();
+  const name = location.state ? location.state.name : null;
+  console.log("location",location,name)
+
+  const fetchDetails = () => {
+    fetch(
+      `https://cema-backend.plasium.com/api/products?per_page=10&page=1&${products}=1`,
+      {
+        method: "GET",
+      }
+    )
+      .then((response) => {
+        if (!response.ok) throw new Error("Network Issue");
+        return response.json();
+      })
+      .then((data) => {
+        console.log("test", data.data.data);
+        setData(data.data.data);
+      })
+      .catch((error) => console.error("Problem with fetch operations", error));
+  };
+
+  useEffect(() => {
+    fetchDetails();
+  }, []);
   return (
     <>
       <div id="site-main" className="site-main">
         <div id="main-content" className="main-content">
           <div id="primary" className="content-area">
             {/* Page Info */}
-            <PageTitle current={"Bed & Bath"} />
+            <PageTitle current={name} />
             {/* Page Content  */}
             <div id="content" className="site-content" role="main">
               <div className="section-padding">
@@ -178,7 +208,7 @@ const Listing = () => {
                       <div className="products-topbar clearfix">
                         <div className="products-topbar-left">
                           <div className="products-count">
-                            Showing all 21 results
+                            Showing all {data?.length} results
                           </div>
                         </div>
                         <div className="products-topbar-right">
@@ -225,485 +255,71 @@ const Listing = () => {
                         >
                           <div className="products-list grid">
                             <div className="row">
-                              <div className="col-xl-4 col-lg-4 col-md-4 col-sm-6">
-                                <div className="items">
-                                  <div className="products-entry clearfix product-wapper">
-                                    <div className="products-thumb">
-                                      <div className="product-lable">
-                                        <div className="hot">Hot</div>
-                                      </div>
-                                      <div className="product-thumb-hover">
-                                        <a href="details.html">
-                                          <img
-                                            width="600"
-                                            height="600"
-                                            src={P613}
-                                            className="hover-image back"
-                                            alt=""
-                                          />
-                                        </a>
-                                      </div>
-                                      <div className="product-button">
-                                        <div
-                                          className="btn-add-to-cart"
-                                          data-title="Add to cart"
-                                        >
-                                          <a
-                                            rel="nofollow"
-                                            href="#"
-                                            className="product-btn button"
+                              {data?.map((product) => (
+                                <div
+                                  className="col-xl-3 col-lg-4 col-md-4 col-sm-6"
+                                  key={product.id}
+                                >
+                                  <div className="items">
+                                    <div className="products-entry clearfix product-wapper">
+                                      <div className="products-thumb">
+                                        <div className="product-lable">
+                                          <div className="onsale">-23%</div>
+                                          {/*/to ask what to show */}
+                                          <div className="hot">Hot</div>
+                                        </div>
+                                        <div className="product-thumb-hover">
+                                          <Link
+                                            to={`/shop-details?product_id=${product.id}`}
                                           >
-                                            Add to cart
-                                          </a>
+                                            <img
+                                              width={600}
+                                              height={600}
+                                              src={`${product.image_path}/${product.product_image?.[0]}`}
+                                              className="hover-image back"
+                                              alt="image not available"
+                                            />
+                                          </Link>
                                         </div>
-                                        <div
-                                          className="btn-wishlist"
-                                          data-title="Wishlist"
-                                        >
-                                          <button className="product-btn">
-                                            Add to wishlist
-                                          </button>
+                                        <div className="product-button">
+                                          <div
+                                            className="btn-add-to-cart"
+                                            data-title="Add to cart"
+                                          >
+                                            <a
+                                              rel="nofollow"
+                                              href="#"
+                                              className="product-btn button"
+                                            >
+                                              Add to cart
+                                            </a>
+                                          </div>
+                                          <div
+                                            className="btn-wishlist"
+                                            data-title="Wishlist"
+                                          >
+                                            <button className="product-btn">
+                                              Add to wishlist
+                                            </button>
+                                          </div>
                                         </div>
                                       </div>
-                                    </div>
-                                    <div className="products-content">
-                                      <div className="contents text-center">
-                                        <h3 className="product-title">
-                                          <a href="details.html">
-                                            Dining Table
-                                          </a>
-                                        </h3>
-                                        <span className="price">KD150.00</span>
+                                      <div className="products-content">
+                                        <div className="contents text-center">
+                                          <h3 className="product-title">
+                                            <a href="#">
+                                              {product?.product_name?.en}
+                                            </a>
+                                          </h3>
+                                          <span className="price">
+                                            KD{product.actual_selling_price}
+                                          </span>
+                                        </div>
                                       </div>
                                     </div>
                                   </div>
                                 </div>
-                              </div>
-
-                              <div className="col-xl-4 col-lg-4 col-md-4 col-sm-6">
-                                <div className="items">
-                                  <div className="products-entry clearfix product-wapper">
-                                    <div className="products-thumb">
-                                      <div className="product-lable">
-                                        <div className="hot">Hot</div>
-                                      </div>
-                                      <div className="product-thumb-hover">
-                                        <a href="details.html">
-                                          <img
-                                            width="600"
-                                            height="600"
-                                            src={P611}
-                                            className="hover-image back"
-                                            alt=""
-                                          />
-                                        </a>
-                                      </div>
-                                      <div className="product-button">
-                                        <div
-                                          className="btn-add-to-cart"
-                                          data-title="Add to cart"
-                                        >
-                                          <a
-                                            rel="nofollow"
-                                            href="#"
-                                            className="product-btn button"
-                                          >
-                                            Add to cart
-                                          </a>
-                                        </div>
-                                        <div
-                                          className="btn-wishlist"
-                                          data-title="Wishlist"
-                                        >
-                                          <button className="product-btn">
-                                            Add to wishlist
-                                          </button>
-                                        </div>
-                                      </div>
-                                    </div>
-                                    <div className="products-content">
-                                      <div className="contents text-center">
-                                        <h3 className="product-title">
-                                          <a href="details.html">
-                                            Dining Table
-                                          </a>
-                                        </h3>
-                                        <span className="price">KD150.00</span>
-                                      </div>
-                                    </div>
-                                  </div>
-                                </div>
-                              </div>
-
-                              <div className="col-xl-4 col-lg-4 col-md-4 col-sm-6">
-                                <div className="items">
-                                  <div className="products-entry clearfix product-wapper">
-                                    <div className="products-thumb">
-                                      <div className="product-lable">
-                                        <div className="onsale">-33%</div>
-                                      </div>
-                                      <div className="product-thumb-hover">
-                                        <a href="details.html">
-                                          <img
-                                            width="600"
-                                            height="600"
-                                            src={P64}
-                                            className="hover-image back"
-                                            alt=""
-                                          />
-                                        </a>
-                                      </div>
-                                      <div className="product-button">
-                                        <div
-                                          className="btn-add-to-cart"
-                                          data-title="Add to cart"
-                                        >
-                                          <a
-                                            rel="nofollow"
-                                            href="#"
-                                            className="product-btn button"
-                                          >
-                                            Add to cart
-                                          </a>
-                                        </div>
-                                        <div
-                                          className="btn-wishlist"
-                                          data-title="Wishlist"
-                                        >
-                                          <button className="product-btn">
-                                            Add to wishlist
-                                          </button>
-                                        </div>
-                                      </div>
-                                    </div>
-                                    <div className="products-content">
-                                      <div className="contents text-center">
-                                        <h3 className="product-title">
-                                          <a href="details.html">
-                                            Dining Table
-                                          </a>
-                                        </h3>
-                                        <span className="price">KD150.00</span>
-                                      </div>
-                                    </div>
-                                  </div>
-                                </div>
-                              </div>
-                              <div className="col-xl-4 col-lg-4 col-md-4 col-sm-6">
-                                <div className="items">
-                                  <div className="products-entry clearfix product-wapper">
-                                    <div className="products-thumb">
-                                      <div className="product-thumb-hover">
-                                        <a href="details.html">
-                                          <img
-                                            width="600"
-                                            height="600"
-                                            src={P66}
-                                            className="hover-image back"
-                                            alt=""
-                                          />
-                                        </a>
-                                      </div>
-                                      <div className="product-button">
-                                        <div
-                                          className="btn-add-to-cart"
-                                          data-title="Add to cart"
-                                        >
-                                          <a
-                                            rel="nofollow"
-                                            href="#"
-                                            className="product-btn button"
-                                          >
-                                            Add to cart
-                                          </a>
-                                        </div>
-                                        <div
-                                          className="btn-wishlist"
-                                          data-title="Wishlist"
-                                        >
-                                          <button className="product-btn">
-                                            Add to wishlist
-                                          </button>
-                                        </div>
-                                      </div>
-                                    </div>
-                                    <div className="products-content">
-                                      <div className="contents text-center">
-                                        <h3 className="product-title">
-                                          <a href="details.html">
-                                            Dining Table
-                                          </a>
-                                        </h3>
-                                        <span className="price">KD150.00</span>
-                                      </div>
-                                    </div>
-                                  </div>
-                                </div>
-                              </div>
-                              <div className="col-xl-4 col-lg-4 col-md-4 col-sm-6">
-                                <div className="items">
-                                  <div className="products-entry clearfix product-wapper">
-                                    <div className="products-thumb">
-                                      <div className="product-lable">
-                                        <div className="onsale">-23%</div>
-                                        <div className="hot">Hot</div>
-                                      </div>
-                                      <div className="product-thumb-hover">
-                                        <a href="details.html">
-                                          <img
-                                            width="600"
-                                            height="600"
-                                            src={P67}
-                                            className="hover-image back"
-                                            alt=""
-                                          />
-                                        </a>
-                                      </div>
-                                      <div className="product-button">
-                                        <div
-                                          className="btn-add-to-cart"
-                                          data-title="Add to cart"
-                                        >
-                                          <a
-                                            rel="nofollow"
-                                            href="#"
-                                            className="product-btn button"
-                                          >
-                                            Add to cart
-                                          </a>
-                                        </div>
-                                        <div
-                                          className="btn-wishlist"
-                                          data-title="Wishlist"
-                                        >
-                                          <button className="product-btn">
-                                            Add to wishlist
-                                          </button>
-                                        </div>
-                                      </div>
-                                    </div>
-                                    <div className="products-content">
-                                      <div className="contents text-center">
-                                        <h3 className="product-title">
-                                          <a href="details.html">
-                                            Dining Table
-                                          </a>
-                                        </h3>
-                                        <span className="price">KD150.00</span>
-                                      </div>
-                                    </div>
-                                  </div>
-                                </div>
-                              </div>
-
-                              <div className="col-xl-4 col-lg-4 col-md-4 col-sm-6">
-                                <div className="items">
-                                  <div className="products-entry clearfix product-wapper">
-                                    <div className="products-thumb">
-                                      <div className="product-lable">
-                                        <div className="hot">Hot</div>
-                                      </div>
-                                      <div className="product-thumb-hover">
-                                        <a href="details.html">
-                                          <img
-                                            width="600"
-                                            height="600"
-                                            src={P68}
-                                            className="hover-image back"
-                                            alt=""
-                                          />
-                                        </a>
-                                      </div>
-                                      <div className="product-button">
-                                        <div
-                                          className="btn-add-to-cart"
-                                          data-title="Add to cart"
-                                        >
-                                          <a
-                                            rel="nofollow"
-                                            href="#"
-                                            className="product-btn button"
-                                          >
-                                            Add to cart
-                                          </a>
-                                        </div>
-                                        <div
-                                          className="btn-wishlist"
-                                          data-title="Wishlist"
-                                        >
-                                          <button className="product-btn">
-                                            Add to wishlist
-                                          </button>
-                                        </div>
-                                      </div>
-                                    </div>
-                                    <div className="products-content">
-                                      <div className="contents text-center">
-                                        <h3 className="product-title">
-                                          <a href="details.html">
-                                            Dining Table
-                                          </a>
-                                        </h3>
-                                        <span className="price">KD150.00</span>
-                                      </div>
-                                    </div>
-                                  </div>
-                                </div>
-                              </div>
-                              <div className="col-xl-4 col-lg-4 col-md-4 col-sm-6">
-                                <div className="items">
-                                  <div className="products-entry clearfix product-wapper">
-                                    <div className="products-thumb">
-                                      <div className="product-thumb-hover">
-                                        <a href="details.html">
-                                          <img
-                                            width="600"
-                                            height="600"
-                                            src={P69}
-                                            className="hover-image back"
-                                            alt=""
-                                          />
-                                        </a>
-                                      </div>
-                                      <div className="product-button">
-                                        <div
-                                          className="btn-add-to-cart"
-                                          data-title="Add to cart"
-                                        >
-                                          <a
-                                            rel="nofollow"
-                                            href="#"
-                                            className="product-btn button"
-                                          >
-                                            Add to cart
-                                          </a>
-                                        </div>
-                                        <div
-                                          className="btn-wishlist"
-                                          data-title="Wishlist"
-                                        >
-                                          <button className="product-btn">
-                                            Add to wishlist
-                                          </button>
-                                        </div>
-                                      </div>
-                                    </div>
-                                    <div className="products-content">
-                                      <div className="contents text-center">
-                                        <h3 className="product-title">
-                                          <a href="details.html">
-                                            Dining Table
-                                          </a>
-                                        </h3>
-                                        <span className="price">KD150.00</span>
-                                      </div>
-                                    </div>
-                                  </div>
-                                </div>
-                              </div>
-                              <div className="col-xl-4 col-lg-4 col-md-4 col-sm-6">
-                                <div className="items">
-                                  <div className="products-entry clearfix product-wapper">
-                                    <div className="products-thumb">
-                                      <div className="product-thumb-hover">
-                                        <a href="details.html">
-                                          <img
-                                            width="600"
-                                            height="600"
-                                            src={P610}
-                                            className="hover-image back"
-                                            alt=""
-                                          />
-                                        </a>
-                                      </div>
-                                      <div className="product-button">
-                                        <div
-                                          className="btn-add-to-cart"
-                                          data-title="Add to cart"
-                                        >
-                                          <a
-                                            rel="nofollow"
-                                            href="#"
-                                            className="product-btn button"
-                                          >
-                                            Add to cart
-                                          </a>
-                                        </div>
-                                        <div
-                                          className="btn-wishlist"
-                                          data-title="Wishlist"
-                                        >
-                                          <button className="product-btn">
-                                            Add to wishlist
-                                          </button>
-                                        </div>
-                                      </div>
-                                    </div>
-                                    <div className="products-content">
-                                      <div className="contents text-center">
-                                        <h3 className="product-title">
-                                          <a href="details.html">
-                                            Dining Table
-                                          </a>
-                                        </h3>
-                                        <span className="price">KD150.00</span>
-                                      </div>
-                                    </div>
-                                  </div>
-                                </div>
-                              </div>
-
-                              <div className="col-xl-4 col-lg-4 col-md-4 col-sm-6">
-                                <div className="items">
-                                  <div className="products-entry clearfix product-wapper">
-                                    <div className="products-thumb">
-                                      <div className="product-thumb-hover">
-                                        <a href="details.html">
-                                          <img
-                                            width="600"
-                                            height="600"
-                                            src={P615}
-                                            className="hover-image back"
-                                            alt=""
-                                          />
-                                        </a>
-                                      </div>
-                                      <div className="product-button">
-                                        <div
-                                          className="btn-add-to-cart"
-                                          data-title="Add to cart"
-                                        >
-                                          <a
-                                            rel="nofollow"
-                                            href="#"
-                                            className="product-btn button"
-                                          >
-                                            Add to cart
-                                          </a>
-                                        </div>
-                                        <div
-                                          className="btn-wishlist"
-                                          data-title="Wishlist"
-                                        >
-                                          <button className="product-btn">
-                                            Add to wishlist
-                                          </button>
-                                        </div>
-                                      </div>
-                                    </div>
-                                    <div className="products-content">
-                                      <div className="contents text-center">
-                                        <h3 className="product-title">
-                                          <a href="details.html">
-                                            Dining Table
-                                          </a>
-                                        </h3>
-                                        <span className="price">KD150.00</span>
-                                      </div>
-                                    </div>
-                                  </div>
-                                </div>
-                              </div>
+                              ))}
                             </div>
                           </div>
                         </div>

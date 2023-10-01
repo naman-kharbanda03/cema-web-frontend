@@ -1,19 +1,47 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import greyImage from "../../asset/images/product/1-2.jpg";
 import PageTitle from "../../components/page-tittle/PageTitle";
 import { useShoppingCart } from "../../context/ShoppingCartContext";
 
 const ShopDetails = (product) => {
+  const [data, setData] = useState();
+
+  const url = new URL(window.location.href);
+  const params = new URLSearchParams(url.search);
+  const product_id = params.get("product_id");
 
   const { increaseItem, decreaseItem } = useShoppingCart();
   const [quant, setQuant] = useState(0);
+  
+
+  const fetchDetails = () => {
+    fetch(
+      `https://cema-backend.plasium.com/api/products/${product_id}/simple_product`,
+      {
+        method: "GET",
+      }
+    )
+      .then((response) => {
+        if (!response.ok) throw new Error("Network Issue");
+        return response.json();
+      })
+      .then((data) => {
+
+        setData(data.data);
+        console.log("test", data.data);
+      })
+      .catch((error) => console.error("Problem with fetch operations", error));
+  };
+
+  useEffect(() => {
+    fetchDetails();
+  }, []);
 
   return (
     <div id="site-main" className="site-main">
       <div id="main-content" className="main-content">
         <div id="primary" className="content-area">
-
-          <PageTitle current={"Bora Armchair"} />
+          <PageTitle current={data?.product_name?.en} />
 
           <div id="content" className="site-content" role="main">
             <div
@@ -56,7 +84,7 @@ const ShopDetails = (product) => {
                                     <img
                                       width="600"
                                       height="600"
-                                      src={greyImage}
+                                      src={`${data?.images_path}/${data?.combinations?.images?.[0]?.image}`}
                                       alt=""
                                     />
                                   </span>
@@ -112,7 +140,7 @@ const ShopDetails = (product) => {
                                   <img
                                     width="900"
                                     height="900"
-                                    src={greyImage}
+                                    src={`${data?.images_path}/${data?.combinations?.images?.[0]?.image}`}
                                     alt=""
                                     title=""
                                   />
@@ -160,19 +188,19 @@ const ShopDetails = (product) => {
                       </div>
 
                       <div className="product-info col-lg-5 col-md-12 col-12 ">
-                        <h1 className="title">Bora Armchair</h1>
+                        <h1 className="title">{data?.product_name?.en}</h1>
                         <span className="price">
                           <del aria-hidden="true">
-                            <span>$100.00</span>
+                            <span>{data?.combinations?.[0]?.symbol}{data?.combinations?.[0]?.mainprice}</span>
                           </del>
                           <ins>
-                            <span>$90.00</span>
+                            <span>{data?.combinations?.[0]?.symbol}{data?.combinations?.[0]?.offerprice}</span>
                           </ins>
                         </span>
                         <div className="rating">
                           <div className="star star-5"></div>
                           <div className="review-count">
-                            (3<span> reviews</span>)
+                            ({}<span> reviews</span>)
                           </div>
                         </div>
                         <div className="description">
@@ -227,7 +255,13 @@ const ShopDetails = (product) => {
                         <div className="buttons">
                           <div className="add-to-cart-wrap">
                             <div className="quantity">
-                              <button type="button" className="plus" onClick={() => { setQuant(count => count + 1) }}>
+                              <button
+                                type="button"
+                                className="plus"
+                                onClick={() => {
+                                  setQuant((count) => count + 1);
+                                }}
+                              >
                                 +
                               </button>
                               <input
@@ -244,11 +278,20 @@ const ShopDetails = (product) => {
                                 inputmode="numeric"
                                 autocomplete="off"
                               />
-                              <button type="button" className="minus" onClick={() => { setQuant(count => count - 1) }}>
+                              <button
+                                type="button"
+                                className="minus"
+                                onClick={() => {
+                                  setQuant((count) => count - 1);
+                                }}
+                              >
                                 -
                               </button>
                             </div>
-                            <div className="btn-add-to-cart" onClick={() => increaseItem(1, quant)}>
+                            <div
+                              className="btn-add-to-cart"
+                              onClick={() => increaseItem(1, quant)}
+                            >
                               <a href="#" className="button" tabindex="0">
                                 Add to cart
                               </a>

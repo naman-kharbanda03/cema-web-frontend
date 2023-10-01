@@ -2,9 +2,15 @@ import React from "react";
 import logo from "../../asset/images/logo.png";
 import product_1 from "../../asset/images/product/1.jpg";
 import product_3 from "../../asset/images/product/3.jpg";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 
 const Header = () => {
+  const navigate = useNavigate();
+  const handleNavigate = () => {
+    const name = 'New Arrivals'; 
+    navigate('/listings?products=new_arrival', { state: { name } });
+  };
+
   return (
     <header id="site-header" className="site-header header-v2 large-height">
       <div id="header-topbar" className="topbar-v1 hidden-sm hidden-xs">
@@ -242,15 +248,16 @@ const Header = () => {
                   <div className="site-navigation">
                     <nav id="main-navigation">
                       <ul id="menu-main-menu" className="menu">
-                        <li className="level-0 menu-item">
-                          <a href="#">
+                        <li className="level-0 menu-item" onClick={handleNavigate}>
+                        <Link to = "">
                             <span className="menu-item-text">New Arrivals</span>
-                          </a>
+                          
+                          </Link>
                         </li>
                         <li className="level-0 menu-item">
-                          <a href="#">
+                        <Link to = "listings?best-sellers">
                             <span className="menu-item-text">Best Sellers</span>
-                          </a>
+                          </Link>
                         </li>
                         <li className="level-0 menu-item menu-item-has-children mega-menu mega-menu-fullwidth">
                           <a href="javascript:;">
@@ -532,7 +539,7 @@ const Header = () => {
                     </div>
                     {/* Wishlist */}
                     <div className="wishlist-box">
-                      <Link to="/wish-list">
+                      <Link to="/shop-wishlist">
                         <i className="ti-heart" />
                       </Link>
                       <span className="count-wishlist">1</span>

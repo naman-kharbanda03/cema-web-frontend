@@ -2,10 +2,11 @@ import React from "react";
 
 import Sliders from "../../components/slider/Slider";
 import Banner from "../../components/banner/Banner";
-import Block1 from "../../components/block/Block1";
+import NewArrival from "../../components/block/NewArrival";
 import ProductSlider from "../../components/slider/ProductSlider";
 import Banner2 from "../../components/banner/Banner2";
 import BestSellerSlider from "../../components/slider/BestSellerSlider";
+import { Link } from "react-router-dom";
 
 const Home = () => {
   return (
@@ -25,13 +26,13 @@ const Home = () => {
               <section className="section section-padding m-b-50">
                 <div className="section-container large">
                   {/* Block Products */}
-                  <div className="block block-products loadmore">
-                    <div className="block-widget-wrap">
+                  <div className="block block-products loadmore">                   
+                    <div className="block-widget-wrap">                   
                       <div className="block-title">
                         <h2>New Arrivals</h2>
-                      </div>
+                      </div>                  
                       <div className="block-content">
-                        <Block1 />
+                        <NewArrival />
                         <div className="products-loadmore">
                           <div className="btn button-outline loadmore">
                             <div className="lds-ellipsis">
