@@ -18,6 +18,7 @@ const ProductList = () => {
   const category = queryParams.get('category');
 
 
+
   const [categoryList, setCategoryList] = useState([]);
   const [productList, setProductList] = useState([]);
   const [filteredProductList, setFilteredProductList] = useState([]);
@@ -164,7 +165,7 @@ const ProductList = () => {
       <div id="main-content" className="main-content">
         <div id="primary" className="content-area">
 
-          <PageTitle current={category} />
+          <PageTitle current={category === null ? "Products" : category} />
 
           <div id="content" className="site-content" role="main">
             <div className="section-padding">
