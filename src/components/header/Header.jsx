@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import logo from "../../asset/images/logo.png";
 import product_1 from "../../asset/images/product/1.jpg";
 import product_3 from "../../asset/images/product/3.jpg";
@@ -7,9 +7,31 @@ import { Link, useNavigate } from "react-router-dom";
 const Header = (props) => {
   const navigate = useNavigate();
   const handleNavigate = () => {
-    const name = 'New Arrivals';
-    navigate('/listings?products=new_arrival', { state: { name } });
+    const name = "New Arrivals";
+    navigate("/listings?products=new_arrival", { state: { name } });
   };
+
+  const [categories, setCategories] = useState();
+  console.log("testing3", categories);
+
+  const fetchDetails = () => {
+    fetch("https://cema-backend.plasium.com/api/navCategories", {
+      method: "GET",
+    })
+      .then((response) => {
+        if (!response.ok) throw new Error("Network Issue");
+        return response.json();
+      })
+      .then((data) => {
+        console.log("testing", data.data);
+        setCategories(data.data);
+      })
+      .catch((error) => console.error("Problem with fetch operations", error));
+  };
+
+  useEffect(() => {
+    fetchDetails();
+  }, []);
 
   return (
     <header id="site-header" className="site-header header-v2 large-height">
@@ -248,10 +270,12 @@ const Header = (props) => {
                   <div className="site-navigation">
                     <nav id="main-navigation">
                       <ul id="menu-main-menu" className="menu">
-                        <li className="level-0 menu-item" onClick={handleNavigate}>
+                        <li
+                          className="level-0 menu-item"
+                          onClick={handleNavigate}
+                        >
                           <Link to="">
                             <span className="menu-item-text">New Arrivals</span>
-
                           </Link>
                         </li>
                         <li className="level-0 menu-item">
@@ -267,132 +291,35 @@ const Header = (props) => {
                           </a>
                           <div className="sub-menu">
                             <div className="row">
-                              <div className="col-md-4">
-                                <div className="menu-section">
-                                  <h2 className="sub-menu-title">Furniture</h2>
-                                  <ul className="menu-list">
-                                    <li>
-                                      <a href="javascript:;">
-                                        <span className="menu-item-text">
-                                          Tables &amp; desks
-                                        </span>
-                                      </a>
-                                    </li>
-                                    <li>
-                                      <a href="javascript:;">
-                                        <span className="menu-item-text">
-                                          Bookcases &amp; shelving units
-                                        </span>
-                                      </a>
-                                    </li>
-                                    <li>
-                                      <a href="javascript:;">
-                                        <span className="menu-item-text">
-                                          Cabinets &amp; cupboards
-                                        </span>
-                                      </a>
-                                    </li>
-                                    <li>
-                                      <a href="javascript:;l">
-                                        <span className="menu-item-text">
-                                          TV &amp; media furniture
-                                        </span>
-                                      </a>
-                                    </li>
-                                    <li>
-                                      <a href="javascript:;">
-                                        <span className="menu-item-text">
-                                          Beds
-                                        </span>
-                                      </a>
-                                    </li>
-                                  </ul>
+                              {categories?.map((category) => (
+                                <div className="col-md-4">
+                                  <div className="menu-section">
+                                    <h2 className="sub-menu-title">
+                                      {category?.title?.en}
+                                    </h2>
+                                    <ul className="menu-list">
+                                      {category?.subcategory.map(
+                                        (subCategory) => (
+                                          <Link
+                                            to={{
+                                              pathname: "/products",
+                                              search: `?category=${subCategory.title.en}&id=${subCategory.id}`,
+                                            }}
+                                          >
+                                            <li>
+                                              <a href="javascript:;">
+                                                <span className="menu-item-text">
+                                                  {subCategory?.title?.en}
+                                                </span>
+                                              </a>
+                                            </li>
+                                          </Link>
+                                        )
+                                      )}
+                                    </ul>
+                                  </div>
                                 </div>
-                              </div>
-                              <div className="col-md-4">
-                                <div className="menu-section">
-                                  <h2 className="sub-menu-title">Decoration</h2>
-                                  <ul className="menu-list">
-                                    <li>
-                                      <a href="javascript:;">
-                                        <span className="menu-item-text">
-                                          Frames &amp; pictures
-                                        </span>
-                                      </a>
-                                    </li>
-                                    <li>
-                                      <a href="javascript:;">
-                                        <span className="menu-item-text">
-                                          Plants &amp; flowers
-                                        </span>
-                                      </a>
-                                    </li>
-                                    <li>
-                                      <a href="javascript:;">
-                                        <span className="menu-item-text">
-                                          Storage boxes &amp; baskets
-                                        </span>
-                                      </a>
-                                    </li>
-                                    <li>
-                                      <a href="javascript:;l">
-                                        <span className="menu-item-text">
-                                          Flower pots &amp; planters
-                                        </span>
-                                      </a>
-                                    </li>
-                                    <li>
-                                      <a href="javascript:;">
-                                        <span className="menu-item-text">
-                                          Vases &amp; bowls
-                                        </span>
-                                      </a>
-                                    </li>
-                                  </ul>
-                                </div>
-                              </div>
-                              <div className="col-md-4">
-                                <div className="menu-section">
-                                  <h2 className="sub-menu-title">Lighting</h2>
-                                  <ul className="menu-list">
-                                    <li>
-                                      <a href="javascript:;">
-                                        <span className="menu-item-text">
-                                          Lamps
-                                        </span>
-                                      </a>
-                                    </li>
-                                    <li>
-                                      <a href="javascript:;">
-                                        <span className="menu-item-text">
-                                          Decorative lighting
-                                        </span>
-                                      </a>
-                                    </li>
-                                    <li>
-                                      <a href="javascript:;">
-                                        <span className="menu-item-text">
-                                          Integrated lighting
-                                        </span>
-                                      </a>
-                                    </li>
-                                    <li>
-                                      <a href="javascript:;l">
-                                        <span className="menu-item-text">
-                                          Smart lighting
-                                        </span>
-                                      </a>
-                                    </li>
-                                    <li>
-                                      <a href="javascript:;">
-                                        <span className="menu-item-text">
-                                          Bathroom lighting
-                                        </span>
-                                      </a>
-                                    </li>
-                                  </ul>
-                                </div>
-                              </div>
+                              ))}
                             </div>
                           </div>
                         </li>
@@ -421,9 +348,13 @@ const Header = (props) => {
                   <div className="header-page-link">
                     {/* Login */}
                     <div className="login-header">
-                      {props.auth ? <Link to='/account'> My Account</Link> : <Link className="active-login" to="/login">
-                        Login
-                      </Link>}
+                      {props.auth ? (
+                        <Link to="/account"> My Account</Link>
+                      ) : (
+                        <Link className="active-login" to="/login">
+                          Login
+                        </Link>
+                      )}
 
                       {/* <div className="form-login-register">
                         <div className="box-form-login">
