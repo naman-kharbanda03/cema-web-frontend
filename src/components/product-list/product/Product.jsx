@@ -20,7 +20,7 @@ const Product = (props) => {
                                 <div className="hot">Hot</div>
                             </div>
                             <div className="product-thumb-hover">
-                                <Link href="shop-details.html" to="/shop-details">
+                                <Link to={`/product-details?product_id=${product.productid}`}>
                                     <img
                                         width="600"
                                         height="600"
@@ -52,7 +52,7 @@ const Product = (props) => {
                     </div>
                     <div className="col-md-8">
                         <div className="products-content">
-                            <Link href="shop-details.html" to="/shop-details">
+                            <Link to={`/product-details?product_id=${product.productid}`}>
 
                                 <h3 className="product-title">
                                     <a href="shop-details.html">{product.productname.en}</a>

@@ -46,7 +46,7 @@ const NewArrival = () => {
                     <div className="hot">Hot</div>
                   </div>
                   <div className="product-thumb-hover">
-                    <Link to = {`/shop-details?product_id=${product.id}`}>
+                    <Link to={`/product-details?product_id=${product.id}`}>
                       <img
                         width={600}
                         height={600}
