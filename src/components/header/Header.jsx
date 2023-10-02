@@ -534,12 +534,13 @@ const Header = (props) => {
                     </div> */}
                     {/* Wishlist */}
                     <div className="wishlist-box">
-                      <Link to="/wish-list">
+                      <Link to="/wishlist">
                         <i className="ti-heart" />
                       </Link>
                       <span className="count-wishlist">1</span>
                     </div>
                     {/* Cart */}
+
                     <div className="cema-topcart dropdown light">
                       <div className="dropdown mini-cart top-cart">
                         <div className="remove-cart-shadow" />
