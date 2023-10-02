@@ -1,12 +1,14 @@
-import React from "react";
+import React, { useState } from "react";
 import { Link } from "react-router-dom";
 import { useShoppingCart } from "../../../context/ShoppingCartContext";
 
 const Product = (props) => {
     const product = props.current;
+    const [desc,setDesc]= useState(product.description)
     // console.log(product.thumbpath + '/' + product.images[0].image);
     const { increaseItem, getQuantity } = useShoppingCart();
     // console.log(getQuantity(1));
+    console.log("itss",product)
 
     return (
         <>
@@ -31,7 +33,7 @@ const Product = (props) => {
                                     <img
                                         width="600"
                                         height="600"
-                                        // src={product.thumbpath + "/" + product.images[1].image}
+                                        src={product.thumbpath + "/" + product.images[1].image}
                                         className="hover-image back"
                                         alt=""
                                     />
@@ -97,7 +99,8 @@ const Product = (props) => {
                                 </div>
                             </div>
                             <div className="product-description">
-                                {product.description}
+                                
+                                <div dangerouslySetInnerHTML={{ __html: desc }} />
                             </div>
                         </div>
                     </div>

@@ -2,9 +2,13 @@ import React, { useEffect, useState } from "react";
 import greyImage from "../../asset/images/product/1-2.jpg";
 import PageTitle from "../../components/page-tittle/PageTitle";
 import { useShoppingCart } from "../../context/ShoppingCartContext";
+import { act } from "react-dom/test-utils";
+import StarRatings from "react-star-ratings";
 
 const ShopDetails = (product) => {
   const [data, setData] = useState();
+  const [image, setImage] = useState("");
+  const [activeTabId, setActiveTabId] = useState(1);
 
   const url = new URL(window.location.href);
   const params = new URLSearchParams(url.search);
@@ -12,7 +16,6 @@ const ShopDetails = (product) => {
 
   const { increaseItem, decreaseItem } = useShoppingCart();
   const [quant, setQuant] = useState(0);
-  
 
   const fetchDetails = () => {
     fetch(
@@ -26,9 +29,12 @@ const ShopDetails = (product) => {
         return response.json();
       })
       .then((data) => {
-
         setData(data.data);
-        console.log("test", data.data);
+        console.log("testimm", data.data);
+        console.log("testim", data.data.combinations);
+        setImage(
+          `${data.data.images_path}/${data.data.combinations[0].images[0].image}`
+        );
       })
       .catch((error) => console.error("Problem with fetch operations", error));
   };
@@ -79,47 +85,23 @@ const ShopDetails = (product) => {
                                 data-vertical='"true"'
                                 data-verticalswiping='"true"'
                               >
-                                <div className="img-item slick-slide">
-                                  <span className="img-thumbnail-scroll">
-                                    <img
-                                      width="600"
-                                      height="600"
-                                      src={`${data?.images_path}/${data?.combinations?.images?.[0]?.image}`}
-                                      alt=""
-                                    />
-                                  </span>
-                                </div>
-                                <div className="img-item slick-slide">
-                                  <span className="img-thumbnail-scroll">
-                                    <img
-                                      width="600"
-                                      height="600"
-                                      src={greyImage}
-                                      alt=""
-                                    />
-                                  </span>
-                                </div>
-
-                                <div className="img-item slick-slide">
-                                  <span className="img-thumbnail-scroll">
-                                    <img
-                                      width="600"
-                                      height="600"
-                                      src={greyImage}
-                                      alt=""
-                                    />
-                                  </span>
-                                </div>
-                                <div className="img-item slick-slide">
-                                  <span className="img-thumbnail-scroll">
-                                    <img
-                                      width="600"
-                                      height="600"
-                                      src={greyImage}
-                                      alt=""
-                                    />
-                                  </span>
-                                </div>
+                                {data?.combinations[0].images.map((images) => (
+                                  <div className="img-item slick-slide">
+                                    <span className="img-thumbnail-scroll">
+                                      <img
+                                        width="600"
+                                        height="500"
+                                        src={`${data?.images_path}/${images.image}`}
+                                        alt=""
+                                        onClick={() =>
+                                          setImage(
+                                            `${data?.images_path}/${images.image}`
+                                          )
+                                        }
+                                      />
+                                    </span>
+                                  </div>
+                                ))}
                               </div>
                             </div>
                           </div>
@@ -136,47 +118,11 @@ const ShopDetails = (product) => {
                                 data-columns="1"
                                 data-nav="true"
                               >
-                                <div className="img-item slick-slide">
+                                <div style={{ width: "90%" }}>
                                   <img
                                     width="900"
                                     height="900"
-                                    src={`${data?.images_path}/${data?.combinations?.images?.[0]?.image}`}
-                                    alt=""
-                                    title=""
-                                  />
-                                </div>
-                                <div className="img-item slick-slide">
-                                  <img
-                                    width="900"
-                                    height="900"
-                                    src={greyImage}
-                                    alt=""
-                                    title=""
-                                  />
-                                </div>
-                                <div className="img-item slick-slide">
-                                  <img
-                                    width={900}
-                                    height={900}
-                                    src={greyImage}
-                                    alt=""
-                                    title=""
-                                  />
-                                </div>
-                                <div className="img-item slick-slide">
-                                  <img
-                                    width="900"
-                                    height="900"
-                                    src={greyImage}
-                                    alt=""
-                                    title=""
-                                  />
-                                </div>
-                                <div className="img-item slick-slide">
-                                  <img
-                                    width="900"
-                                    height="900"
-                                    src={greyImage}
+                                    src={image}
                                     alt=""
                                     title=""
                                   />
@@ -191,28 +137,31 @@ const ShopDetails = (product) => {
                         <h1 className="title">{data?.product_name?.en}</h1>
                         <span className="price">
                           <del aria-hidden="true">
-                            <span>{data?.combinations?.[0]?.symbol}{data?.combinations?.[0]?.mainprice}</span>
+                            <span>
+                              {data?.combinations?.[0]?.symbol}
+                              {data?.combinations?.[0]?.mainprice}
+                            </span>
                           </del>
                           <ins>
-                            <span>{data?.combinations?.[0]?.symbol}{data?.combinations?.[0]?.offerprice}</span>
+                            <span>
+                              {data?.combinations?.[0]?.symbol}
+                              {data?.combinations?.[0]?.offerprice}
+                            </span>
                           </ins>
                         </span>
                         <div className="rating">
-                          <div className="star star-5"></div>
-                          <div className="review-count">
-                            ({}<span> reviews</span>)
-                          </div>
+                          <StarRatings
+                            rating={2.5}
+                            starRatedColor="gold"
+                            starHoverColor="gold"
+                            numberOfStars={5}
+                            starDimension="24px"
+                            starSpacing="2px"
+                          />
+                          <p>Rating: {2.5} out of 5</p>
                         </div>
                         <div className="description">
-                          <p>
-                            Lorem ipsum dolor sit amet, consectetur adipiscing
-                            elit, sed do eiusmod tempor incididunt ut labore et
-                            dolore magna aliqua. Ut enim ad minim veniam, quis
-                            nostrud exercitation ullamco laboris nisi ut aliquip
-                            ex ea commodo consequat. Duis aute irure dolor in
-                            reprehenderit in voluptate velit esse cillum dolore
-                            eu fugiat nulla pariatur.
-                          </p>
+                          <p>{data?.description.en}</p>
                         </div>
                         <div className="variations">
                           <table cellspacing="0">
@@ -362,86 +311,80 @@ const ShopDetails = (product) => {
                       <ul className="nav nav-tabs" role="tablist">
                         <li className="nav-item">
                           <a
-                            className="nav-link active"
+                            className={`nav-link ${
+                              activeTabId === 1 ? "active" : ""
+                            }`}
                             data-toggle="tab"
-                            href="#description"
+                            // href="#description"
                             role="tab"
+                            onClick={() => setActiveTabId(1)}
                           >
                             Description
                           </a>
                         </li>
                         <li className="nav-item">
                           <a
-                            className="nav-link"
+                            className={`nav-link ${
+                              activeTabId === 2 ? "active" : ""
+                            }`}
                             data-toggle="tab"
-                            href="#additional-information"
+                            // href="#additional-information"
                             role="tab"
+                            onClick={() => setActiveTabId(2)}
                           >
                             Additional information
                           </a>
                         </li>
                         <li className="nav-item">
                           <a
-                            className="nav-link"
+                            className={`nav-link ${
+                              activeTabId === 3 ? "active" : ""
+                            }`}
                             data-toggle="tab"
-                            href="#reviews"
+                            // href="#reviews"
                             role="tab"
+                            onClick={() => setActiveTabId(3)}
                           >
-                            Reviews (1)
+                            Reviews ({data?.reviews})
                           </a>
                         </li>
                       </ul>
                       <div className="tab-content">
                         <div
-                          className="tab-pane fade show active"
+                          className={`tab-pane fade  ${
+                            activeTabId === 1 ? " show active" : ""
+                          }`}
                           id="description"
                           role="tabpanel"
                         >
-                          <p>
-                            Lorem ipsum dolor sit amet, consectetur adipisicing
-                            elit, sed do eiusmod tempor incididunt ut labore et
-                            dolore magna aliqua. Ut enim ad minim veniam, quis
-                            nostrud exercitation ullamco laboris nisi ut aliquip
-                            ex ea commodo consequat. Duis aute irure dolor in
-                            reprehenderit in voluptate velit esse cillum dolore
-                            eu fugiat nulla pariatur. Excepteur sint occaecat
-                            cupidatat non proident, sunt in culpa qui officia
-                            deserunt mollit anim id est laborum. Sed ut
-                            perspiciatis unde omnis iste natus error sit
-                            voluptatem accusantium doloremque laudantium, totam
-                            rem aperiam, eaque ipsa quae ab illo inventore
-                            veritatis et quasi architecto beatae vitae dicta
-                            sunt explicabo.
-                          </p>
-                          <p>
-                            Nemo enim ipsam voluptatem quia voluptas sit
-                            aspernatur aut odit aut fugit, sed quia consequuntur
-                            magni dolores eos qui ratione voluptatem sequi
-                            nesciunt. Neque porro quisquam est, qui dolorem
-                            ipsum quia dolor sit amet, consectetur, adipisci
-                            velit, sed quia non numquam eius modi tempora
-                            incidunt ut labore et dolore magnam aliquam quaerat
-                            voluptatem.
-                          </p>
+                          <p>{data?.key_features?.en}</p>
                         </div>
                         <div
-                          className="tab-pane fade"
+                          className={`tab-pane fade  ${
+                            activeTabId === 2 ? " show active" : ""
+                          }`}
                           id="additional-information"
                           role="tabpanel"
                         >
                           <table className="product-attributes">
                             <tbody>
-                              <tr className="attribute-item">
-                                <th className="attribute-label">Color</th>
-                                <td className="attribute-value">
-                                  Black, Blue, Green
-                                </td>
-                              </tr>
+                              {data?.special_services.map((service) => (
+                                <tr className="attribute-item">
+                                  <th className="attribute-label">
+                                    {service?.heading}
+                                  </th>
+                                  <td className="attribute-value">
+                                    {service?.description}
+                                  </td>
+                                </tr>
+                              ))}
                             </tbody>
                           </table>
                         </div>
                         <div
-                          className="tab-pane fade"
+                          className={`tab-pane fade  ${
+                            activeTabId === 3 ? " show active" : ""
+                          }`}
                           id="reviews"
                           role="tabpanel"
                         >
@@ -463,7 +406,17 @@ const ShopDetails = (product) => {
                                       />
                                       <div className="comment-text">
                                         <div className="rating small">
-                                          <div className="star star-5"></div>
+                                          <div className="rating">
+                                            <StarRatings
+                                              rating={2.5}
+                                              starRatedColor="gold"
+                                              starHoverColor="gold"
+                                              numberOfStars={5}
+                                              starDimension="24px"
+                                              starSpacing="2px"
+                                            />
+                                            <p>Rating: {2.5} out of 5</p>
+                                          </div>
                                         </div>
                                         <div className="review-author">
                                           Peter Capidal

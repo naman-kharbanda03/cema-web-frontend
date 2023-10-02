@@ -11,6 +11,8 @@ import P69 from "../../asset/images/product/6-9.png";
 import P610 from "../../asset/images/product/6-10.png";
 import P615 from "../../asset/images/product/6-15.png";
 import { Link, useLocation } from "react-router-dom";
+import apiConfig from "../../config/apiConfig";
+import Category from "../../components/product-list/Category";
 
 const Listing = () => {
   const [data, setData] = useState();
@@ -19,8 +21,11 @@ const Listing = () => {
   const products = params.get("products");
   const location = useLocation();
   const name = location.state ? location.state.name : null;
-  console.log("location",location,name)
+  console.log("location", location, name);
 
+  const [categoryList, setCategoryList] = useState([]);
+  console.log("categoryList",categoryList)
+  const categoryListAPI = apiConfig.categoryListAPI;
   const fetchDetails = () => {
     fetch(
       `https://cema-backend.plasium.com/api/products?per_page=10&page=1&${products}=1`,
@@ -35,6 +40,19 @@ const Listing = () => {
       .then((data) => {
         console.log("test", data.data.data);
         setData(data.data.data);
+      })
+      .catch((error) => console.error("Problem with fetch operations", error));
+
+    fetch(categoryListAPI, {
+      method: "GET",
+    })
+      .then((response) => {
+        if (!response.ok) throw new Error("Network Issue");
+        return response.json();
+      })
+      .then((datar) => {
+        setCategoryList(datar.categories.data);
+        return datar;
       })
       .catch((error) => console.error("Problem with fetch operations", error));
   };
@@ -61,39 +79,11 @@ const Listing = () => {
                         </div>
                         <div className="block-content">
                           <div className="product-cats-list">
-                            <ul>
-                              <li className="current">
-                                <a href="shop-grid-left.html">
-                                  Bed &amp; Bath{" "}
-                                  <span className="count">9</span>
-                                </a>
-                              </li>
-                              <li>
-                                <a href="shop-grid-left.html">
-                                  Furniture <span className="count">4</span>
-                                </a>
-                              </li>
-                              <li>
-                                <a href="shop-grid-left.html">
-                                  Home Décor <span className="count">3</span>
-                                </a>
-                              </li>
-                              <li>
-                                <a href="shop-grid-left.html">
-                                  Lighting <span className="count">6</span>
-                                </a>
-                              </li>
-                              <li>
-                                <a href="shop-grid-left.html">
-                                  Office <span className="count">2</span>
-                                </a>
-                              </li>
-                              <li>
-                                <a href="shop-grid-left.html">
-                                  Outdoor <span className="count">4</span>
-                                </a>
-                              </li>
-                            </ul>
+                          <ul>
+                            {categoryList.map(category => (
+                              <Category current={category} />
+                            ))}
+                          </ul>
                           </div>
                         </div>
                       </div>
@@ -270,7 +260,7 @@ const Listing = () => {
                                         </div>
                                         <div className="product-thumb-hover">
                                           <Link
-                                            to={`/shop-details?product_id=${product.id}`}
+                                            to={`/product-details?product_id=${product.id}`}
                                           >
                                             <img
                                               width={600}

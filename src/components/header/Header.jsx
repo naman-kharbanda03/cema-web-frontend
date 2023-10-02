@@ -6,9 +6,8 @@ import { Link, useNavigate } from "react-router-dom";
 
 const Header = (props) => {
   const navigate = useNavigate();
-  const handleNavigate = () => {
-    const name = "New Arrivals";
-    navigate("/listings?products=new_arrival", { state: { name } });
+  const handleNavigate = (name, link) => {
+    navigate(`/listings?products=${link}`, { state: { name } });
   };
 
   const [categories, setCategories] = useState();
@@ -272,14 +271,21 @@ const Header = (props) => {
                       <ul id="menu-main-menu" className="menu">
                         <li
                           className="level-0 menu-item"
-                          onClick={handleNavigate}
+                          onClick={() =>
+                            handleNavigate("New Arrivals", "new_arrival")
+                          }
                         >
                           <Link to="">
                             <span className="menu-item-text">New Arrivals</span>
                           </Link>
                         </li>
-                        <li className="level-0 menu-item">
-                          <Link to="listings?best-sellers">
+                        <li
+                          className="level-0 menu-item"
+                          onClick={() =>
+                            handleNavigate("Best Sellers", "best_sellers")
+                          }
+                        >
+                          <Link to="">
                             <span className="menu-item-text">Best Sellers</span>
                           </Link>
                         </li>
@@ -294,9 +300,16 @@ const Header = (props) => {
                               {categories?.map((category) => (
                                 <div className="col-md-4">
                                   <div className="menu-section">
-                                    <h2 className="sub-menu-title">
-                                      {category?.title?.en}
-                                    </h2>
+                                    <Link
+                                      to={{
+                                        pathname: "/products",
+                                        search: `?category=${category.title?.en}&id=${category.id}`,
+                                      }}
+                                    >
+                                      <h2 className="sub-menu-title">
+                                        {category?.title?.en}
+                                      </h2>
+                                    </Link>
                                     <ul className="menu-list">
                                       {category?.subcategory.map(
                                         (subCategory) => (
@@ -473,7 +486,7 @@ const Header = (props) => {
                     </div> */}
                     {/* Wishlist */}
                     <div className="wishlist-box">
-                      <Link to="/shop-wishlist">
+                      <Link to="/wishlist">
                         <i className="ti-heart" />
                       </Link>
                       <span className="count-wishlist">1</span>
