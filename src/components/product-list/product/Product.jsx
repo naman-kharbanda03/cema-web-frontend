@@ -1,14 +1,15 @@
 import React, { useState } from "react";
 import { Link } from "react-router-dom";
+import StarRatings from "react-star-ratings";
 import { useShoppingCart } from "../../../context/ShoppingCartContext";
 
 const Product = (props) => {
     const product = props.current;
-    const [desc,setDesc]= useState(product.description)
+    const [desc, setDesc] = useState(product.description)
     // console.log(product.thumbpath + '/' + product.images[0].image);
     const { increaseItem, getQuantity } = useShoppingCart();
     // console.log(getQuantity(1));
-    console.log("itss",product)
+    console.log("itss", product)
 
     return (
         <>
@@ -62,7 +63,17 @@ const Product = (props) => {
                             </Link>
                             <span className="price">{product.symbol}{product.mainprice}</span>
                             <div className="rating">
-                                <div className="star star-5"></div>
+                                <div className="rating">
+                                    <StarRatings
+                                        rating={2.5}
+                                        starRatedColor="gold"
+                                        starHoverColor="gold"
+                                        numberOfStars={5}
+                                        starDimension="24px"
+                                        starSpacing="2px"
+                                    />
+                                    <p>Rating: {2.5} out of 5</p>
+                                </div>
                                 <div className="review-count">
                                     (1<span> review</span>)
                                 </div>
@@ -99,7 +110,7 @@ const Product = (props) => {
                                 </div>
                             </div>
                             <div className="product-description">
-                                
+
                                 <div dangerouslySetInnerHTML={{ __html: desc }} />
                             </div>
                         </div>
