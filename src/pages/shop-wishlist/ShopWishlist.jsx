@@ -13,6 +13,8 @@ const ShopWishlist = () => {
             <div className="section-padding">
               <div className="section-container p-l-r">
                 <WishListTable />
+                <br />
+                <br />
               </div>
             </div>
           </div>

@@ -23,6 +23,7 @@ const WishListTable = () => {
             return response.json();
         }).then((datar) => {
             if (datar.success) {
+                console.log(datar);
                 setOrderData(datar.data);
                 setWishListCount(datar.count);
                 return datar;
@@ -40,9 +41,6 @@ const WishListTable = () => {
         const formData = new FormData();
         formData.append('product_id', id);
         const apiURl = apiConfig.addRemoveWishlistAPI;
-
-
-
         fetch(apiURl, {
             method: "POST",
             headers: {

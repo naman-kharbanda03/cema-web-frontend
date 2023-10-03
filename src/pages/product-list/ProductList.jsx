@@ -17,12 +17,15 @@ const ProductList = () => {
   const queryParams = new URLSearchParams(location.search);
   const category = queryParams.get('category');
 
-
+  const [currentPage, setCurrentPage] = useState(1);
+  const [lastPage, setLastpage] = useState(1);
 
   const [categoryList, setCategoryList] = useState([]);
   const [productList, setProductList] = useState([]);
   const [filteredProductList, setFilteredProductList] = useState([]);
   const [brands, setBrands] = useState([]);
+
+
 
   const [categoryDetails, setCategoryDetails] = useState({
     category: {},
@@ -61,9 +64,13 @@ const ProductList = () => {
         return response.json();
       })
       .then((datar) => {
+        console.log(datar);
         if (datar.status) return "";
         else {
-          setProductList(datar.products);
+          setProductList(datar.products.data);
+          setCurrentPage(datar.products.current_page);
+          setLastpage(datar.products.last_page);
+
           return datar;
         }
 
@@ -80,7 +87,6 @@ const ProductList = () => {
       .then((datar) => {
         if (datar.status) return "";
         else {
-          console.log(datar)
           setBrands(datar);
           return datar;
         }
@@ -95,28 +101,29 @@ const ProductList = () => {
     let categoryDetailsAPI = "";
 
     if (categoryID === null) {
-      categoryDetailsAPI = `https://cema-backend.plasium.com/api/category/0?currency=INR`;
+      categoryDetailsAPI = `https://cema-backend.plasium.com/api/category/0?currency=INR&page=${currentPage}&per_page=3`;
     }
     else {
-      categoryDetailsAPI = `https://cema-backend.plasium.com/api/category/${categoryID}?currency=INR`;
+      categoryDetailsAPI = `https://cema-backend.plasium.com/api/category/${categoryID}?currency=INR&page=${currentPage}&per_page=3`;
     }
     const categoryListAPI = apiConfig.categoryListAPI;
-    const brandsAPI = apiConfig.brandsAPI;
+    const brandsAPI =
+
+      apiConfig.brandsAPI;
     const productListAPI = apiConfig.productListAPI;
 
     fetchDetails(categoryListAPI, categoryDetailsAPI, brandsAPI);
-  }, [location.search]);
+  }, [location.search, currentPage]);
 
-  useEffect(() => {
-    console.log(categoryList, brands);
-  }, [categoryList, brands]);
+  // useEffect(() => {
+  //   console.log(categoryList, brands);
+  // }, [categoryList, brands]);
 
   useEffect(() => {
     // setProductList(categoryDetails.products);
     setFilteredProductList(productList);
     setProductsLoaded(true);
   }, [productList])
-
 
 
   const handleSizeChange = (event) => {
@@ -157,6 +164,9 @@ const ProductList = () => {
     // Update the filtered products state
     setFilteredProductList(filtered);
   };
+  const handlePage = (page) => {
+    setCurrentPage(page);
+  }
 
 
 
@@ -217,7 +227,7 @@ const ProductList = () => {
                       <div className="block-content" >
                         <ul className="filter-items text" onClick={handleSizeChange}>
                           <li>
-                            <span value="l"  >L</span>
+                            <span value="l" >L</span>
                           </li>
                           <li>
                             <span value="m" >M</span>
@@ -1188,36 +1198,40 @@ const ProductList = () => {
                       </div>
                     </div>
 
+                    {/* Pagination  */}
                     <nav className="pagination">
                       <ul className="page-numbers">
-                        <li>
-                          <a className="prev page-numbers" href="#">
-                            Previous
-                          </a>
-                        </li>
-                        <li>
-                          <span
-                            aria-current="page"
-                            className="page-numbers current"
-                          >
-                            1
-                          </span>
-                        </li>
-                        <li>
-                          <a className="page-numbers" href="#">
-                            2
-                          </a>
-                        </li>
-                        <li>
-                          <a className="page-numbers" href="#">
-                            3
-                          </a>
-                        </li>
-                        <li>
-                          <a className="next page-numbers" href="#">
-                            Next
-                          </a>
-                        </li>
+                        {currentPage !== 1 ?
+                          <li onClick={() => setCurrentPage(pre => pre - 1)}>
+                            <a className="prev page-numbers" href="#">
+                              Previous
+                            </a>
+                          </li> : ""
+                        }
+
+                        {[...Array(lastPage)].map((e, i) => (
+                          <>
+                            <li key={i} value={i + 1} onClick={() => handlePage(i + 1)} >
+                              <a href="#">
+                                <span
+                                  aria-current="page"
+                                  className={`page-numbers ${currentPage === i + 1 ? "current" : ""}`}
+                                >
+                                  {i + 1}
+                                </span>
+                              </a>
+                            </li>
+                          </>
+                        ))}
+
+                        {currentPage !== lastPage ?
+                          <li onClick={() => setCurrentPage(pre => pre + 1)}>
+                            <a className="next page-numbers" href="#">
+                              Next
+                            </a>
+                          </li> : ""
+                        }
+
                       </ul>
                     </nav>
                   </div>

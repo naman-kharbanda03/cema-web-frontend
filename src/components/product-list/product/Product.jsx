@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import { Link } from "react-router-dom";
 import StarRatings from "react-star-ratings";
+import apiConfig from "../../../config/apiConfig";
 import { useShoppingCart } from "../../../context/ShoppingCartContext";
 
 const Product = (props) => {
@@ -8,8 +9,32 @@ const Product = (props) => {
     const [desc, setDesc] = useState(product.description)
     // console.log(product.thumbpath + '/' + product.images[0].image);
     const { increaseItem, getQuantity } = useShoppingCart();
-    // console.log(getQuantity(1));
-    console.log("itss", product)
+    const token = localStorage.getItem('accessToken');
+
+    const handleAddRemove = (e, id) => {
+        e.preventDefault();
+        const formData = new FormData();
+        formData.append('product_id', id);
+
+        const apiURl = apiConfig.addRemoveWishlistAPI;
+        fetch(apiURl, {
+            method: "POST",
+            headers: {
+                'Authorization': `Bearer ${token}`,
+                // "Content-Type": "application/json",
+                // Add any other headers your API requires
+            },
+            body: formData,
+        })
+            .then((response) => response.json())
+            .then((data) => {
+                console.log(data);
+                return data;
+            })
+            .catch((error) => {
+                console.error("Error:", error);
+            });
+    }
 
     return (
         <>
@@ -27,14 +52,14 @@ const Product = (props) => {
                                     <img
                                         width="600"
                                         height="600"
-                                        src={product.thumbpath + "/" + product.images[0].image}
+                                        src={product.image_path + "/" + product.product_image[0]}
                                         className="post-image"
                                         alt=""
                                     />
                                     <img
                                         width="600"
                                         height="600"
-                                        src={product.thumbpath + "/" + product.images[1].image}
+                                        src={product.image_path + "/" + product.product_image[0]}
                                         className="hover-image back"
                                         alt=""
                                     />
@@ -58,7 +83,7 @@ const Product = (props) => {
                             <Link to={`/product-details?product_id=${product.productid}`}>
 
                                 <h3 className="product-title">
-                                    <a href="shop-details.html">{product.productname.en}</a>
+                                    <a href="shop-details.html">{product.product_name.en}</a>
                                 </h3>
                             </Link>
                             <span className="price">{product.symbol}{product.mainprice}</span>
@@ -96,7 +121,9 @@ const Product = (props) => {
                                     className="btn-wishlist"
                                     data-title="Wishlist"
                                 >
-                                    <button className="product-btn">
+                                    <button className="product-btn"
+                                    // onClick={(e) => handleAddRemove(e, product.id)}
+                                    >
                                         Add to wishlist
                                     </button>
                                 </div>

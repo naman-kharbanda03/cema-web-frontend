@@ -11,7 +11,6 @@ const Header = (props) => {
   };
 
   const [categories, setCategories] = useState();
-  console.log("testing3", categories);
 
   const fetchDetails = () => {
     fetch("https://cema-backend.plasium.com/api/navCategories", {
@@ -22,7 +21,7 @@ const Header = (props) => {
         return response.json();
       })
       .then((data) => {
-        console.log("testing", data.data);
+        // console.log("testing", data.data);
         setCategories(data.data);
       })
       .catch((error) => console.error("Problem with fetch operations", error));
