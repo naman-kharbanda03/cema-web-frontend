@@ -6,6 +6,8 @@ const apiConfig = {
   categoryDetailsAPI: `${BASE_URL}/api/category/1?secret=${secretKey}&currency=INR`,
   productListAPI: `${BASE_URL}/api/products?per_page=10&page=1`,
   brandsAPI: `${BASE_URL}/api/brands`,
+  wishListAPI: `${BASE_URL}/api/get_wishlist`,
+  addRemoveWishlistAPI: `${BASE_URL}/api/add_remove_wishlist`,
 };
 
 export default apiConfig;
