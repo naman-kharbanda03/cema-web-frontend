@@ -23,7 +23,6 @@ const WishListTable = () => {
             return response.json();
         }).then((datar) => {
             if (datar.success) {
-                console.log(datar)
                 setOrderData(datar.data);
                 setWishListCount(datar.count);
                 return datar;
@@ -83,7 +82,7 @@ const WishListTable = () => {
                                         <img
                                             width="600"
                                             height="600"
-                                            src={order.simple_product.image_path + '/' + order.simple_product.thumbnail}
+                                            src={order.simple_product.image_path + '/' + order.simple_product.product_image[0]}
                                             alt=""
                                         />
                                     </a>
@@ -100,7 +99,7 @@ const WishListTable = () => {
                                     <div className="wishlist-item-time">June 6, 2022</div>
                                 </td>
                                 <td className="wishlist-item-actions">
-                                    <div className="wishlist-item-stock">In stock</div>
+                                    <div className="wishlist-item-stock">{order.simple_product.stock > 0 ? "In Stock" : "Out of Stock"}</div>
                                     <div className="wishlist-item-add">
                                         <div
                                             className="btn-add-to-cart"
