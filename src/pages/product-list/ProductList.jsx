@@ -101,15 +101,13 @@ const ProductList = () => {
     let categoryDetailsAPI = "";
 
     if (categoryID === null) {
-      categoryDetailsAPI = `https://cema-backend.plasium.com/api/category/0?currency=INR&page=${currentPage}&per_page=3`;
+      categoryDetailsAPI = `https://cema-backend.plasium.com/api/category/0?currency=INR&page=${currentPage}&per_page=2`;
     }
     else {
-      categoryDetailsAPI = `https://cema-backend.plasium.com/api/category/${categoryID}?currency=INR&page=${currentPage}&per_page=3`;
+      categoryDetailsAPI = `https://cema-backend.plasium.com/api/category/${categoryID}?currency=INR&page=${currentPage}&per_page=2`;
     }
     const categoryListAPI = apiConfig.categoryListAPI;
-    const brandsAPI =
-
-      apiConfig.brandsAPI;
+    const brandsAPI = apiConfig.brandsAPI;
     const productListAPI = apiConfig.productListAPI;
 
     fetchDetails(categoryListAPI, categoryDetailsAPI, brandsAPI);
@@ -190,10 +188,12 @@ const ProductList = () => {
                       </div>
                       <div class="block-content">
                         <div className="product-cats-list">
-                          <ul>
-                            {categoryList.map(category => (
-                              <Category current={category} />
-                            ))}
+                          <ul onClick={() => setCurrentPage(1)}>
+                            {
+                              categoryList.map(category => (
+                                <Category current={category} />
+                              ))
+                            }
                           </ul>
                         </div>
                       </div>
@@ -250,85 +250,6 @@ const ProductList = () => {
                         </ul>
                       </div>
                     </div>
-
-
-                    {/* Feature Products  */}
-                    {/* <div className="block block-products">
-                      <div className="block-title">
-                        <h2>Feature Product</h2>
-                      </div>
-                      <div className="block-content">
-                        <ul className="products-list">
-                          <li className="product-item">
-                            <a
-                              href="shop-details.html"
-                              className="product-image"
-                            >
-                              <img src="images/product/6.png" />
-                            </a>
-                            <div className="product-content">
-                              <h2 className="product-title">
-                                <a href="shop-details.html">Dining Table</a>
-                              </h2>
-                              <div className="rating small">
-                                <div className="star star-5"></div>
-                              </div>
-                              <span className="price">
-                                <del aria-hidden="true">
-                                  <span>KD150.00</span>
-                                </del>
-                                <ins>
-                                  <span>KD100.00</span>
-                                </ins>
-                              </span>
-                            </div>
-                          </li>
-                          <li className="product-item">
-                            <a
-                              href="shop-details.html"
-                              className="product-image"
-                            >
-                              <img src="images/product/8.png" />
-                            </a>
-                            <div className="product-content">
-                              <h2 className="product-title">
-                                <a href="shop-details.html">
-                                  Spinning Pendant Lamp
-                                </a>
-                              </h2>
-                              <div className="rating small">
-                                <div className="star star-0"></div>
-                              </div>
-                              <span className="price">KD120.00</span>
-                            </div>
-                          </li>
-                          <li className="product-item">
-                            <a
-                              href="shop-details.html"
-                              className="product-image"
-                            >
-                              <img src="images/product/9.png" />
-                            </a>
-                            <div className="product-content">
-                              <h2 className="product-title">
-                                <a href="shop-details.html">Bora Armchair</a>
-                              </h2>
-                              <div className="rating small">
-                                <div className="star star-5"></div>
-                              </div>
-                              <span className="price">
-                                <del aria-hidden="true">
-                                  <span>KD200.00</span>
-                                </del>
-                                <ins>
-                                  <span>KD180.00</span>
-                                </ins>
-                              </span>
-                            </div>
-                          </li>
-                        </ul>
-                      </div>
-                    </div> */}
                   </div>
 
                   <div className="col-xl-9 col-lg-9 col-md-12 col-12">
@@ -427,13 +348,14 @@ const ProductList = () => {
                     </div>
 
 
-                    {/* Grid Version  */}
+
                     <div className="tab-content">
                       <div
                         className="tab-pane fade"
                         id="layout-grid"
                         role="tabpanel"
                       >
+                        {/* Grid Version  */}
                         {/* <div className="products-list grid">
                           <div className="row">
                             <div className="col-xl-4 col-lg-4 col-md-4 col-sm-6">
@@ -1208,21 +1130,9 @@ const ProductList = () => {
                             </a>
                           </li> : ""
                         }
-
-                        {[...Array(lastPage)].map((e, i) => (
-                          <>
-                            <li key={i} value={i + 1} onClick={() => handlePage(i + 1)} >
-                              <a href="#">
-                                <span
-                                  aria-current="page"
-                                  className={`page-numbers ${currentPage === i + 1 ? "current" : ""}`}
-                                >
-                                  {i + 1}
-                                </span>
-                              </a>
-                            </li>
-                          </>
-                        ))}
+                        {currentPage - 1 > 0 ? <li onClick={() => setCurrentPage(page => page - 1)}><a class="page-numbers" href="#">{currentPage - 1}</a></li> : ""}
+                        <li><span aria-current="page" class="page-numbers current">{currentPage}</span></li>
+                        {currentPage + 1 <= lastPage ? <li onClick={() => setCurrentPage(page => page + 1)}><a class="page-numbers" href="#">{currentPage + 1}</a></li> : ""}
 
                         {currentPage !== lastPage ?
                           <li onClick={() => setCurrentPage(pre => pre + 1)}>
