@@ -8,6 +8,9 @@ const apiConfig = {
   brandsAPI: `${BASE_URL}/api/brands`,
   wishListAPI: `${BASE_URL}/api/get_wishlist`,
   addRemoveWishlistAPI: `${BASE_URL}/api/add_remove_wishlist`,
+  getOrderAPI: `${BASE_URL}/api/orders`,
+  getAddressAPI: `${BASE_URL}/api/manageaddress`,
+  getBillingAddressAPI: `${BASE_URL}/api/billing-address`,
 };
 
 export default apiConfig;

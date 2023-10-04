@@ -48,7 +48,7 @@ const Product = (props) => {
                                 <div className="hot">Hot</div>
                             </div>
                             <div className="product-thumb-hover">
-                                <Link to={`/product-details?product_id=${product.productid}`}>
+                                <Link to={`/product-details?product_id=${product.id}`}>
                                     <img
                                         width="600"
                                         height="600"

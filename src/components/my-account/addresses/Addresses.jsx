@@ -1,16 +1,9 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
+import apiConfig from "../../../config/apiConfig";
 import Address from "../address/Address";
 
 const Addresses = () => {
-  const [shippingAddress, setShippingAddress] = useState({
-    type: "Shipping Address",
-    houseNo: "4299 Express Lane",
-    locality: "75 Business Spur",
-    street: "Sault Ste",
-    city: "Marie",
-    state: "MI",
-    pincode: "49783",
-  });
+  const [shippingAddress, setShippingAddress] = useState();
   const [billingAddress, setBillingAddress] = useState({
     type: "Billing Address",
     houseNo: "4299 Express Lane",
@@ -20,6 +13,34 @@ const Addresses = () => {
     state: "FL",
     pincode: "34249",
   });
+  const authToken = localStorage.getItem('accessToken');
+
+  const fetchDetails = (apiUrl, setState) => {
+    fetch(apiUrl, {
+      method: "GET",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${authToken}`,
+      },
+    })
+      .then((response) => {
+        if (!response.ok) throw new Error("Network Issue");
+        return response.json();
+      })
+      .then((data) => {
+        console.log(data);
+        setState(data.address[0]);
+        return data.address;
+      })
+      .catch((error) => console.error("Problem with fetch operations", error));
+  };
+
+  useEffect(() => {
+    const addressApiUrl = apiConfig.getAddressAPI;
+    const billingAddressAPI = apiConfig.getBillingAddressAPI;
+    fetchDetails(addressApiUrl, setShippingAddress);
+    // fetchDetails(billingAddressAPI,setBillingAddress);
+  }, []);
   return (
     <>
       <div className="my-account-addresses">
@@ -37,11 +58,11 @@ const Addresses = () => {
           />
           <Address
             type={shippingAddress.type}
-            houseNo={shippingAddress.houseNo}
-            locality={shippingAddress.locality}
-            city={shippingAddress.city}
-            state={shippingAddress.state}
-            pincode={shippingAddress.pincode}
+            houseNo={shippingAddress.address}
+            // locality={shippingAddress.locality}
+            city={shippingAddress.city.name}
+            state={shippingAddress.state.name}
+            pincode={shippingAddress.pin_code}
           />
         </div>
       </div>

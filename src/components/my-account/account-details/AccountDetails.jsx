@@ -1,6 +1,7 @@
 import React from "react";
 
 const AccountDetails = () => {
+
   return (
     <>
       <div className="my-account-account-details">

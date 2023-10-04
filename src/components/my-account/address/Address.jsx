@@ -1,7 +1,6 @@
 import React from "react";
 
 const Address = (address) => {
-  console.log(address.type);
   return (
     <>
       {/* <p>

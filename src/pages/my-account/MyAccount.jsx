@@ -8,14 +8,14 @@ import OrdersTable from "../../components/my-account/ordersTable/OrdersTable";
 import PageTitle from "../../components/page-tittle/PageTitle";
 
 const MyAccount = (props) => {
-  const [orderDetails, setOrderDetails] = useState([]);
+  const [orderDetails, setOrderDetails] = useState([{}]);
   const [activeTab, setActiveTab] = useState("dashboard");
+  const [ordersLoaded, setOrdersLoaded] = useState(false);
 
   const handleTabChange = (tab) => {
     setActiveTab(tab);
   };
-  const authToken = localStorage.getItem("accessToken"); // const authToken =
-
+  const authToken = localStorage.getItem("accessToken");
   const fetchDetails = (apiUrl) => {
     fetch(apiUrl, {
       method: "GET",
@@ -30,7 +30,8 @@ const MyAccount = (props) => {
       })
       .then((data) => {
         console.log(data);
-        return data;
+        setOrderDetails(data.orders);
+        return data.orders;
       })
       .catch((error) => console.error("Problem with fetch operations", error));
   };
@@ -45,6 +46,9 @@ const MyAccount = (props) => {
     // setShippingAddress(() => fetchDetails(apiUrl));
     // console.log(shippingAddress);
   };
+  useEffect(() => {
+    setOrdersLoaded(true);
+  }, [orderDetails])
 
   return (
     <>
@@ -132,7 +136,7 @@ const MyAccount = (props) => {
                           id="orders"
                           role="tabpanel"
                         >
-                          <OrdersTable orders={orderDetails} />
+                          {ordersLoaded ? <OrdersTable orders={orderDetails} /> : ''}
                         </div>
                         <div
                           className={`tab-pane fade ${activeTab === "addresses" ? "show active" : ""}`}
