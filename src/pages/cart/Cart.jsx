@@ -6,8 +6,11 @@ import { Link } from "react-router-dom";
 
 const Cart = () => {
   const [orders, setOrders] = useState();
-  
+  const [total, setTotal] = useState();
+  const [qtyChanged, setQtyChanged] = useState();
 
+  const setQtyChange = (qty) => setQtyChanged(qty);
+  console.log("qtyChanged", qtyChanged);
   function getCartDetails() {
     const bearerToken = localStorage.getItem("accessToken");
     console.log("bearerToken", orders);
@@ -20,7 +23,8 @@ const Cart = () => {
     })
       .then((response) => response.json())
       .then((data) => {
-        console.log("getCartData:", data.data);
+        console.log("getCartData:", data.total);
+        setTotal(data.total);
         setOrders(data.data);
       })
       .catch((error) => {
@@ -28,9 +32,14 @@ const Cart = () => {
       });
   }
 
+  
   useEffect(() => {
     getCartDetails();
   }, []);
+
+  useEffect(() => {
+    getCartDetails();
+  }, [qtyChanged]);
 
   return (
     <div id="site-main" className="site-main">
@@ -60,7 +69,10 @@ const Cart = () => {
                             </thead>
                             {orders?.map((order) => (
                               <tbody>
-                                <CartProduct ordersData={order} />
+                                <CartProduct
+                                  orderQtyChanged={setQtyChange}
+                                  ordersData={order}
+                                />
                               </tbody>
                             ))}
 
@@ -117,7 +129,7 @@ const Cart = () => {
                           <div className="cart-subtotal">
                             <div className="title">Subtotal</div>
                             <div>
-                              <span>KD480.00</span>
+                              <span>KD{total}</span>
                             </div>
                           </div>
                           <div className="shipping-totals">
@@ -155,7 +167,7 @@ const Cart = () => {
                           <div className="order-total">
                             <div className="title">Total</div>
                             <div>
-                              <span>KD{orders?.total}</span>
+                              <span>KD{total}</span>
                             </div>
                           </div>
                         </div>
