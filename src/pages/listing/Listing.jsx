@@ -13,6 +13,7 @@ import P615 from "../../asset/images/product/6-15.png";
 import { Link, useLocation } from "react-router-dom";
 import apiConfig from "../../config/apiConfig";
 import Category from "../../components/product-list/Category";
+import { AddToCart } from "../../components/block/NewArrival";
 
 const Listing = () => {
   const [data, setData] = useState();
@@ -278,8 +279,9 @@ const Listing = () => {
                                           >
                                             <a
                                               rel="nofollow"
-                                              href="#"
+                                              onClick={() => AddToCart(product)}
                                               className="product-btn button"
+                                              
                                             >
                                               Add to cart
                                             </a>
