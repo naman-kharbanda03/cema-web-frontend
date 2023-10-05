@@ -4,6 +4,7 @@ const AccountDetails = () => {
 
   return (
     <>
+
       <div className="my-account-account-details">
         <form className="edit-account" action="" method="post">
           <p className="form-row">
