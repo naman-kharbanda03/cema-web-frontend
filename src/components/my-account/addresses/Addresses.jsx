@@ -57,12 +57,12 @@ const Addresses = () => {
             pincode={billingAddress.pincode}
           />
           <Address
-            type={shippingAddress.type}
-            houseNo={shippingAddress.address}
+            type={shippingAddress?.type}
+            houseNo={shippingAddress?.address}
             // locality={shippingAddress.locality}
-            city={shippingAddress.city.name}
-            state={shippingAddress.state.name}
-            pincode={shippingAddress.pin_code}
+            city={shippingAddress?.city.name}
+            state={shippingAddress?.state?.name}
+            pincode={shippingAddress?.pin_code}
           />
         </div>
       </div>

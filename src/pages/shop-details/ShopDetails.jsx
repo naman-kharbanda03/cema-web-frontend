@@ -4,6 +4,7 @@ import PageTitle from "../../components/page-tittle/PageTitle";
 import { useShoppingCart } from "../../context/ShoppingCartContext";
 import { act } from "react-dom/test-utils";
 import StarRatings from "react-star-ratings";
+import apiConfig from "../../config/apiConfig";
 
 const ShopDetails = (product) => {
   const [data, setData] = useState();
@@ -42,6 +43,33 @@ const ShopDetails = (product) => {
   useEffect(() => {
     fetchDetails();
   }, []);
+
+  const handleAddRemove = (e, id) => {
+    e.preventDefault();
+    const formData = new FormData();
+    formData.append('product_id', id);
+    const token = localStorage.getItem('accessToken');
+    // console.log("shopDeatils", token);
+    const apiURl = apiConfig.addRemoveWishlistAPI;
+
+    fetch(apiURl, {
+      method: "POST",
+      headers: {
+        'Authorization': `Bearer ${token}`,
+        // "Content-Type": "application/json",
+        // Add any other headers your API requires
+      },
+      body: formData,
+    })
+      .then((response) => response.json())
+      .then((data) => {
+        console.log(data);
+        return data;
+      })
+      .catch((error) => {
+        console.error("Error:", error);
+      });
+  }
 
   return (
     <div id="site-main" className="site-main">
@@ -250,7 +278,7 @@ const ShopDetails = (product) => {
                             <button className="product-btn">Buy It Now</button>
                           </div>
                           <div className="btn-wishlist" data-title="Wishlist">
-                            <button className="product-btn">
+                            <button className="product-btn" onClick={(e) => handleAddRemove(e, data.product_id)}>
                               Add to wishlist
                             </button>
                           </div>
@@ -311,9 +339,8 @@ const ShopDetails = (product) => {
                       <ul className="nav nav-tabs" role="tablist">
                         <li className="nav-item">
                           <a
-                            className={`nav-link ${
-                              activeTabId === 1 ? "active" : ""
-                            }`}
+                            className={`nav-link ${activeTabId === 1 ? "active" : ""
+                              }`}
                             data-toggle="tab"
                             // href="#description"
                             role="tab"
@@ -324,9 +351,8 @@ const ShopDetails = (product) => {
                         </li>
                         <li className="nav-item">
                           <a
-                            className={`nav-link ${
-                              activeTabId === 2 ? "active" : ""
-                            }`}
+                            className={`nav-link ${activeTabId === 2 ? "active" : ""
+                              }`}
                             data-toggle="tab"
                             // href="#additional-information"
                             role="tab"
@@ -337,9 +363,8 @@ const ShopDetails = (product) => {
                         </li>
                         <li className="nav-item">
                           <a
-                            className={`nav-link ${
-                              activeTabId === 3 ? "active" : ""
-                            }`}
+                            className={`nav-link ${activeTabId === 3 ? "active" : ""
+                              }`}
                             data-toggle="tab"
                             // href="#reviews"
                             role="tab"
@@ -351,18 +376,16 @@ const ShopDetails = (product) => {
                       </ul>
                       <div className="tab-content">
                         <div
-                          className={`tab-pane fade  ${
-                            activeTabId === 1 ? " show active" : ""
-                          }`}
+                          className={`tab-pane fade  ${activeTabId === 1 ? " show active" : ""
+                            }`}
                           id="description"
                           role="tabpanel"
                         >
                           <p>{data?.key_features?.en}</p>
                         </div>
                         <div
-                          className={`tab-pane fade  ${
-                            activeTabId === 2 ? " show active" : ""
-                          }`}
+                          className={`tab-pane fade  ${activeTabId === 2 ? " show active" : ""
+                            }`}
                           id="additional-information"
                           role="tabpanel"
                         >
@@ -382,9 +405,8 @@ const ShopDetails = (product) => {
                           </table>
                         </div>
                         <div
-                          className={`tab-pane fade  ${
-                            activeTabId === 3 ? " show active" : ""
-                          }`}
+                          className={`tab-pane fade  ${activeTabId === 3 ? " show active" : ""
+                            }`}
                           id="reviews"
                           role="tabpanel"
                         >

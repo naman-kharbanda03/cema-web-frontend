@@ -101,10 +101,10 @@ const ProductList = () => {
     let categoryDetailsAPI = "";
 
     if (categoryID === null) {
-      categoryDetailsAPI = `https://cema-backend.plasium.com/api/category/0?currency=INR&page=${currentPage}&per_page=2`;
+      categoryDetailsAPI = `https://cema-backend.plasium.com/api/category/0?currency=INR&page=${currentPage}&per_page=3`;
     }
     else {
-      categoryDetailsAPI = `https://cema-backend.plasium.com/api/category/${categoryID}?currency=INR&page=${currentPage}&per_page=2`;
+      categoryDetailsAPI = `https://cema-backend.plasium.com/api/category/${categoryID}?currency=INR&page=${currentPage}&per_page=3`;
     }
     const categoryListAPI = apiConfig.categoryListAPI;
     const brandsAPI = apiConfig.brandsAPI;

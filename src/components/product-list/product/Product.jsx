@@ -16,7 +16,7 @@ const Product = (props) => {
         e.preventDefault();
         const formData = new FormData();
         formData.append('product_id', id);
-
+        // console.log("product", token);
         const apiURl = apiConfig.addRemoveWishlistAPI;
         fetch(apiURl, {
             method: "POST",
@@ -123,7 +123,7 @@ const Product = (props) => {
                                     data-title="Wishlist"
                                 >
                                     <button className="product-btn"
-                                    // onClick={(e) => handleAddRemove(e, product.id)}
+                                        onClick={(e) => handleAddRemove(e, product.id)}
                                     >
                                         Add to wishlist
                                     </button>

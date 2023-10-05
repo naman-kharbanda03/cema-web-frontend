@@ -3,6 +3,7 @@ import logo from "../../asset/images/logo.png";
 import product_1 from "../../asset/images/product/1.jpg";
 import product_3 from "../../asset/images/product/3.jpg";
 import { Link, useNavigate } from "react-router-dom";
+import apiConfig from "../../config/apiConfig";
 
 const Header = (props) => {
   const navigate = useNavigate();
@@ -11,6 +12,7 @@ const Header = (props) => {
   };
 
   const [categories, setCategories] = useState();
+  const [wishListCount, setWishListCount] = useState();
 
   const fetchDetails = () => {
     fetch("https://cema-backend.plasium.com/api/navCategories", {
@@ -25,11 +27,36 @@ const Header = (props) => {
         setCategories(data.data);
       })
       .catch((error) => console.error("Problem with fetch operations", error));
+
+    const apiUrl = apiConfig.wishListAPI;
+    const token = localStorage.getItem('accessToken');
+    fetch(apiUrl, {
+      method: 'GET',
+      headers: {
+        'Authorization': `Bearer ${token}`,
+        // Add other headers as needed
+      },
+    }).then((response) => {
+      if (!response.ok) throw new Error("Network Issue");
+      return response.json();
+    }).then((datar) => {
+      if (datar.success) {
+        console.log(datar);
+        setWishListCount(datar.count);
+        return datar;
+      } else {
+        alert("Fetch error");
+      }
+
+    }).catch((error) => console.error("Problem with fetch", error));
+
   };
 
   useEffect(() => {
     fetchDetails();
   }, []);
+
+
 
   return (
     <header id="site-header" className="site-header header-v2 large-height">
@@ -488,7 +515,7 @@ const Header = (props) => {
                       <Link to="/wishlist">
                         <i className="ti-heart" />
                       </Link>
-                      <span className="count-wishlist">1</span>
+                      <span className="count-wishlist">{wishListCount}</span>
                     </div>
                     {/* Cart */}
                     <div className="cema-topcart dropdown light">
@@ -504,7 +531,7 @@ const Header = (props) => {
                         >
                           <div className="icons-cart">
                             <i className="ti-bag" />
-                            <span className="cart-count">2</span>
+                            <span className="cart-count">1</span>
                           </div>
                         </Link>
                         <div className="dropdown-menu cart-popup">

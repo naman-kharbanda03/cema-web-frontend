@@ -71,60 +71,61 @@ const WishListTable = () => {
                 <table className="wishlist-items">
                     <tbody>
                         {orderData.map(order => (
-                            <tr className="wishlist-item">
-                                <td className="wishlist-item-remove" onClick={(e) => handleAddRemove(e, order.simple_product.id)}>
-                                    <span></span>
-                                </td>
-                                <td className="wishlist-item-image">
-                                    <a href="shop-details.html">
-                                        <img
-                                            width="600"
-                                            height="600"
-                                            src={order.simple_product.image_path + '/' + order.simple_product.product_image[0]}
-                                            alt=""
-                                        />
-                                    </a>
-                                </td>
-                                <td className="wishlist-item-info">
-                                    <div className="wishlist-item-name">
+                            <>
+                                <tr className="wishlist-item">
+                                    <td className="wishlist-item-remove" onClick={(e) => handleAddRemove(e, order.simple_product.id)}>
+                                        <span></span>
+                                    </td>
+                                    <td className="wishlist-item-image">
                                         <a href="shop-details.html">
-                                            {order.simple_product.product_name.en}
+                                            <img
+                                                width="600"
+                                                height="600"
+                                                src={order.simple_product.image_path + '/' + order.simple_product.product_image[0]}
+                                                alt=""
+                                            />
                                         </a>
-                                    </div>
-                                    <div className="wishlist-item-price">
-                                        {/* <span>{order.simple_product.price}</span> */}
-                                    </div>
-                                    <div className="wishlist-item-time">June 6, 2022</div>
-                                </td>
-                                <td className="wishlist-item-actions">
-                                    <div className="wishlist-item-stock">{order.simple_product.stock > 0 ? "In Stock" : "Out of Stock"}</div>
-                                    <div className="wishlist-item-add">
-                                        <div
-                                            className="btn-add-to-cart"
-                                            data-title="Add to cart"
-                                        >
-                                            <a
-                                                rel="nofollow"
-                                                href="#"
-                                                className="product-btn button"
-                                            >
-                                                Add to cart
-                                            </a>{" "}
-                                            &nbsp;&nbsp;
-                                            <a
-                                                rel="nofollow"
-                                                href="#"
-                                                className="product-btn button"
-                                                onClick={(e) => handleAddRemove(e, order.simple_product.id)}
-                                            >
-                                                Remove
+                                    </td>
+                                    <td className="wishlist-item-info">
+                                        <div className="wishlist-item-name">
+                                            <a href="shop-details.html">
+                                                {order.simple_product.product_name.en}
                                             </a>
                                         </div>
-                                    </div>
-                                </td>
-                            </tr>
+                                        <div className="wishlist-item-price">
+                                            {/* <span>{order.simple_product.price}</span> */}
+                                        </div>
+                                        <div className="wishlist-item-time">June 6, 2022</div>
+                                    </td>
+                                    <td className="wishlist-item-actions">
+                                        <div className="wishlist-item-stock">{order.simple_product.stock > 0 ? "In Stock" : "Out of Stock"}</div>
+                                        <div className="wishlist-item-add">
+                                            <div
+                                                className="btn-add-to-cart"
+                                                data-title="Add to cart"
+                                            >
+                                                <a
+                                                    rel="nofollow"
+                                                    href="#"
+                                                    className="product-btn button"
+                                                >
+                                                    Add to cart
+                                                </a>{" "}
+                                                &nbsp;&nbsp;
+                                                <a
+                                                    rel="nofollow"
+                                                    href="#"
+                                                    className="product-btn button"
+                                                    onClick={(e) => handleAddRemove(e, order.simple_product.id)}
+                                                >
+                                                    Remove
+                                                </a>
+                                            </div>
+                                        </div>
+                                    </td>
+                                </tr>
+                            </>
                         ))}
-
                     </tbody>
                 </table>
             </div>

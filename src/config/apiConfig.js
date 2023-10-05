@@ -11,6 +11,8 @@ const apiConfig = {
   getOrderAPI: `${BASE_URL}/api/orders`,
   getAddressAPI: `${BASE_URL}/api/manageaddress`,
   getBillingAddressAPI: `${BASE_URL}/api/billing-address`,
+  updateProfileAPI: `${BASE_URL}/api/update/profile`,
+  secretKey: secretKey,
 };
 
 export default apiConfig;
