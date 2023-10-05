@@ -11,7 +11,7 @@ const WishListTable = () => {
 
     useEffect(() => {
         const apiUrl = apiConfig.wishListAPI;
-        // const token = localStorage.getItem('accessToken');
+        const token = localStorage.getItem('accessToken');
         fetch(apiUrl, {
             method: 'GET',
             headers: {

@@ -3,6 +3,7 @@ import { Link } from "react-router-dom";
 import StarRatings from "react-star-ratings";
 import apiConfig from "../../../config/apiConfig";
 import { useShoppingCart } from "../../../context/ShoppingCartContext";
+import { AddToCart } from "../../block/NewArrival";
 
 const Product = (props) => {
     const product = props.current;
@@ -111,7 +112,7 @@ const Product = (props) => {
                                 >
                                     <a
                                         rel="nofollow"
-                                        href="#"
+                                        onClick={() => AddToCart(product)}
                                         className="product-btn button"
                                     >
                                         Add to cart

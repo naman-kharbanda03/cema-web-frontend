@@ -5,13 +5,32 @@ import { useShoppingCart } from "../../context/ShoppingCartContext";
 import { Link } from "react-router-dom";
 
 const Cart = () => {
+  const [orders, setOrders] = useState();
+  
 
-  const [orderIDs, setOrderIDs] = useState([{}]);
-  const { getQuantity,
-    increaseItem,
-    decreseItem,
-    removeItem, cartItems } = useShoppingCart();
+  function getCartDetails() {
+    const bearerToken = localStorage.getItem("accessToken");
+    console.log("bearerToken", orders);
 
+    fetch("https://cema-backend.plasium.com/api/getCartData", {
+      method: "GET",
+      headers: {
+        Authorization: `Bearer ${bearerToken}`,
+      },
+    })
+      .then((response) => response.json())
+      .then((data) => {
+        console.log("getCartData:", data.data);
+        setOrders(data.data);
+      })
+      .catch((error) => {
+        console.error("Error:", error);
+      });
+  }
+
+  useEffect(() => {
+    getCartDetails();
+  }, []);
 
   return (
     <div id="site-main" className="site-main">
@@ -39,11 +58,12 @@ const Cart = () => {
                                 <th className="product-remove">&nbsp;</th>
                               </tr>
                             </thead>
-                            <tbody>
-                              <CartProduct />
-                              <CartProduct />
-                              <CartProduct />
-                            </tbody>
+                            {orders?.map((order) => (
+                              <tbody>
+                                <CartProduct ordersData={order} />
+                              </tbody>
+                            ))}
+
                             <tfoot>
                               <tr>
                                 <td
@@ -135,12 +155,12 @@ const Cart = () => {
                           <div className="order-total">
                             <div className="title">Total</div>
                             <div>
-                              <span>KD480.00</span>
+                              <span>KD{orders?.total}</span>
                             </div>
                           </div>
                         </div>
                         <div className="proceed-to-checkout">
-                          <Link to="/shop-checkout" >
+                          <Link to="/shop-checkout">
                             <div
                               href="shop-checkout.html"
                               className="checkout-button button"
