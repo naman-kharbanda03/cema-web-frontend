@@ -2,19 +2,23 @@ import React, { useState } from "react";
 import image from "../../asset/images/product/3.jpg";
 import { Link } from "react-router-dom";
 
-const CartProduct = (orderData) => {
-  const order = orderData?.ordersData;
+const CartProduct = (props) => {
+  const { ordersData : orderData, orderQtyChanged } = props;
+  const order = orderData
   const initialQty = order?.qty ? parseInt(order.qty) : 0;
   const [orderQnty, setOrderQnty] = useState(initialQty);
+  console.log("akku", orderData);
 
   const increaseQty = () => {
     setOrderQnty(orderQnty + 1);
     increaseQtyUtils();
+    orderQtyChanged && orderQtyChanged(orderQnty);
   }; // you can add up to max quantity allowed.
 
   const decreaseQty = () => {
     orderQnty !== 0 && setOrderQnty(orderQnty - 1);
     decreaseQtyUtils();
+    orderQtyChanged && orderQtyChanged(orderQnty);
   };
 
   const increaseQtyUtils = () => {
@@ -63,17 +67,17 @@ const CartProduct = (orderData) => {
   return (
     <tr className="cart-item">
       <td className="product-thumbnail">
-        <Link to={`/product-details?product_id=${order.id}`}>
+        <Link to={`/product-details?product_id=${order?.id}`}>
           <img
             width={600}
             height={600}
-            src={`${orderData?.ordersData?.simple_product?.image_path}/${orderData?.ordersData?.simple_product?.product_image?.[0]}`}
+            src={`${orderData?.simple_product?.image_path}/${orderData?.simple_product?.product_image?.[0]}`}
             className="product-image"
             alt
           />
         </Link>
         <div className="product-name">
-          <Link to={`/product-details?product_id=${order.id}`}>
+          <Link to={`/product-details?product_id=${order?.id}`}>
             {order?.simple_product?.product_name?.en}
           </Link>
         </div>

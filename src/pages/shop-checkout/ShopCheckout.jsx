@@ -2,6 +2,27 @@ import React from "react";
 import PageTitle from "../../components/page-tittle/PageTitle";
 
 const ShopCheckout = () => {
+
+  const placeOrder = () => {
+    const bearerToken = localStorage.getItem("accessToken");
+    const formdata = {
+      address_id: 1,
+      billing_id: 1,
+      grand_total: 10,
+    };
+    fetch('https://cema-backend.plasium.com/api/checkout', {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${bearerToken}`,
+      },
+      body: JSON.stringify(formdata),
+    })
+      .then((response) => response.text())
+      .then((result) => console.log(result))
+      .catch((error) => console.log("error", error));
+  };
+
   return (
     <div id="site-main" className="site-main">
       <div id="main-content" className="main-content">
