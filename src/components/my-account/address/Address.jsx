@@ -1,29 +1,45 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
+import apiConfig from "../../../config/apiConfig";
 
-const Address = (address) => {
+const Address = (props) => {
+  const [address, setAddress] = useState({})
+
   return (
     <>
-      {/* <p>
-        The following addresses will be used on the checkout page by default.
-      </p> */}
+
       <div className="addresses-col">
         <header className="col-title">
-          <h3>{address.type}</h3>
-          <a href="#" className="edit">
-            Edit
-          </a>
+          <h3> {props.type}</h3>
+          {address === null ?
+            <a href="#" className="edit">
+              Edit
+            </a>
+            :
+            <a href="#" className="add" >
+              Add
+            </a>
+          }
         </header>
         <address>
-          {address.houseNo}
-          <br />
-          {address.locality}
-          <br />
-          {address.street}
-          <br />
-          {address.city}, {address.state} {address.pincode}
+          {address !== {} ? <>
+            {address?.houseNo}
+            <br />
+            {address?.locality}
+            <br />
+            {address?.street}
+            <br />
+            {address?.city}, {address?.state} {address?.pincode}
+          </>
+            :
+            "Please Add Address"
+          }
+
         </address>
+
       </div>
+
     </>
+
   );
 };
 export default Address;

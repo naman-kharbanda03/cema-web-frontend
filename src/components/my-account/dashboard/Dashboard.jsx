@@ -1,26 +1,39 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
+import apiConfig from "../../../config/apiConfig";
 
 const Dashboard = (props) => {
+    const [user, setUser] = useState({});
+
+    useEffect(() => {
+        const apiUrl = apiConfig.getUserApi;
+        const token = localStorage.getItem('accessToken');
+        fetch(apiUrl, {
+            method: 'GET',
+            headers: {
+                Authorization: `Bearer ${token}`
+            }
+        }).then(response => response.json())
+            .then(data => {
+                console.log(data);
+                setUser(data);
+            })
+    }, [])
     return (
         <>
             <div className="my-account-dashboard">
                 <p>
-                    Hello <strong>Rosie</strong> (not{" "}
-                    <strong>Rosie</strong>?{" "}
-                    <Link to="/login" onClick={() => props.auth(false)}>Log out</Link>
+                    Hello <strong>{user?.name}</strong>
                 </p>
                 <p>
                     From your account dashboard you can view your{" "}
-                    <a href="#">recent orders</a>, manage your{" "}
-                    <a href="#">shipping and billing addresses</a>,
+                    recent orders, manage your{" "}
+                    shipping and billing addresses,
                     and{" "}
-                    <a href="#">
-                        edit your password and account details
-                    </a>
-                    .
+                    edit your password and account details.
                 </p>
             </div>
+
         </>
     );
 }

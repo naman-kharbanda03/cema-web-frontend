@@ -14,6 +14,7 @@ import { Link, useLocation } from "react-router-dom";
 import apiConfig from "../../config/apiConfig";
 import Category from "../../components/product-list/Category";
 import { AddToCart } from "../../components/block/NewArrival";
+import { useShoppingCart } from "../../context/ShoppingCartContext";
 
 const Listing = () => {
   const [data, setData] = useState();
@@ -23,10 +24,12 @@ const Listing = () => {
   const location = useLocation();
   const name = location.state ? location.state.name : null;
   console.log("location", location, name);
-
+  const token = localStorage.getItem('accessToken');
   const [categoryList, setCategoryList] = useState([]);
-  console.log("categoryList",categoryList)
+  console.log("categoryList", categoryList)
   const categoryListAPI = apiConfig.categoryListAPI;
+  const { handleAddRemoveWishlist } = useShoppingCart();
+
   const fetchDetails = () => {
     fetch(
       `https://cema-backend.plasium.com/api/products?per_page=10&page=1&${products}=1`,
@@ -61,6 +64,8 @@ const Listing = () => {
   useEffect(() => {
     fetchDetails();
   }, []);
+
+
   return (
     <>
       <div id="site-main" className="site-main">
@@ -80,11 +85,11 @@ const Listing = () => {
                         </div>
                         <div className="block-content">
                           <div className="product-cats-list">
-                          <ul>
-                            {categoryList.map(category => (
-                              <Category current={category} />
-                            ))}
-                          </ul>
+                            <ul>
+                              {categoryList.map(category => (
+                                <Category current={category} />
+                              ))}
+                            </ul>
                           </div>
                         </div>
                       </div>
@@ -281,7 +286,7 @@ const Listing = () => {
                                               rel="nofollow"
                                               onClick={() => AddToCart(product)}
                                               className="product-btn button"
-                                              
+
                                             >
                                               Add to cart
                                             </a>
@@ -290,7 +295,11 @@ const Listing = () => {
                                             className="btn-wishlist"
                                             data-title="Wishlist"
                                           >
-                                            <button className="product-btn">
+                                            <button className="product-btn"
+                                              onClick={(e) => {
+                                                handleAddRemoveWishlist(e, product.id)
+                                              }}
+                                            >
                                               Add to wishlist
                                             </button>
                                           </div>

@@ -4,6 +4,7 @@ import AccountDetails from "../../components/my-account/account-details/AccountD
 import Address from "../../components/my-account/address/Address";
 import Addresses from "../../components/my-account/addresses/Addresses";
 import Dashboard from "../../components/my-account/dashboard/Dashboard";
+import ForgotPassword from "../../components/my-account/forgot-password/ForgotPassword";
 import OrdersTable from "../../components/my-account/ordersTable/OrdersTable";
 import PageTitle from "../../components/page-tittle/PageTitle";
 
@@ -43,8 +44,6 @@ const MyAccount = (props) => {
   };
   const handleAddress = () => {
     const apiUrl = "https://cema-backend.plasium.com/api/manageaddress";
-    // setShippingAddress(() => fetchDetails(apiUrl));
-    // console.log(shippingAddress);
   };
   useEffect(() => {
     setOrdersLoaded(true);
@@ -117,10 +116,22 @@ const MyAccount = (props) => {
                             </a>
                           </li>
                           <li className="nav-item">
+                            <a
+                              className={`nav-link ${activeTab === "forgot-password" ? "active" : ""}`}
+                              data-toggle="tab"
+                              href="#forgot-password"
+                              role="tab"
+                              onClick={() => handleTabChange("forgot-password")}
+                            >
+                              Forgot Password
+                            </a>
+                          </li>
+                          <li className="nav-item">
                             <a className="nav-link" href="">
                               <Link to="/login" onClick={() => props.auth(false)} >Log out</Link>
                             </a>
                           </li>
+
                         </ul>
                       </nav>
                       <div className="my-account-content tab-content">
@@ -136,7 +147,7 @@ const MyAccount = (props) => {
                           id="orders"
                           role="tabpanel"
                         >
-                          {ordersLoaded ? <OrdersTable orders={orderDetails} /> : ''}
+                          <OrdersTable orders={orderDetails} />
                         </div>
                         <div
                           className={`tab-pane fade ${activeTab === "addresses" ? "show active" : ""}`}
@@ -152,6 +163,14 @@ const MyAccount = (props) => {
                           role="tabpanel"
                         >
                           <AccountDetails />
+
+                        </div>
+                        <div
+                          className={`tab-pane fade ${activeTab === "forgot-password" ? "show active" : ""}`}
+                          id="forgot-password"
+                          role="tabpanel"
+                        >
+                          <ForgotPassword />
                         </div>
                       </div>
                     </div>

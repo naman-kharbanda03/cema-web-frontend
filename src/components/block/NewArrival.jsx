@@ -8,8 +8,10 @@ import product_6_7 from "../../asset/images/product/6-7.png";
 import product_6_6 from "../../asset/images/product/6-6.png";
 import product_6_4 from "../../asset/images/product/6-4.png";
 import { Link } from "react-router-dom";
+import apiConfig from "../../config/apiConfig";
+import { useShoppingCart } from "../../context/ShoppingCartContext";
 
-export   function AddToCart(product) {
+export function AddToCart(product) {
   const formData = {
     quantity: 1,
     product_id: product?.id,
@@ -40,8 +42,11 @@ export   function AddToCart(product) {
 
 const NewArrival = () => {
   const [data, setData] = useState([{}]);
+  const token = localStorage.getItem("accessToken");
+  const { handleAddRemoveWishlist } = useShoppingCart();
 
- 
+
+
   const fetchDetails = () => {
     fetch(
       "https://cema-backend.plasium.com/api/products?per_page=10&page=1&new_arrival=1",
@@ -63,6 +68,7 @@ const NewArrival = () => {
   useEffect(() => {
     fetchDetails();
   }, []);
+
   return (
     <div className="products-list grid">
       <div className="row">
@@ -74,7 +80,7 @@ const NewArrival = () => {
                   <div className="product-lable">
                     <div className="onsale">-23%</div>
                     {/*/to ask what to show */}
-                    <div className="hot">Hot</div>
+                    <div className="hot">Hottest</div>
                   </div>
                   <div className="product-thumb-hover">
                     <Link to={`/product-details?product_id=${product.id}`}>
@@ -98,7 +104,11 @@ const NewArrival = () => {
                       </a>
                     </div>
                     <div className="btn-wishlist" data-title="Wishlist">
-                      <button className="product-btn">Add to wishlist</button>
+                      <button className="product-btn"
+                        onClick={(e) => {
+                          handleAddRemoveWishlist(e, product.id)
+                        }}
+                      >Add to wishlist</button>
                     </div>
                   </div>
                 </div>
@@ -108,7 +118,7 @@ const NewArrival = () => {
                       <a href="#">{product?.product_name?.en}</a>
                     </h3>
                     <span className="price">
-                      KD{product.actual_selling_price}
+                      KD {product.actual_selling_price}
                     </span>
                   </div>
                 </div>

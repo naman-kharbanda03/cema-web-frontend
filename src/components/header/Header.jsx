@@ -4,6 +4,7 @@ import product_1 from "../../asset/images/product/1.jpg";
 import product_3 from "../../asset/images/product/3.jpg";
 import { Link, useNavigate } from "react-router-dom";
 import apiConfig from "../../config/apiConfig";
+import { useShoppingCart } from "../../context/ShoppingCartContext";
 
 const Header = (props) => {
   const navigate = useNavigate();
@@ -12,7 +13,7 @@ const Header = (props) => {
   };
 
   const [categories, setCategories] = useState();
-  const [wishListCount, setWishListCount] = useState();
+  const { wishListCount, setWishListCount } = useShoppingCart();
 
   const fetchDetails = () => {
     fetch("https://cema-backend.plasium.com/api/navCategories", {
@@ -28,27 +29,7 @@ const Header = (props) => {
       })
       .catch((error) => console.error("Problem with fetch operations", error));
 
-    const apiUrl = apiConfig.wishListAPI;
-    const token = localStorage.getItem('accessToken');
-    fetch(apiUrl, {
-      method: 'GET',
-      headers: {
-        'Authorization': `Bearer ${token}`,
-        // Add other headers as needed
-      },
-    }).then((response) => {
-      if (!response.ok) throw new Error("Network Issue");
-      return response.json();
-    }).then((datar) => {
-      if (datar.success) {
-        console.log(datar);
-        setWishListCount(datar.count);
-        return datar;
-      } else {
-        alert("Fetch error");
-      }
 
-    }).catch((error) => console.error("Problem with fetch", error));
 
   };
 
@@ -59,7 +40,7 @@ const Header = (props) => {
 
 
   return (
-    <header id="site-header" className="site-header header-v2 large-height">
+    <header id="site-header" className="site-header header-v2 large-height" style={{ zIndex: 1000 }}>
       <div id="header-topbar" className="topbar-v1 hidden-sm hidden-xs">
         <div className="topbar-inner">
           <div className="section-padding">

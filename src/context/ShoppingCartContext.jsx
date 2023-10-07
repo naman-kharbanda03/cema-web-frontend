@@ -1,4 +1,5 @@
 import React, { createContext, useContext, useEffect, useState } from "react";
+import apiConfig from "../config/apiConfig";
 import useLocalStorage from "../hooks/useLocalStorage";
 
 const ShoppingCartContext = createContext({});
@@ -12,82 +13,90 @@ export const ShoppingCartProvider = ({ children }) => {
         Uid: null,
         quantity: null
     }]);
+    const [wishListCount, setWishListCount] = useState();
+    const [wishListToggle, setWishListToggle] = useState(false);
+
     useEffect(() => {
-    }, [cartItems]);
-
-    const getQuantity = (id) => {
-        return cartItems.find(item => item.Uid === id)?.quantity || 0;
-    }
-    // const addToCart = (id) => {
-    //     setCartItems(currItems => {
-    //         if (currItems.find(item.Uid === id) === null) {
-    //             return [...currItems, { Uid: id, quantity: 1 }];
-    //         }
-    //         else {
-    //             currItems.map(item => {
-    //                 if (item.Uid === id) {
-    //                     return {...item, quantity : item.quantity + 1};
-    //                 }else{
-    //                     return item;
-    //                 }
-    //             })
-    //         }
-    //     });
-    // }
-    const increaseItem = (id, amt) => {
-        setCartItems(currItems => {
-            const foundItem = currItems.find(item => item.Uid === id);
-
-            if (foundItem === undefined) {
-                // If the item doesn't exist in the cart, add it.
-                return [...currItems, { Uid: id, quantity: 1 }];
+        const apiUrl = apiConfig.wishListAPI;
+        const token = localStorage.getItem('accessToken');
+        fetch(apiUrl, {
+            method: 'GET',
+            headers: {
+                'Authorization': `Bearer ${token}`,
+                // Add other headers as needed
+            },
+        }).then((response) => {
+            if (!response.ok) throw new Error("Network Issue");
+            return response.json();
+        }).then((datar) => {
+            if (datar.success) {
+                console.log(datar);
+                setWishListCount(datar.count);
+                return datar;
             } else {
-                // If the item exists, update its quantity.
-                return currItems.map(item => {
-                    if (item.Uid === id) {
-                        return { ...item, quantity: item.quantity + amt };
-                    } else {
-                        return item;
-                    }
-                });
+                alert("Fetch error");
             }
-        });
-    };
-    const decreaseItem = (id) => {
-        setCartItems(currItems => {
-            const foundItem = currItems.find(item => item.Uid === id);
-            if (foundItem === undefined) {
-                return currItems;
-            }
-            else {
-                if (foundItem.quantity === 1) {
-                    return currItems.filter(item => item.Uid !== id);
-                }
-                else {
-                    return currItems.map(item => {
-                        if (item.Uid === id) {
-                            return { ...item, quantity: item.quantity - 1 }
-                        }
-                        else return item;
-                    })
-                }
-            }
-        });
 
-    }
-    const removeItem = (id) => {
-        setCartItems(currItems => {
-            return currItems.filter(item => item.Uid !== id);
+        }).catch((error) => console.error("Problem with fetch", error));
+    }, [wishListToggle]);
+
+    // const fetchWishlistCount=()=>{
+    //     const apiUrl = apiConfig.wishListAPI;
+    //     const token = localStorage.getItem('accessToken');
+    //     fetch(apiUrl, {
+    //         method: 'GET',
+    //         headers: {
+    //             'Authorization': `Bearer ${token}`,
+    //             // Add other headers as needed
+    //         },
+    //     }).then((response) => {
+    //         if (!response.ok) throw new Error("Network Issue");
+    //         return response.json();
+    //     }).then((datar) => {
+    //         if (datar.success) {
+    //             console.log(datar);
+    //             setWishListCount(datar.count);
+    //             return datar;
+    //         } else {
+    //             alert("Fetch error");
+    //         }
+
+    //     }).catch((error) => console.error("Problem with fetch", error));
+    // }
+
+    const handleAddRemoveWishlist = (e, id) => {
+        e.preventDefault();
+        const formData = new FormData();
+        formData.append('product_id', id);
+
+        const apiURl = apiConfig.addRemoveWishlistAPI;
+        const token = localStorage.getItem('accessToken');
+        fetch(apiURl, {
+            method: "POST",
+            headers: {
+                'Authorization': `Bearer ${token}`,
+                // "Content-Type": "application/json",
+                // Add any other headers your API requires
+            },
+            body: formData,
         })
+            .then((response) => response.json())
+            .then((data) => {
+                console.log(data);
+                setWishListToggle(prev => !prev);
+                return data;
+            })
+            .catch((error) => {
+                console.error("Error:", error);
+            });
     }
+
 
     return (
         <ShoppingCartContext.Provider value={{
-            getQuantity,
-            increaseItem,
-            decreaseItem,
-            removeItem,
-            cartItems
+            handleAddRemoveWishlist,
+            wishListCount,
+            setWishListCount,
         }}>
             {children}
         </ShoppingCartContext.Provider>
