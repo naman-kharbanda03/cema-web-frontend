@@ -66,7 +66,7 @@ const Product = (props) => {
                                     <a href="shop-details.html">{product.product_name.en}</a>
                                 </h3>
                             </Link>
-                            <span className="price">{product.symbol}{product.mainprice}</span>
+                            <span className="price">KD{product.actual_selling_price}</span>
                             <div className="rating">
                                 <div className="rating">
                                     <StarRatings

@@ -555,7 +555,7 @@ const ShopDetails = (product) => {
                   </div>
                 </div>
               </div>
-              <div className="product-related">
+              {/* <div className="product-related">
                 <div className="section-padding">
                   <div className="section-container p-l-r">
                     <div className="block block-products slider">
@@ -1021,7 +1021,7 @@ const ShopDetails = (product) => {
                     </div>
                   </div>
                 </div>
-              </div>
+              </div> */}
             </div>
           </div>
         </div>
