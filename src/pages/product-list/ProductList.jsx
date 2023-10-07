@@ -25,8 +25,6 @@ const ProductList = () => {
   const [filteredProductList, setFilteredProductList] = useState([]);
   const [brands, setBrands] = useState([]);
 
-
-
   const [categoryDetails, setCategoryDetails] = useState({
     category: {},
     products: []
@@ -37,8 +35,6 @@ const ProductList = () => {
   const [selectedSize, setSelectedSize] = useState('All');
   const [selectedPrice, setSelectedPrice] = useState('');
   const [selectedBrand, setSelectedBrand] = useState('All');
-
-
 
   const fetchDetails = (categoryListAPI, categoryDetailsAPI, brandsAPI) => {
     // const productListAPI = apiConfig.productListAPI;
@@ -217,7 +213,7 @@ const ProductList = () => {
                     </div>
 
                     {/* Size  */}
-                    <div className="block block-product-filter clearfix">
+                    {/* <div className="block block-product-filter clearfix">
                       <div className="block-title">
                         <h2>Size</h2>
                       </div>
@@ -234,7 +230,7 @@ const ProductList = () => {
                           </li>
                         </ul>
                       </div>
-                    </div>
+                    </div> */}
 
                     {/* Brands  */}
                     <div className="block block-product-filter clearfix">

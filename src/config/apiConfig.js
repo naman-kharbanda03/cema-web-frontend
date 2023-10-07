@@ -12,6 +12,7 @@ const apiConfig = {
   getAddressAPI: `${BASE_URL}/api/manageaddress`,
   getBillingAddressAPI: `${BASE_URL}/api/billing-address`,
   updateProfileAPI: `${BASE_URL}/api/update/profile`,
+  getUserApi: `${BASE_URL}/api/myprofile`,
   secretKey: secretKey,
 };
 

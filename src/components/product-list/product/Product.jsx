@@ -6,36 +6,15 @@ import { useShoppingCart } from "../../../context/ShoppingCartContext";
 import { AddToCart } from "../../block/NewArrival";
 
 const Product = (props) => {
+
     const product = props.current;
+    console.log(product);
     const [desc, setDesc] = useState(product.description)
     // console.log(product.thumbpath + '/' + product.images[0].image);
     const { increaseItem, getQuantity } = useShoppingCart();
     const token = localStorage.getItem('accessToken');
+    const { handleAddRemoveWishlist } = useShoppingCart();
 
-    const handleAddRemove = (e, id) => {
-        e.preventDefault();
-        const formData = new FormData();
-        formData.append('product_id', id);
-        // console.log("product", token);
-        const apiURl = apiConfig.addRemoveWishlistAPI;
-        fetch(apiURl, {
-            method: "POST",
-            headers: {
-                'Authorization': `Bearer ${token}`,
-                // "Content-Type": "application/json",
-                // Add any other headers your API requires
-            },
-            body: formData,
-        })
-            .then((response) => response.json())
-            .then((data) => {
-                console.log(data);
-                return data;
-            })
-            .catch((error) => {
-                console.error("Error:", error);
-            });
-    }
 
     return (
         <>
@@ -123,19 +102,23 @@ const Product = (props) => {
                                     data-title="Wishlist"
                                 >
                                     <button className="product-btn"
-                                        onClick={(e) => handleAddRemove(e, product.id)}
+                                        onClick={(e) => {
+                                            handleAddRemoveWishlist(e, product.id)
+                                            // document.documentElement.style.setProperty('--wishlist-color', 'white');
+                                            // document.documentElement.style.setProperty('--wishlist-bk-color', 'black');
+                                        }}
                                     >
                                         Add to wishlist
                                     </button>
                                 </div>
-                                <div
+                                {/* <div
                                     className="btn-compare"
                                     data-title="Compare"
                                 >
                                     <button className="product-btn">
                                         Compare
                                     </button>
-                                </div>
+                                </div> */}
                             </div>
                             <div className="product-description">
 

@@ -110,7 +110,7 @@ const AccountDetails = () => {
 
             />
           </p>
-          <fieldset>
+          {/* <fieldset>
             <legend>Password change</legend>
             <p className="form-row">
               <label>Current password (leave blank to leave unchanged)</label>
@@ -145,7 +145,7 @@ const AccountDetails = () => {
 
               />
             </p>
-          </fieldset>
+          </fieldset> */}
           <div className="clear"></div>
           <p className="form-row">
             <button
