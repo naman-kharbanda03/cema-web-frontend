@@ -3,28 +3,34 @@ import image from "../../asset/images/product/3.jpg";
 import { Link } from "react-router-dom";
 
 const CartProduct = (props) => {
-  const { ordersData : orderData, orderQtyChanged } = props;
-  const order = orderData
+  const { ordersData: orderData, orderQtyChanged } = props;
+  const order = orderData;
   const initialQty = order?.qty ? parseInt(order.qty) : 0;
   const [orderQnty, setOrderQnty] = useState(initialQty);
   console.log("akku", orderData);
 
   const increaseQty = () => {
     setOrderQnty(orderQnty + 1);
-    increaseQtyUtils();
-    orderQtyChanged && orderQtyChanged(orderQnty);
-  }; // you can add up to max quantity allowed.
-
-  const decreaseQty = () => {
-    orderQnty !== 0 && setOrderQnty(orderQnty - 1);
-    decreaseQtyUtils();
+    increaseQtyUtils(orderQnty + 1);
     orderQtyChanged && orderQtyChanged(orderQnty);
   };
 
-  const increaseQtyUtils = () => {
+  const decreaseQty = () => {
+    orderQnty !== 0 && setOrderQnty(orderQnty - 1);
+    increaseQtyUtils(orderQnty - 1);
+    orderQtyChanged && orderQtyChanged(orderQnty);
+  };
+
+  const removeProduct = () => {
+    decreaseQtyUtils();
+    orderQtyChanged && orderQtyChanged(orderQnty);
+    orderQnty !== 0 && setOrderQnty(0);
+  };
+
+  const increaseQtyUtils = (qty) => {
     const bearerToken = localStorage.getItem("accessToken");
     const formdata = {
-      quantity: orderQnty,
+      quantity: qty,
       id: order?.id,
       variant_id: "",
     };
@@ -115,7 +121,11 @@ const CartProduct = (props) => {
         <span>KD{order?.simple_product?.actual_selling_price * orderQnty}</span>
       </td>
       <td className="product-remove">
-        <a href="#" className="remove">
+        <a
+          className="remove"
+          onClick={removeProduct}
+          style={{ cursor: "pointer" }}
+        >
           ×
         </a>
       </td>
