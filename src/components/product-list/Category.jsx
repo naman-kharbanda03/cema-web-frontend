@@ -11,7 +11,7 @@ const Category = (props) => {
             }} >
                 <li className="">
                     <a href="">
-                        {category.title.en} <span className="count">{category.products_count}</span>
+                        {category.title.en} <span className="count">{category.simpleproducts_count}</span>
                     </a>
                 </li>
             </Link>

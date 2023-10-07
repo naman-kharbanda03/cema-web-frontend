@@ -10,11 +10,10 @@ import { Link } from "react-router-dom";
 import apiConfig from "../../config/apiConfig";
 
 const Home = () => {
-
   useEffect(() => {
     const categoryListAPI = apiConfig.categoryListAPI;
     fetch(categoryListAPI, {
-      method: "GET"
+      method: "GET",
     })
       .then((response) => {
         if (!response.ok) throw new Error("Network Issue");
@@ -44,11 +43,11 @@ const Home = () => {
               <section className="section section-padding m-b-50">
                 <div className="section-container large">
                   {/* Block Products */}
-                  <div className="block block-products loadmore">                   
-                    <div className="block-widget-wrap">                   
+                  <div className="block block-products loadmore">
+                    <div className="block-widget-wrap">
                       <div className="block-title">
                         <h2>New Arrivals</h2>
-                      </div>                  
+                      </div>
                       <div className="block-content">
                         <NewArrival />
                         <div className="products-loadmore">
@@ -59,7 +58,11 @@ const Home = () => {
                               <div />
                               <div />
                             </div>
-                            <span>Load more</span>
+
+                            <Link to={"/new-arrivals"}>
+                              <span>View more</span>
+                            </Link>
+
                             <i className="icon-arrow-down" aria-hidden="true" />
                           </div>
                         </div>

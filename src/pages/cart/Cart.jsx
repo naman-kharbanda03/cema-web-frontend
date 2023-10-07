@@ -204,7 +204,7 @@ const Cart = () => {
                                 <div className="cart-subtotal">
                                   <div className="title">Discount</div>
                                   <div>
-                                    <span>KD{couponData?.coupan_discount}</span>
+                                    <span>-KD{couponData?.coupan_discount}</span>
                                   </div>
                                 </div>
                               )}
