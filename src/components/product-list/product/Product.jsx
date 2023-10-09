@@ -3,17 +3,20 @@ import { Link } from "react-router-dom";
 import StarRatings from "react-star-ratings";
 import apiConfig from "../../../config/apiConfig";
 import { useShoppingCart } from "../../../context/ShoppingCartContext";
-import { AddToCart } from "../../block/NewArrival";
+// import { AddToCart } from "../../block/NewArrival";
+
 
 const Product = (props) => {
 
     const product = props.current;
-    console.log(product);
     const [desc, setDesc] = useState(product.description)
     // console.log(product.thumbpath + '/' + product.images[0].image);
     const { increaseItem, getQuantity } = useShoppingCart();
     const token = localStorage.getItem('accessToken');
-    const { handleAddRemoveWishlist } = useShoppingCart();
+    const { handleAddRemoveWishlist, AddToCart } = useShoppingCart();
+
+
+
 
 
     return (
@@ -60,7 +63,7 @@ const Product = (props) => {
                     </div>
                     <div className="col-md-8">
                         <div className="products-content">
-                            <Link to={`/product-details?product_id=${product.productid}`}>
+                            <Link to={`/product-details?product_id=${product.id}`}>
 
                                 <h3 className="product-title">
                                     <a href="shop-details.html">{product.product_name.en}</a>
@@ -87,7 +90,7 @@ const Product = (props) => {
                                 <div
                                     className="btn-add-to-cart"
                                     data-title="Add to cart"
-                                    onClick={() => increaseItem(product.id, 1)}
+                                // onClick={() => increaseItem(product.id, 1)}
                                 >
                                     <a
                                         rel="nofollow"

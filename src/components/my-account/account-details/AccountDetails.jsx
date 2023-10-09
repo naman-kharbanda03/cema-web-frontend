@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import apiConfig from "../../../config/apiConfig";
 
 const AccountDetails = () => {
@@ -6,17 +6,20 @@ const AccountDetails = () => {
   const [profileData, setProfileData] = useState({
     firstName: '',
     lastName: '',
-    mobileNumber: '',
-    countryId: '',
-    stateId: '',
-    cityId: '',
+    displayName: ''
   });
 
 
   const handleChange = (e) => {
     e.preventDefault();
-    console.log(e.target.value);
+    // console.log(e.target.value);
+    setProfileData(prev => ({
+      ...prev,
+      [e.target.name]: e.target.value
+    }))
   }
+
+  // useEffect(() => { console.log(profileData) }, [profileData]);
 
   const onSubmit = (e) => {
     e.preventDefault();
@@ -27,11 +30,8 @@ const AccountDetails = () => {
     const formData = new FormData();
 
     formData.append('secret', secret);
-    formData.append('name', profileData.firstName + profileData.lastName);
-    formData.append('phone', profileData.mobileNumber);
-    formData.append('country_id', profileData.countryId);
-    formData.append('state_id', profileData.stateId);
-    formData.append('city_id', profileData.cityId);
+    formData.append('name', profileData.firstName + ' ' + profileData.lastName);
+    // formData.append('displayName', profileData.displayName);
 
 
     fetch(apiUrl, {
@@ -55,9 +55,7 @@ const AccountDetails = () => {
     <>
 
       <div className="my-account-account-details">
-        <form className="edit-account" action="" method="post"
-        // onSubmit={()=>onSubmit}
-        >
+        <form className="edit-account" onSubmit={(e) => onSubmit(e)}>
           <p className="form-row">
             <label for="account_first_name">
               First name <span className="required">*</span>
@@ -65,7 +63,7 @@ const AccountDetails = () => {
             <input
               type="text"
               className="input-text"
-              name="account_first_name"
+              name="firstName"
               onChange={(e) => handleChange(e)}
             />
           </p>
@@ -76,7 +74,7 @@ const AccountDetails = () => {
             <input
               type="text"
               className="input-text"
-              name="account_last_name"
+              name="lastName"
               onChange={(e) => handleChange(e)}
 
             />
@@ -89,7 +87,7 @@ const AccountDetails = () => {
             <input
               type="text"
               className="input-text"
-              name="account_display_name"
+              name="displayName"
               onChange={(e) => handleChange(e)}
 
             />
@@ -101,15 +99,6 @@ const AccountDetails = () => {
             </span>
           </p>
           <div className="clear"></div>
-          <p className="form-row">
-            <label>
-              Email address <span className="required">*</span>
-            </label>
-            <input type="email" className="input-text" name="account_email"
-              onChange={(e) => handleChange(e)}
-
-            />
-          </p>
           {/* <fieldset>
             <legend>Password change</legend>
             <p className="form-row">
@@ -153,6 +142,8 @@ const AccountDetails = () => {
               className="button"
               name="save_account_details"
               value="Save changes"
+            // onClick={(e) => onSubmit(e)}
+
             >
               Save changes
             </button>

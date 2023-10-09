@@ -15,7 +15,7 @@ const ShopDetails = (product) => {
   const params = new URLSearchParams(url.search);
   const product_id = params.get("product_id");
 
-  const { increaseItem, decreaseItem } = useShoppingCart();
+  const { AddToCart } = useShoppingCart();
   const [quant, setQuant] = useState(0);
 
   const fetchDetails = () => {
@@ -267,7 +267,7 @@ const ShopDetails = (product) => {
                             </div>
                             <div
                               className="btn-add-to-cart"
-                              onClick={() => increaseItem(1, quant)}
+                              onClick={() => AddToCart({ id: data.product_id, type: 'simple_product' })}
                             >
                               <a href="#" className="button" tabindex="0">
                                 Add to cart

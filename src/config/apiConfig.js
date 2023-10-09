@@ -14,6 +14,10 @@ const apiConfig = {
   updateProfileAPI: `${BASE_URL}/api/update/profile`,
   getUserApi: `${BASE_URL}/api/myprofile`,
   secretKey: secretKey,
+  orderDetailsAPI: `${BASE_URL}/api/orders/2`,
+  applyCouponAPI: `${BASE_URL}/api/apply-coupan`,
+  getCartDataAPI: `${BASE_URL}/api/getCartData`,
+  addToCartAPI: `https://cema-backend.plasium.com/api/addToCart`,
 };
 
 export default apiConfig;

@@ -13,7 +13,7 @@ const Header = (props) => {
   };
 
   const [categories, setCategories] = useState();
-  const { wishListCount, setWishListCount } = useShoppingCart();
+  const { wishListCount, cartItemsCount } = useShoppingCart();
 
   const fetchDetails = () => {
     fetch("https://cema-backend.plasium.com/api/navCategories", {
@@ -369,7 +369,7 @@ const Header = (props) => {
                     {/* Login */}
                     <div className="login-header">
                       {props.auth ? (
-                        <Link to="/account"> My Account</Link>
+                        <Link to="/account"> Account</Link>
                       ) : (
                         <Link className="active-login" to="/login">
                           Login
@@ -512,7 +512,7 @@ const Header = (props) => {
                         >
                           <div className="icons-cart">
                             <i className="ti-bag" />
-                            <span className="cart-count">1</span>
+                            <span className="cart-count">{cartItemsCount}</span>
                           </div>
                         </Link>
                         <div className="dropdown-menu cart-popup">

@@ -1,12 +1,15 @@
 import React, { useState } from "react";
 import image from "../../asset/images/product/3.jpg";
 import { Link } from "react-router-dom";
+import { useShoppingCart } from "../../context/ShoppingCartContext";
 
 const CartProduct = (props) => {
   const { ordersData: orderData, orderQtyChanged } = props;
   const order = orderData;
   const initialQty = order?.qty ? parseInt(order.qty) : 0;
   const [orderQnty, setOrderQnty] = useState(initialQty);
+  const { setCartToggle } = useShoppingCart();
+
   console.log("akku", orderData);
 
   const increaseQty = () => {
@@ -43,7 +46,10 @@ const CartProduct = (props) => {
       body: JSON.stringify(formdata),
     })
       .then((response) => response.text())
-      .then((result) => console.log(result))
+      .then((result) => {
+        console.log(result);
+        setCartToggle(prev => !prev);
+      })
       .catch((error) => console.log("error", error));
   };
 
@@ -65,7 +71,11 @@ const CartProduct = (props) => {
       body: JSON.stringify(formdata),
     })
       .then((response) => response.text())
-      .then((result) => console.log(result))
+      .then((result) => {
+        console.log(result)
+        setCartToggle(prev => !prev);
+
+      })
       .catch((error) => console.log("error", error));
   };
 

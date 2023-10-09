@@ -8,6 +8,11 @@ import Category from "../../components/product-list/Category";
 import Product from "../../components/product-list/product/Product";
 import apiConfig from "../../config/apiConfig";
 import Error from "../error/Error";
+import { ToastContainer, toast } from "react-toastify";
+import Dropdown from 'react-bootstrap/Dropdown';
+
+
+
 
 
 
@@ -36,21 +41,30 @@ const ProductList = () => {
   const [selectedPrice, setSelectedPrice] = useState('');
   const [selectedBrand, setSelectedBrand] = useState('All');
 
-  const fetchDetails = (categoryListAPI, categoryDetailsAPI, brandsAPI) => {
-    // const productListAPI = apiConfig.productListAPI;
+  const showInfoToastMessage = () => {
+    toast.info("Invalid Coupon code !", {
+      position: toast.POSITION.BOTTOM_LEFT,
+    });
+  };
 
-    fetch(categoryListAPI, {
-      method: "GET"
-    })
-      .then((response) => {
-        if (!response.ok) throw new Error("Network Issue");
-        return response.json();
-      })
-      .then((datar) => {
-        setCategoryList(datar.categories.data);
-        return datar;
-      })
-      .catch((error) => console.error("Problem with fetch operations", error));
+  const showSuccessToastMessage = (msg) => {
+    toast.success(msg, {
+      position: toast.POSITION.BOTTOM_LEFT,
+    });
+  };
+
+
+  useEffect(() => {
+    const queryParams = new URLSearchParams(location.search);
+    const categoryID = queryParams.get('id');
+    let categoryDetailsAPI = "";
+
+    if (categoryID === null) {
+      categoryDetailsAPI = `https://cema-backend.plasium.com/api/category/0?currency=INR&page=${currentPage}&per_page=3`;
+    }
+    else {
+      categoryDetailsAPI = `https://cema-backend.plasium.com/api/category/${categoryID}?currency=INR&page=${currentPage}&per_page=3`;
+    }
 
     fetch(categoryDetailsAPI, {
       method: "GET"
@@ -73,6 +87,26 @@ const ProductList = () => {
       })
       .catch((error) => console.error("Problem with fetch operations", error));
 
+
+  }, [location.search, currentPage]);
+
+  useEffect(() => {
+    const categoryListAPI = apiConfig.categoryListAPI;
+    const brandsAPI = apiConfig.brandsAPI;
+
+    fetch(categoryListAPI, {
+      method: "GET"
+    })
+      .then((response) => {
+        if (!response.ok) throw new Error("Network Issue");
+        return response.json();
+      })
+      .then((datar) => {
+        setCategoryList(datar.categories.data);
+        return datar;
+      })
+      .catch((error) => console.error("Problem with fetch operations", error));
+
     fetch(brandsAPI, {
       method: "GET"
     })
@@ -89,25 +123,9 @@ const ProductList = () => {
 
       })
       .catch((error) => console.error("Problem with fetch operations", error));
-  };
 
-  useEffect(() => {
-    const queryParams = new URLSearchParams(location.search);
-    const categoryID = queryParams.get('id');
-    let categoryDetailsAPI = "";
 
-    if (categoryID === null) {
-      categoryDetailsAPI = `https://cema-backend.plasium.com/api/category/0?currency=INR&page=${currentPage}&per_page=3`;
-    }
-    else {
-      categoryDetailsAPI = `https://cema-backend.plasium.com/api/category/${categoryID}?currency=INR&page=${currentPage}&per_page=3`;
-    }
-    const categoryListAPI = apiConfig.categoryListAPI;
-    const brandsAPI = apiConfig.brandsAPI;
-    const productListAPI = apiConfig.productListAPI;
-
-    fetchDetails(categoryListAPI, categoryDetailsAPI, brandsAPI);
-  }, [location.search, currentPage]);
+  }, []);
 
 
   useEffect(() => {
@@ -212,6 +230,25 @@ const ProductList = () => {
                       </div>
                     </div>
 
+                    {/* <div className="block block-product-filter">
+                      <div className="block-title">
+                        <h2>Price</h2>
+                      </div>
+                      <div className="block-content">
+                        <div id="slider-range" className="price-filter-wrap">
+                          <div className="filter-item price-filter">
+                            <div className="layout-slider">
+                              <input
+                                id="price-filter"
+                                name="price"
+                              />
+                            </div>
+                            <div className="layout-slider-settings"></div>
+                          </div>
+                        </div>
+                      </div>
+                    </div> */}
+
                     {/* Size  */}
                     {/* <div className="block block-product-filter clearfix">
                       <div className="block-title">
@@ -298,8 +335,8 @@ const ProductList = () => {
             </div>
           </div>
         </div>
-      </div>
-    </div>
+      </div >
+    </div >
   );
 };
 

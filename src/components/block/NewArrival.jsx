@@ -23,6 +23,7 @@ export function AddToCart(product) {
   const bearerToken = localStorage.getItem("accessToken");
   console.log("bearerToken", bearerToken);
 
+
   fetch("https://cema-backend.plasium.com/api/addToCart", {
     method: "POST",
     headers: {

@@ -7,11 +7,30 @@ import apiConfig from "../../../config/apiConfig";
 
 const OrdersTable = () => {
 
-  const [orderDetails, setOrderDetails] = useState([]);
+  const [orders, setOrders] = useState([]);
+  const [orderDetails, setOrderDetails] = useState({});
+
   const authToken = localStorage.getItem("accessToken");
   const [showModal, setShowModal] = useState(false);
 
-  const openModal = () => setShowModal(true);
+
+  const openModal = (product_id) => {
+    // const apiUrl = apiConfig.orderDetailsAPI;
+    const apiUrl = `https://cema-backend.plasium.com/api/orders/${product_id}`;
+
+    const token = localStorage.getItem('accessToken');
+    fetch(apiUrl, {
+      method: 'GET',
+      headers: {
+        Authorization: `Bearer ${token}`
+      }
+    }).then(response => response.json())
+      .then(data => {
+        console.log("Order Deatils", data);
+        setOrderDetails(data.order);
+        setShowModal(true);
+      }).catch(error => console.error("Network Fetch Issue", error));
+  }
   const closeModal = () => setShowModal(false);
 
   const fetchDetails = (apiUrl) => {
@@ -28,7 +47,7 @@ const OrdersTable = () => {
       })
       .then((data) => {
         console.log(data);
-        setOrderDetails(data.orders);
+        setOrders(data.orders);
         return data.orders;
       })
       .catch((error) => console.error("Problem with fetch operations", error));
@@ -37,7 +56,7 @@ const OrdersTable = () => {
   useEffect(() => {
     const apiUrl = apiConfig.getOrderAPI;
     fetchDetails(apiUrl);
-    console.log(orderDetails);
+    console.log(orders);
   }, []);
 
   return (
@@ -56,14 +75,14 @@ const OrdersTable = () => {
             </thead>
             <tbody>
               {
-                orderDetails.map(order => (
+                orders.map(order => (
                   <tr>
                     <td>#{order.order_id}</td>
                     <td>{order.order_date}</td>
                     <td>{order.order_status}</td>
                     <td>{order.currency}{' '}{order.grand_total} for {order.total_items} item</td>
                     <td>
-                      <a href="#" className="btn-small d-block" onClick={() => openModal()}>
+                      <a href="#" className="btn-small d-block" onClick={() => openModal(order.id)}>
                         View
                       </a>
                     </td>
@@ -90,7 +109,13 @@ const OrdersTable = () => {
               </button>
             </div>
             <div className="modal-body">
-              <p>Here comes the order details.</p>
+              {/* {
+                Object.keys(orderDetails).map((key) => (
+                  < li key={key} >
+                    <strong>{key}:</strong> {orderDetails[key]}
+                  </li>
+                ))} */}
+              <p>Here comes the order details</p>
             </div>
             <div className="modal-footer">
               <button type="button" className="btn" onClick={closeModal}>

@@ -166,7 +166,7 @@ const Login = (props) => {
                                     className="button"
                                     name="login"
                                     defaultValue="Login"
-                                    onClick={handleLogin}
+                                    onClick={(e) => handleLogin(e)}
                                   />
                                 </div>
                               </form>
@@ -182,7 +182,7 @@ const Login = (props) => {
                               <form
                                 method="post"
                                 className="register"
-                                onSubmit={handleRegister}
+                                onSubmit={(e) => handleRegister(e)}
                               >
                                 <div className="name">
                                   <label>

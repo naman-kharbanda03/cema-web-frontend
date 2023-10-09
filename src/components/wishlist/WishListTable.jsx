@@ -1,12 +1,14 @@
 import { UNSAFE_warning } from "@remix-run/router";
 import React, { useEffect, useState } from "react";
 import apiConfig from "../../config/apiConfig";
+import { useShoppingCart } from "../../context/ShoppingCartContext";
 
 
 
 const WishListTable = () => {
     const [orderData, setOrderData] = useState([]);
     const [wishListCount, setWishListCount] = useState();
+    const { handleAddRemoveWishlist } = useShoppingCart();
     const token = "eyJ0eXAiOiJKV1QiLCJhbGciOiJSUzI1NiJ9.eyJhdWQiOiIyIiwianRpIjoiMDg5ZTBiNWU4N2E0ZmUxMDhlNTIyMTZkMGQyZTQ3MmVhZWVmYWEzOWZiMDQ3NDlmNmFkYmM1YjViYjQ1YjUwMmIyODRlZTliOWRiYzM0NzIiLCJpYXQiOjE2OTYwOTMyNDUuODg0MzU2LCJuYmYiOjE2OTYwOTMyNDUuODg0MzU3LCJleHAiOjE3Mjc3MTU2NDUuODc0Nzc1LCJzdWIiOiIxMiIsInNjb3BlcyI6W119.m-wW2OK1tQc9Iobe6cFRogBjlpGhC5y7sGx0tDiYWNhXid-8rIwRfgnWccEMl5_gdJJbwJEtq1vYww2Fs3xA9Dgt343D4mI-ms32GQHnqvyySmWCHj5bOzh6kYOQo2qh0ADZuIZVT_OsZYmrPyzfk_k5epEHzc03OX_9iQoxKiWbODtNT_lEuTsYFV1iYf4bXhcRnFEICfIG_g7e2cOEnNlHb2rf2jrxN4RWnmvtsetBFj_JxpIc31yIpca8Enml1PvrxL101qzk4OmKFQJbEGVYf6cNxxf9IbVcYZLKumx-sbUiimfVLqLsvoTFogFPY0VI-T9Anvqscn5Mso44tpV3tc2iGNGF9SGFnP-g3KOfLWT_ztoLQ3rH0blm03omri32nQQP4CnZFic6zjN9HKknALQ1_P52VfU4CWFOHyqUrUcNLB98wBU-jHeyUUUdwcXyAF9F2io3xAyKqw2uRiiQ2p0t0A0WUU-_Xvc1xGdBEo5bIZUxc5qYm3u4Q8rbcg6wfmFPFLHVv0ZoYSUtnXngZQZ1xv5__GU8U94UgbWRNfIgTZuKOvLEj8hEa7fyGx_IVzLzh3gcHSGMA9ysZ8l_dDzgxs3cehOHIPhBqvvjitmSefBsYacx2NPN3MnCJAzXe6p1StTLRRNIchGDpduRDgxVAHYnCV76tv20__A";
 
     useEffect(() => {
@@ -36,34 +38,34 @@ const WishListTable = () => {
 
     useEffect(() => console.log(orderData), [orderData]);
 
-    const handleAddRemove = (e, id) => {
-        e.preventDefault();
-        const formData = new FormData();
-        formData.append('product_id', id);
-        const apiURl = apiConfig.addRemoveWishlistAPI;
-        fetch(apiURl, {
-            method: "POST",
-            headers: {
-                'Authorization': `Bearer ${token}`,
-                // "Content-Type": "application/json",
-                // Add any other headers your API requires
-            },
-            body: formData,
-        })
-            .then((response) => response.json())
-            .then((data) => {
-                console.log(data);
-                if (data.status === "success") {
-                    setOrderData(prevData => {
-                        return prevData.filter(order => order.simple_product.id !== id);
-                    });
-                }
-                return orderData;
-            })
-            .catch((error) => {
-                console.error("Error:", error);
-            });
-    }
+    // const handleAddRemove = (e, id) => {
+    //     e.preventDefault();
+    //     const formData = new FormData();
+    //     formData.append('product_id', id);
+    //     const apiURl = apiConfig.addRemoveWishlistAPI;
+    //     fetch(apiURl, {
+    //         method: "POST",
+    //         headers: {
+    //             'Authorization': `Bearer ${token}`,
+    //             // "Content-Type": "application/json",
+    //             // Add any other headers your API requires
+    //         },
+    //         body: formData,
+    //     })
+    //         .then((response) => response.json())
+    //         .then((data) => {
+    //             console.log(data);
+    //             if (data.status === "success") {
+    //                 setOrderData(prevData => {
+    //                     return prevData.filter(order => order.simple_product.id !== id);
+    //                 });
+    //             }
+    //             return orderData;
+    //         })
+    //         .catch((error) => {
+    //             console.error("Error:", error);
+    //         });
+    // }
 
     return (
         <>
@@ -73,7 +75,7 @@ const WishListTable = () => {
                         {orderData.map(order => (
                             <>
                                 <tr className="wishlist-item">
-                                    <td className="wishlist-item-remove" onClick={(e) => handleAddRemove(e, order.simple_product.id)}>
+                                    <td className="wishlist-item-remove" onClick={(e) => handleAddRemoveWishlist(e, order.simple_product.id)}>
                                         <span></span>
                                     </td>
                                     <td className="wishlist-item-image">
@@ -116,7 +118,7 @@ const WishListTable = () => {
                                                     rel="nofollow"
                                                     href="#"
                                                     className="product-btn button"
-                                                    onClick={(e) => handleAddRemove(e, order.simple_product.id)}
+                                                    onClick={(e) => handleAddRemoveWishlist(e, order.simple_product.id)}
                                                 >
                                                     Remove
                                                 </a>

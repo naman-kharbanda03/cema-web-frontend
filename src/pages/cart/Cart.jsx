@@ -5,6 +5,7 @@ import { useShoppingCart } from "../../context/ShoppingCartContext";
 import { Link } from "react-router-dom";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
+import apiConfig from "../../config/apiConfig";
 
 const Cart = () => {
   const [orders, setOrders] = useState();
@@ -40,7 +41,8 @@ const Cart = () => {
       code: couponCode,
       currency: "INR",
     };
-    fetch("https://cema-backend.plasium.com/api/apply-coupan", {
+    const apiUrl = apiConfig.applyCouponAPI;
+    fetch(apiUrl, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
@@ -64,8 +66,9 @@ const Cart = () => {
   function getCartDetails() {
     const bearerToken = localStorage.getItem("accessToken");
     console.log("bearerToken", orders);
+    const apiUrl = apiConfig.getCartDataAPI;
 
-    fetch("https://cema-backend.plasium.com/api/getCartData", {
+    fetch(apiUrl, {
       method: "GET",
       headers: {
         Authorization: `Bearer ${bearerToken}`,
@@ -269,11 +272,11 @@ const Cart = () => {
                         </p>
                       </div>
                       <Link to={'/products'}>
-                      <div className="return-to-shop">
-                        <a className="button" >
-                          Return to shop
-                        </a>
-                      </div>
+                        <div className="return-to-shop">
+                          <a className="button" >
+                            Return to shop
+                          </a>
+                        </div>
                       </Link>
                     </div>
                   )}

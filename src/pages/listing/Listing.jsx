@@ -13,26 +13,30 @@ import P615 from "../../asset/images/product/6-15.png";
 import { Link, useLocation } from "react-router-dom";
 import apiConfig from "../../config/apiConfig";
 import Category from "../../components/product-list/Category";
-import { AddToCart } from "../../components/block/NewArrival";
+// import { AddToCart } from "../../components/block/NewArrival";
 import { useShoppingCart } from "../../context/ShoppingCartContext";
 
 const Listing = () => {
   const [data, setData] = useState();
+  const [currentPage, setCurrentPage] = useState(1);
+  const [lastPage, setLastpage] = useState(1);
+  const [categoryList, setCategoryList] = useState([]);
+
   const url = new URL(window.location.href);
   const params = new URLSearchParams(url.search);
   const products = params.get("products");
   const location = useLocation();
   const name = location.state ? location.state.name : null;
-  console.log("location", location, name);
+
   const token = localStorage.getItem('accessToken');
-  const [categoryList, setCategoryList] = useState([]);
-  console.log("categoryList", categoryList)
   const categoryListAPI = apiConfig.categoryListAPI;
-  const { handleAddRemoveWishlist } = useShoppingCart();
+  const { handleAddRemoveWishlist, AddToCart } = useShoppingCart();
+
+
 
   const fetchDetails = () => {
     fetch(
-      `https://cema-backend.plasium.com/api/products?per_page=10&page=1&${products}=1`,
+      `https://cema-backend.plasium.com/api/products?per_page=3&page=${currentPage}&${products}=1`,
       {
         method: "GET",
       }
@@ -44,6 +48,7 @@ const Listing = () => {
       .then((data) => {
         console.log("test", data.data.data);
         setData(data.data.data);
+        setLastpage(data.data.last_page);
       })
       .catch((error) => console.error("Problem with fetch operations", error));
 
@@ -63,7 +68,7 @@ const Listing = () => {
 
   useEffect(() => {
     fetchDetails();
-  }, []);
+  }, [currentPage]);
 
 
   return (
@@ -326,36 +331,27 @@ const Listing = () => {
                         </div>
                       </div>
 
+                      {/* Pagination  */}
                       <nav className="pagination">
                         <ul className="page-numbers">
-                          <li>
-                            <a className="prev page-numbers" href="#">
-                              Previous
-                            </a>
-                          </li>
-                          <li>
-                            <span
-                              aria-current="page"
-                              className="page-numbers current"
-                            >
-                              1
-                            </span>
-                          </li>
-                          <li>
-                            <a className="page-numbers" href="#">
-                              2
-                            </a>
-                          </li>
-                          <li>
-                            <a className="page-numbers" href="#">
-                              3
-                            </a>
-                          </li>
-                          <li>
-                            <a className="next page-numbers" href="#">
-                              Next
-                            </a>
-                          </li>
+                          {currentPage !== 1 ?
+                            <li onClick={() => setCurrentPage(pre => pre - 1)}>
+                              <a className="prev page-numbers" href="#">
+                                Previous
+                              </a>
+                            </li> : ""
+                          }
+                          {currentPage - 1 > 0 ? <li onClick={() => setCurrentPage(page => page - 1)}><a class="page-numbers" href="#">{currentPage - 1}</a></li> : ""}
+                          <li><span aria-current="page" class="page-numbers current">{currentPage}</span></li>
+                          {currentPage + 1 <= lastPage ? <li onClick={() => setCurrentPage(page => page + 1)}><a class="page-numbers" href="#">{currentPage + 1}</a></li> : ""}
+
+                          {currentPage !== lastPage ?
+                            <li onClick={() => setCurrentPage(pre => pre + 1)}>
+                              <a className="next page-numbers" href="#">
+                                Next
+                              </a>
+                            </li> : ""
+                          }
                         </ul>
                       </nav>
                     </div>
