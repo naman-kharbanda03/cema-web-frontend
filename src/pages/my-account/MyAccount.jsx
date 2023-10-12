@@ -49,7 +49,7 @@ const MyAccount = (props) => {
   };
 
   const handleOrdersDetails = () => {
-    const apiUrl = "https://cema-backend.plasium.com/api/orders";
+    const apiUrl = "https://www.demo609.amrithaa.com/backend-cema/public/api/orders";
     // setOrderDetails(() => fetchDetails(apiUrl));
     console.log(orderDetails);
   };

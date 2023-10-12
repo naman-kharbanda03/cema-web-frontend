@@ -25,6 +25,8 @@ const apiConfig = {
   removeFromCartAPI: `${BASE_URL}/api/removeFromCart`,
   updateCartAPI: `${BASE_URL}/api/updateCartQuantity`,
   addToWishlistArrayAPI: `${BASE_URL}/api/add_remove_wishlist_array`,
+  listingAPI: `${BASE_URL}/api/products`,
+  slidersAPI: `${BASE_URL}/api/getSlider`,
 };
 
 export default apiConfig;

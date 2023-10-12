@@ -161,7 +161,7 @@ const ShopCheckout = () => {
     };
 
     console.log("phirAur", formdata);
-    fetch("https://cema-backend.plasium.com/api/create-billing-address", {
+    fetch("https://www.demo609.amrithaa.com/backend-cema/public/api/create-billing-address", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
@@ -190,7 +190,7 @@ const ShopCheckout = () => {
     };
 
     console.log("phirAur", formdata);
-    fetch("https://cema-backend.plasium.com/api/create-address", {
+    fetch("https://www.demo609.amrithaa.com/backend-cema/public/api/create-address", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
@@ -208,7 +208,7 @@ const ShopCheckout = () => {
     const formdata = {
       grand_total: datta?.grand_total,
     };
-    fetch("https://cema-backend.plasium.com/api/checkout", {
+    fetch("https://www.demo609.amrithaa.com/backend-cema/public/api/checkout", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
@@ -225,7 +225,7 @@ const ShopCheckout = () => {
     const bearerToken = localStorage.getItem("accessToken");
     console.log("bearerToken", orders);
 
-    fetch("https://cema-backend.plasium.com/api/getCartData", {
+    fetch("https://www.demo609.amrithaa.com/backend-cema/public/api/getCartData", {
       method: "GET",
       headers: {
         Authorization: `Bearer ${bearerToken}`,
@@ -248,7 +248,7 @@ const ShopCheckout = () => {
     const bearerToken = localStorage.getItem("accessToken");
     console.log("bearerToken", orders);
 
-    fetch("https://cema-backend.plasium.com/api/billing-address", {
+    fetch("https://www.demo609.amrithaa.com/backend-cema/public/api/billing-address", {
       method: "GET",
       headers: {
         Authorization: `Bearer ${bearerToken}`,
@@ -271,7 +271,7 @@ const ShopCheckout = () => {
     };
 
     fetch(
-      "https://cema-backend.plasium.com/api/states/101?secret=1dc7843e-e42c-4154-a02d-d80ab6d81095",
+      "https://www.demo609.amrithaa.com/backend-cema/public/api/states/101?secret=1dc7843e-e42c-4154-a02d-d80ab6d81095",
       requestOptions
     )
       .then((response) => response.json())
@@ -289,7 +289,7 @@ const ShopCheckout = () => {
     };
 
     fetch(
-      "https://cema-backend.plasium.com/api/countries?secret=1dc7843e-e42c-4154-a02d-d80ab6d81095",
+      "https://www.demo609.amrithaa.com/backend-cema/public/api/countries?secret=1dc7843e-e42c-4154-a02d-d80ab6d81095",
       requestOptions
     )
       .then((response) => response.json())
@@ -306,7 +306,7 @@ const ShopCheckout = () => {
     };
 
     fetch(
-      "https://cema-backend.plasium.com/api/city/12?secret=1dc7843e-e42c-4154-a02d-d80ab6d81095",
+      "https://www.demo609.amrithaa.com/backend-cema/public/api/city/12?secret=1dc7843e-e42c-4154-a02d-d80ab6d81095",
       requestOptions
     )
       .then((response) => response.json())

@@ -88,7 +88,7 @@ const Login = (props) => {
     formData.append("mobile", registerData.mobile);
     formData.append("password", registerData.password);
 
-    fetch("https://cema-backend.plasium.com/api/register", {
+    fetch("https://www.demo609.amrithaa.com/backend-cema/public/api/register", {
       method: "POST",
       headers: {
         // "Content-Type": "application/json",

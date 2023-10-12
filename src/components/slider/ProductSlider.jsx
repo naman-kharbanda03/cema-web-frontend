@@ -6,13 +6,15 @@ import product_l3 from "../../asset/images/product/l3.jpg";
 import product_of3 from "../../asset/images/product/of3.jpg";
 import Slider from "react-slick";
 import { Link } from "react-router-dom";
+import apiConfig from "../../config/apiConfig";
 const ProductSlider = () => {
   const [categories, setCategories] = useState([{}]);
   const [path, setPath] = useState();
 
   const fetchDetails = () => {
+    const apiUrl = apiConfig.categoryListAPI;
     fetch(
-      "https://cema-backend.plasium.com/api/categories?per_page=10&page=1",
+      `${apiUrl}?per_page=10&page=1`,
       {
         method: "GET",
       }
@@ -79,7 +81,7 @@ const ProductSlider = () => {
                     <img
                       width={258}
                       height={258}
-                      src={`https://cema-backend.plasium.com/media/category/${cat?.image}`}
+                      src={`https://www.demo609.amrithaa.com/backend-cema/public/media/category/${cat?.image}`}
                       alt={cat.title?.en}
                     />
                   </div>

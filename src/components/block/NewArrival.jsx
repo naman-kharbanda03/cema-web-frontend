@@ -24,7 +24,7 @@ export function AddToCart(product) {
   console.log("bearerToken", bearerToken);
 
 
-  fetch("https://cema-backend.plasium.com/api/addToCart", {
+  fetch("https://www.demo609.amrithaa.com/backend-cema/public/addToCart", {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
@@ -50,7 +50,7 @@ const NewArrival = () => {
 
   const fetchDetails = () => {
     fetch(
-      "https://cema-backend.plasium.com/api/products?per_page=10&page=1&new_arrival=1",
+      "https://www.demo609.amrithaa.com/backend-cema/public/api/products?per_page=10&page=1&new_arrival=1",
       {
         method: "GET",
       }

@@ -24,7 +24,7 @@ const CreateEditAddress = ({ type }) => {
         };
 
         fetch(
-            "https://cema-backend.plasium.com/api/countries?secret=1dc7843e-e42c-4154-a02d-d80ab6d81095",
+            "https://www.demo609.amrithaa.com/backend-cema/public/api/countries?secret=1dc7843e-e42c-4154-a02d-d80ab6d81095",
             requestOptions
         )
             .then((response) => response.json())
@@ -40,7 +40,7 @@ const CreateEditAddress = ({ type }) => {
         };
 
         fetch(
-            "https://cema-backend.plasium.com/api/states/101?secret=1dc7843e-e42c-4154-a02d-d80ab6d81095",
+            "https://www.demo609.amrithaa.com/backend-cema/public/api/states/101?secret=1dc7843e-e42c-4154-a02d-d80ab6d81095",
             requestOptions
         )
             .then((response) => response.json())
@@ -56,7 +56,7 @@ const CreateEditAddress = ({ type }) => {
         };
 
         fetch(
-            `https://cema-backend.plasium.com/api/city/${id}?secret=1dc7843e-e42c-4154-a02d-d80ab6d81095`,
+            `https://www.demo609.amrithaa.com/backend-cema/public/api/city/${id}?secret=1dc7843e-e42c-4154-a02d-d80ab6d81095`,
             requestOptions
         )
             .then((response) => response.json())

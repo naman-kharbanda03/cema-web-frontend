@@ -1,20 +1,11 @@
 import React, { useEffect, useState } from "react";
 import PageTitle from "../../components/page-tittle/PageTitle";
-
-import P613 from "../../asset/images/product/6-13.png";
-import P611 from "../../asset/images/product/6-11.png";
-import P64 from "../../asset/images/product/6-4.png";
-import P66 from "../../asset/images/product/6-6.png";
-import P67 from "../../asset/images/product/6-7.png";
-import P68 from "../../asset/images/product/6-8.png";
-import P69 from "../../asset/images/product/6-9.png";
-import P610 from "../../asset/images/product/6-10.png";
-import P615 from "../../asset/images/product/6-15.png";
 import { Link, useLocation } from "react-router-dom";
 import apiConfig from "../../config/apiConfig";
 import Category from "../../components/product-list/Category";
 // import { AddToCart } from "../../components/block/NewArrival";
 import { useShoppingCart } from "../../context/ShoppingCartContext";
+import Product from "../../components/product-list/product/Product";
 
 const Listing = () => {
   const [data, setData] = useState();
@@ -28,19 +19,16 @@ const Listing = () => {
   const location = useLocation();
   const name = location.pathname.slice(1);
 
-  const token = localStorage.getItem('accessToken');
+  const token = localStorage.getItem("accessToken");
   const categoryListAPI = apiConfig.categoryListAPI;
   const { handleAddRemoveWishlist, AddToCart } = useShoppingCart();
-
-
+  const [view, setView] = useState("grid");
 
   const fetchDetails = () => {
-    fetch(
-      `https://cema-backend.plasium.com/api/products?per_page=3&page=${currentPage}&${products}=1`,
-      {
-        method: "GET",
-      }
-    )
+    const apiUrl = apiConfig.listingAPI;
+    fetch(`${apiUrl}?per_page=3&page=${currentPage}&${products}=1`, {
+      method: "GET",
+    })
       .then((response) => {
         if (!response.ok) throw new Error("Network Issue");
         return response.json();
@@ -68,8 +56,7 @@ const Listing = () => {
 
   useEffect(() => {
     fetchDetails();
-  }, [currentPage]);
-
+  }, [currentPage, location.search]);
 
   return (
     <>
@@ -91,7 +78,7 @@ const Listing = () => {
                         <div className="block-content">
                           <div className="product-cats-list">
                             <ul>
-                              {categoryList.map(category => (
+                              {categoryList.map((category) => (
                                 <Category current={category} />
                               ))}
                             </ul>
@@ -213,7 +200,7 @@ const Listing = () => {
                           </div>
                         </div>
                         <div className="products-topbar-right">
-                          <div className="products-sort dropdown">
+                          {/* <div className="products-sort dropdown">
                             <span
                               className="sort-toggle dropdown-toggle"
                               data-toggle="dropdown"
@@ -244,13 +231,91 @@ const Listing = () => {
                                 <a href="#">Sort by price: high to low</a>
                               </li>
                             </ul>
-                          </div>
+                          </div> */}
+                          <ul className="layout-toggle nav nav-tabs">
+                            <li
+                              className="nav-item"
+                              onClick={() => setView("grid")}
+                              style={{ cursor: "pointer" }}
+                            >
+                              <a
+                                className={`layout-grid nav-link ${
+                                  view === "grid" ? "active" : ""
+                                }`}
+                                data-toggle="tab"
+                                role="tab"
+                              >
+                                <span className="icon-column">
+                                  <span class="layer first">
+                                    <span></span>
+                                    <span></span>
+                                    <span></span>
+                                  </span>
+                                  <span class="layer middle">
+                                    <span></span>
+                                    <span></span>
+                                    <span></span>
+                                  </span>
+                                  <span class="layer last">
+                                    <span></span>
+                                    <span></span>
+                                    <span></span>
+                                  </span>
+                                </span>
+                              </a>
+                            </li>
+                            <li
+                              className="nav-item"
+                              onClick={() => setView("list")}
+                              style={{ cursor: "pointer" }}
+                            >
+                              <a
+                                className={`layout-list nav-link ${
+                                  view === "list" ? "active" : ""
+                                }`}
+                                data-toggle="tab"
+                                role="tab"
+                              >
+                                <span className="icon-column">
+                                  <span class="layer first">
+                                    <span></span>
+                                    <span></span>
+                                  </span>
+                                  <span class="layer middle">
+                                    <span></span>
+                                    <span></span>
+                                  </span>
+                                  <span class="layer last">
+                                    <span></span>
+                                    <span></span>
+                                  </span>
+                                </span>
+                              </a>
+                            </li>
+                          </ul>
                         </div>
                       </div>
 
                       <div className="tab-content">
+                        {/* List Version  */}
                         <div
-                          className="tab-pane fade show active"
+                          className={`tab-pane fade ${
+                            view === "list" ? "show active" : ""
+                          }`}
+                          id="layout-list"
+                          role="tabpanel"
+                        >
+                          <div className="products-list list">
+                            {data?.map((product) => (
+                              <Product current={product} />
+                            ))}
+                          </div>
+                        </div>
+
+                        <div
+                          className={`tab-pane fade ${
+                            view === "grid" ? "show active" : ""
+                          }`}
                           id="layout-grid"
                           role="tabpanel"
                         >
@@ -291,7 +356,6 @@ const Listing = () => {
                                               rel="nofollow"
                                               onClick={() => AddToCart(product)}
                                               className="product-btn button"
-
                                             >
                                               Add to cart
                                             </a>
@@ -300,9 +364,13 @@ const Listing = () => {
                                             className="btn-wishlist"
                                             data-title="Wishlist"
                                           >
-                                            <button className="product-btn"
+                                            <button
+                                              className="product-btn"
                                               onClick={(e) => {
-                                                handleAddRemoveWishlist(e, product.id)
+                                                handleAddRemoveWishlist(
+                                                  e,
+                                                  product.id
+                                                );
                                               }}
                                             >
                                               Add to wishlist
@@ -313,7 +381,9 @@ const Listing = () => {
                                       <div className="products-content">
                                         <div className="contents text-center">
                                           <h3 className="product-title">
-                                            <Link to={`/product-details?product_id=${product.id}`}>
+                                            <Link
+                                              to={`/product-details?product_id=${product.id}`}
+                                            >
                                               {product?.product_name?.en}
                                             </Link>
                                           </h3>
@@ -334,24 +404,59 @@ const Listing = () => {
                       {/* Pagination  */}
                       <nav className="pagination">
                         <ul className="page-numbers">
-                          {currentPage !== 1 ?
-                            <li onClick={() => setCurrentPage(pre => pre - 1)}>
+                          {currentPage !== 1 ? (
+                            <li
+                              onClick={() => setCurrentPage((pre) => pre - 1)}
+                            >
                               <a className="prev page-numbers" href="#">
                                 Previous
                               </a>
-                            </li> : ""
-                          }
-                          {currentPage - 1 > 0 ? <li onClick={() => setCurrentPage(page => page - 1)}><a class="page-numbers" href="#">{currentPage - 1}</a></li> : ""}
-                          <li><span aria-current="page" class="page-numbers current">{currentPage}</span></li>
-                          {currentPage + 1 <= lastPage ? <li onClick={() => setCurrentPage(page => page + 1)}><a class="page-numbers" href="#">{currentPage + 1}</a></li> : ""}
+                            </li>
+                          ) : (
+                            ""
+                          )}
+                          {currentPage - 1 > 0 ? (
+                            <li
+                              onClick={() => setCurrentPage((page) => page - 1)}
+                            >
+                              <a class="page-numbers" href="#">
+                                {currentPage - 1}
+                              </a>
+                            </li>
+                          ) : (
+                            ""
+                          )}
+                          <li>
+                            <span
+                              aria-current="page"
+                              class="page-numbers current"
+                            >
+                              {currentPage}
+                            </span>
+                          </li>
+                          {currentPage + 1 <= lastPage ? (
+                            <li
+                              onClick={() => setCurrentPage((page) => page + 1)}
+                            >
+                              <a class="page-numbers" href="#">
+                                {currentPage + 1}
+                              </a>
+                            </li>
+                          ) : (
+                            ""
+                          )}
 
-                          {currentPage !== lastPage ?
-                            <li onClick={() => setCurrentPage(pre => pre + 1)}>
+                          {currentPage !== lastPage ? (
+                            <li
+                              onClick={() => setCurrentPage((pre) => pre + 1)}
+                            >
                               <a className="next page-numbers" href="#">
                                 Next
                               </a>
-                            </li> : ""
-                          }
+                            </li>
+                          ) : (
+                            ""
+                          )}
                         </ul>
                       </nav>
                     </div>
