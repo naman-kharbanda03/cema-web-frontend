@@ -26,7 +26,7 @@ const Listing = () => {
   const params = new URLSearchParams(url.search);
   const products = params.get("products");
   const location = useLocation();
-  const name = location.state ? location.state.name : null;
+  const name = location.pathname.slice(1);
 
   const token = localStorage.getItem('accessToken');
   const categoryListAPI = apiConfig.categoryListAPI;
@@ -313,9 +313,9 @@ const Listing = () => {
                                       <div className="products-content">
                                         <div className="contents text-center">
                                           <h3 className="product-title">
-                                            <a href="#">
+                                            <Link to={`/product-details?product_id=${product.id}`}>
                                               {product?.product_name?.en}
-                                            </a>
+                                            </Link>
                                           </h3>
                                           <span className="price">
                                             KD{product.actual_selling_price}

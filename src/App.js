@@ -17,35 +17,68 @@ import { ShoppingCartProvider } from "./context/ShoppingCartContext";
 import Error from "./pages/error/Error";
 import { useEffect, useState } from "react";
 import CreateEditAddress from "./pages/createEditAddress/CreateEditAddress";
+import { UserContextWrapper } from "./context/UserContext";
+import HiddenPostLogin from "./routeHandlers/HiddenPostLogin/HiddenPostLogin";
+import Protected from "./routeHandlers/AvailabePostLogin/Projected";
 
 function App() {
-  const [isLoggedIn, setIsLoggedIn] = useState(false);
-  useEffect(() => console.log(isLoggedIn), [isLoggedIn]);
+  // const [isLoggedIn, setIsLoggedIn] = useState(false);
+  // useEffect(() => console.log(isLoggedIn), [isLoggedIn]);
 
   return (
     <div
       id="page"
       className="min-vh-100 d-flex flex-column border-danger hfeed page-wrapper"
     >
-      <ShoppingCartProvider>
-        <Header auth={isLoggedIn} />
-        <Routes>
-          <Route path="/" element={<Home />} />
-          <Route path="/login" element={<Login auth={setIsLoggedIn} />} />
-          <Route path="/forgot-password" element={<ForgotPassword />} />
-          <Route path="/cart" element={<Cart />} />
-          <Route path="/contact" element={<Contact />} />
-          <Route path="/listings" element={<Listing />} />
-          <Route path="/account" element={<MyAccount auth={setIsLoggedIn} />} />
-          <Route path="/products" element={<ProductList />} />
-          <Route path="/shop-checkout" element={<ShopCheckout />} />
-          <Route path="/wishlist" element={<ShopWishlist />} />
-          <Route path="/product-details" element={<ShopDetails />} />
-          <Route path="/edit-address" element={<CreateEditAddress />} />
-        </Routes>
-        <Footer />
-        <BackToTop />
-      </ShoppingCartProvider>
+      <UserContextWrapper>
+        <ShoppingCartProvider>
+          <Header />
+          <Routes>
+            {/* Home */}
+            <Route path="/" element={<Home />} />
+            {/* login */}
+            <Route
+              path="/login"
+              element={
+                <HiddenPostLogin>
+                  <Login />
+                </HiddenPostLogin>
+              }
+            />
+            {/* forgot-password */}
+            <Route
+              path="/forgot-password"
+              element={
+                <HiddenPostLogin>
+                  <ForgotPassword />
+                </HiddenPostLogin>
+              }
+            />
+            {/* cart */}
+            <Route path="/cart" element={<Cart />} />
+            {/* contact */}
+            <Route path="/contact" element={<Contact />} />
+            {/* listings */}
+            <Route path="/listings" element={<Listing />} />
+            {/* account */}
+            <Route
+              path="/account"
+              element={
+                <Protected>
+                  <MyAccount />
+                </Protected>
+              }
+            />
+            <Route path="/products" element={<ProductList />} />
+            <Route path="/shop-checkout" element={<ShopCheckout />} />
+            <Route path="/wishlist" element={<ShopWishlist />} />
+            <Route path="/product-details" element={<ShopDetails />} />
+            <Route path="/edit-address" element={<CreateEditAddress />} />
+          </Routes>
+          <Footer />
+          <BackToTop />
+        </ShoppingCartProvider>
+      </UserContextWrapper>
     </div>
   );
 }

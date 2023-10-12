@@ -7,11 +7,22 @@ import Dashboard from "../../components/my-account/dashboard/Dashboard";
 import ForgotPassword from "../../components/my-account/forgot-password/ForgotPassword";
 import OrdersTable from "../../components/my-account/ordersTable/OrdersTable";
 import PageTitle from "../../components/page-tittle/PageTitle";
+import { useContext } from "react";
+import { UserData } from "../../context/UserContext";
 
 const MyAccount = (props) => {
   const [orderDetails, setOrderDetails] = useState([{}]);
   const [activeTab, setActiveTab] = useState("dashboard");
   const [ordersLoaded, setOrdersLoaded] = useState(false);
+  const { SETLOGGEDIN } = useContext(UserData);
+
+  const logoutHandler = () => {
+    SETLOGGEDIN(false);
+    localStorage.removeItem("refreshToken");
+    localStorage.removeItem("accessToken");
+    localStorage.removeItem("expiresIn");
+    localStorage.removeItem("tokenType");
+  };
 
   const handleTabChange = (tab) => {
     setActiveTab(tab);
@@ -47,7 +58,7 @@ const MyAccount = (props) => {
   };
   useEffect(() => {
     setOrdersLoaded(true);
-  }, [orderDetails])
+  }, [orderDetails]);
 
   return (
     <>
@@ -67,7 +78,9 @@ const MyAccount = (props) => {
                         <ul className="nav nav-tabs">
                           <li className="nav-item">
                             <a
-                              className={`nav-link ${activeTab === "dashboard" ? "active" : ""}`}
+                              className={`nav-link ${
+                                activeTab === "dashboard" ? "active" : ""
+                              }`}
                               data-toggle="tab"
                               href="#dashboard"
                               role="tab"
@@ -78,7 +91,9 @@ const MyAccount = (props) => {
                           </li>
                           <li className="nav-item">
                             <a
-                              className={`nav-link ${activeTab === "orders" ? "active" : ""}`}
+                              className={`nav-link ${
+                                activeTab === "orders" ? "active" : ""
+                              }`}
                               data-toggle="tab"
                               href="#orders"
                               role="tab"
@@ -92,7 +107,9 @@ const MyAccount = (props) => {
                           </li>
                           <li className="nav-item">
                             <a
-                              className={`nav-link ${activeTab === "addresses" ? "active" : ""}`}
+                              className={`nav-link ${
+                                activeTab === "addresses" ? "active" : ""
+                              }`}
                               data-toggle="tab"
                               href="#addresses"
                               role="tab"
@@ -106,7 +123,9 @@ const MyAccount = (props) => {
                           </li>
                           <li className="nav-item">
                             <a
-                              className={`nav-link ${activeTab === "account-details" ? "active" : ""}`}
+                              className={`nav-link ${
+                                activeTab === "account-details" ? "active" : ""
+                              }`}
                               data-toggle="tab"
                               href="#account-details"
                               role="tab"
@@ -117,7 +136,9 @@ const MyAccount = (props) => {
                           </li>
                           <li className="nav-item">
                             <a
-                              className={`nav-link ${activeTab === "forgot-password" ? "active" : ""}`}
+                              className={`nav-link ${
+                                activeTab === "forgot-password" ? "active" : ""
+                              }`}
                               data-toggle="tab"
                               href="#forgot-password"
                               role="tab"
@@ -127,30 +148,39 @@ const MyAccount = (props) => {
                             </a>
                           </li>
                           <li className="nav-item">
-                            <a className="nav-link" href="">
-                              <Link to="/login" onClick={() => props.auth(false)} >Log out</Link>
+                            <a
+                              className="nav-link"
+                              href="javascript:void(0)"
+                              onClick={logoutHandler}
+                            >
+                              <a href="javascript:void(0)">Log out</a>
                             </a>
                           </li>
-
                         </ul>
                       </nav>
                       <div className="my-account-content tab-content">
                         <div
-                          className={`tab-pane fade ${activeTab === "dashboard" ? "show active" : ""}`}
+                          className={`tab-pane fade ${
+                            activeTab === "dashboard" ? "show active" : ""
+                          }`}
                           id="dashboard"
                           role="tabpanel"
                         >
-                          <Dashboard auth={props.auth} />
+                          <Dashboard />
                         </div>
                         <div
-                          className={`tab-pane fade ${activeTab === "orders" ? "show active" : ""}`}
+                          className={`tab-pane fade ${
+                            activeTab === "orders" ? "show active" : ""
+                          }`}
                           id="orders"
                           role="tabpanel"
                         >
                           <OrdersTable orders={orderDetails} />
                         </div>
                         <div
-                          className={`tab-pane fade ${activeTab === "addresses" ? "show active" : ""}`}
+                          className={`tab-pane fade ${
+                            activeTab === "addresses" ? "show active" : ""
+                          }`}
                           id="addresses"
                           role="tabpanel"
                           onClick={handleAddress}
@@ -158,15 +188,18 @@ const MyAccount = (props) => {
                           <Addresses />
                         </div>
                         <div
-                          className={`tab-pane fade ${activeTab === "account-details" ? "show active" : ""}`}
+                          className={`tab-pane fade ${
+                            activeTab === "account-details" ? "show active" : ""
+                          }`}
                           id="account-details"
                           role="tabpanel"
                         >
                           <AccountDetails />
-
                         </div>
                         <div
-                          className={`tab-pane fade ${activeTab === "forgot-password" ? "show active" : ""}`}
+                          className={`tab-pane fade ${
+                            activeTab === "forgot-password" ? "show active" : ""
+                          }`}
                           id="forgot-password"
                           role="tabpanel"
                         >

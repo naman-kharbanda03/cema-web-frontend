@@ -1,16 +1,18 @@
-import React, { useEffect, useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import logo from "../../asset/images/logo.png";
 import product_1 from "../../asset/images/product/1.jpg";
 import product_3 from "../../asset/images/product/3.jpg";
 import { Link, useNavigate } from "react-router-dom";
 import apiConfig from "../../config/apiConfig";
 import { useShoppingCart } from "../../context/ShoppingCartContext";
+import { UserData } from "../../context/UserContext";
 
-const Header = (props) => {
+const Header = () => {
   const navigate = useNavigate();
   const handleNavigate = (name, link) => {
     navigate(`/listings?products=${link}`, { state: { name } });
   };
+  const { LOGGEDIN } = useContext(UserData);
 
   const [categories, setCategories] = useState();
   const { wishListCount, cartItemsCount } = useShoppingCart();
@@ -28,19 +30,18 @@ const Header = (props) => {
         setCategories(data.data);
       })
       .catch((error) => console.error("Problem with fetch operations", error));
-
-
-
   };
 
   useEffect(() => {
     fetchDetails();
   }, []);
 
-
-
   return (
-    <header id="site-header" className="site-header header-v2 large-height" style={{ zIndex: 1000 }}>
+    <header
+      id="site-header"
+      className="site-header header-v2 large-height"
+      style={{ zIndex: 1000 }}
+    >
       <div id="header-topbar" className="topbar-v1 hidden-sm hidden-xs">
         <div className="topbar-inner">
           <div className="section-padding">
@@ -368,7 +369,7 @@ const Header = (props) => {
                   <div className="header-page-link">
                     {/* Login */}
                     <div className="login-header">
-                      {props.auth ? (
+                      {LOGGEDIN ? (
                         <Link to="/account"> Account</Link>
                       ) : (
                         <Link className="active-login" to="/login">

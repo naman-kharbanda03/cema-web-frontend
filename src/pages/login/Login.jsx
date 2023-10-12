@@ -1,9 +1,10 @@
-import React, { useEffect, useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import PageTitle from "../../components/page-tittle/PageTitle";
 import WishListTable from "../../components/wishlist/WishListTable";
 import apiConfig from "../../config/apiConfig";
 import { useShoppingCart } from "../../context/ShoppingCartContext";
+import { UserData } from "../../context/UserContext";
 
 const Login = (props) => {
   const [loginData, setLoginData] = useState({
@@ -13,8 +14,11 @@ const Login = (props) => {
   const [error, setError] = useState("");
   const [response, setResponse] = useState("");
   const [isAuthenticated, setIsAuthentcated] = useState(false);
-  const { setCartToggle, setWishListToggle, AddToCart2, addToWishlist2 } = useShoppingCart();
+  const { setCartToggle, setWishListToggle, AddToCart2, addToWishlist2 } =
+    useShoppingCart();
   const navigate = useNavigate();
+
+  const { SETLOGGEDIN } = useContext(UserData);
 
   const [registerData, setRegisterData] = useState({
     name: "",
@@ -60,7 +64,7 @@ const Login = (props) => {
           localStorage.setItem("expiresIn", data.expires_in);
           localStorage.setItem("refreshToken", data.refresh_token);
           addLocalCartToDB();
-          props.auth(true);
+          SETLOGGEDIN(true);
           return navigate("/");
         } else if (data.status === "fail") alert(data.msg);
       })
@@ -69,11 +73,11 @@ const Login = (props) => {
       });
   };
   const addLocalCartToDB = () => {
-    const cart = JSON.parse(localStorage.getItem('cart'));
-    const wishlist = JSON.parse(localStorage.getItem('wishlist'));
+    const cart = JSON.parse(localStorage.getItem("cart"));
+    const wishlist = JSON.parse(localStorage.getItem("wishlist"));
     AddToCart2(cart);
     addToWishlist2(wishlist);
-  }
+  };
 
   const handleRegister = function (e) {
     e.preventDefault();
@@ -190,10 +194,7 @@ const Login = (props) => {
                           <h2 className="register">Register</h2>
                           <div className="box-content">
                             <div className="form-register">
-                              <form
-                                method="post"
-                                className="register"
-                              >
+                              <form method="post" className="register">
                                 <div className="name">
                                   <label>
                                     Name <span className="required">*</span>
@@ -257,7 +258,6 @@ const Login = (props) => {
                                     name="register"
                                     defaultValue="Register"
                                     onClick={(e) => handleRegister(e)}
-
                                   />
                                 </div>
                               </form>

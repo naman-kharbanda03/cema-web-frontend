@@ -86,9 +86,14 @@ const ProductSlider = () => {
                 </Link>
                 <div className="product-cat-content-info">
                   <h2 className="item-title">
-                    <a href="#" tabIndex={-1}>
+                    <Link
+                      to={{
+                        pathname: "/products",
+                        search: `?category=${cat.title?.en}&id=${cat.id}`,
+                      }}
+                    >
                       {cat?.title?.en}
-                    </a>
+                    </Link>
                   </h2>
                 </div>
               </div>
