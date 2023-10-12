@@ -8,6 +8,7 @@ import apiConfig from "../../../config/apiConfig";
 const OrdersTable = () => {
 
   const [orders, setOrders] = useState([]);
+
   const [orderDetails, setOrderDetails] = useState({});
 
   const authToken = localStorage.getItem("accessToken");
@@ -27,7 +28,7 @@ const OrdersTable = () => {
     }).then(response => response.json())
       .then(data => {
         console.log("Order Deatils", data);
-        setOrderDetails(data.order);
+        setOrderDetails(orders.filter((a) => a.id === product_id)[0] || data.order);
         setShowModal(true);
       }).catch(error => console.error("Network Fetch Issue", error));
   }
@@ -115,7 +116,9 @@ const OrdersTable = () => {
                     <strong>{key}:</strong> {orderDetails[key]}
                   </li>
                 ))} */}
-              <p>Here comes the order details</p>
+                {Object.keys(orderDetails).map((key, index) =>{
+                  return <p><strong>{key} : </strong>{orderDetails[key]}</p>
+                })}
             </div>
             <div className="modal-footer">
               <button type="button" className="btn" onClick={closeModal}>

@@ -5,28 +5,26 @@ import apiConfig from "../../../config/apiConfig";
 const Address = (props) => {
   // const [address, setAddress] = useState();
   console.log(props);
-  const address = props.address;
-
+  const {address, type} = props;
   return (
     <>
-
       <div className="addresses-col">
         <header className="col-title">
           <h3> {props.type}</h3>
           {address === null ?
-            <Link to="/edit-address" className="add">
+            <Link to={`/edit-address?addressType=${type.split(' ')[0]}`} className="add">
               Add
             </Link>
             :
-            <Link to="/edit-address" className="edit">
+            <Link to={`/edit-address?addressType=${type.split(' ')[0]}`} className="edit">
               Edit
             </Link>
           }
         </header>
         <address>
-          {address !== {} ? <>
+          {address != {} ? <>
             {address?.address}
-            <br />
+            <br/>
             {address?.state?.name}
             <br />
             {address?.country?.name}

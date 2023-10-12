@@ -1,22 +1,112 @@
 import React, { useEffect, useState } from "react";
 import PageTitle from "../../components/page-tittle/PageTitle";
+import { useSearchParams } from "react-router-dom";
+import apiConfig from "../../config/apiConfig";
+import { Button } from "react-bootstrap";
+import { toast } from "react-toastify";
 
 
-const CreateEditAddress = ({ type }) => {
-    const [address, setAddress] = useState({});
+const CreateEditAddress = (props) => {
+    console.log(props)
     const [countriesOptions, setCountriesOptions] = useState();
     const [stateOptions, setStateOptions] = useState();
     const [citiesOptions, setCitiesOptions] = useState();
+    const [address, setAddress] = useState({});
+    const setAddressData = (data) =>{
+        setAddress({
+            name: data?.name || "",
+            address: data?.address || "",
+            email: data?.email || "",
+            phone: data?.mobile || data?.phone || "",
+            pincode: data?.pincode || data?.pin_code || "",
+            country_id: data?.country?.id || "",
+            state_id: data?.state?.id || "",
+            city_id: data?.city?.id || "", 
+            defaddress: 1,
+            address_2: ""
+        })
+    }
+    const authToken = localStorage.getItem('accessToken');
     const handleChange = (e) => {
         setAddress(prev => ({
             ...prev,
             [e.target.name]: e.target.value,
         }));
-        if (e.target.name === 'state') {
-            getCities(e.target.value);
-        }
+        if (e.target.name === 'state_id')  getCities(e.target.value);
     }
+    const addOrUpdateBillingAddress = (e) =>{
+        e.preventDefault();
+        console.log(searchParams.get("addressType") === "Shipping"  ? apiConfig.createUpdateShipAddress:apiConfig.createUpdateBillAddress)
+        fetch( (searchParams.get("addressType") === "Shipping"  ? apiConfig.createUpdateShipAddress:apiConfig.createUpdateBillAddress), {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+              Authorization: `Bearer ${authToken}`,
+            },
+            body: JSON.stringify(address),
+          })
+            .then((response) => {
+              if (!response.ok) throw new Error("Network Issue");
+              return response.json();
+            })
+            .then((data) => {
+              console.log("Updated -->", data);
+              if(!data?.status){
+                Object.keys(data["data"]).map(key =>{
+                    toast.warning(data?.data[key][0], {
+                        position: toast.POSITION.BOTTOM_LEFT,
+                      });
+                })
+              }else{
+                toast.success(data?.message, {
+                    position: toast.POSITION.BOTTOM_LEFT,
+                  });
+              }
+              return data;
+            })
+            .catch((error) => console.error("Problem with fetch operations", error));
 
+    }
+    const getAddressDetails = (url) =>{
+        searchParams.get("addressType") === "Shipping" &&
+        fetch(url, {
+            method: "GET",
+            headers: {
+              "Content-Type": "application/json",
+              Authorization: `Bearer ${authToken}`,
+            },
+          })
+            .then((response) => {
+              if (!response.ok) throw new Error("Network Issue");
+              return response.json();
+            })
+            .then((data) => {
+              console.log(data);
+              setAddressData(data.address)
+              getCities(data?.address?.state?.id);
+              return data;
+            })
+            .catch((error) => console.error("Problem with fetch operations", error));
+      
+            searchParams.get("addressType") === "Billing" && fetch(url, {
+            method: "GET",
+            headers: {
+              "Content-Type": "application/json",
+              Authorization: `Bearer ${authToken}`,
+            },
+          })
+            .then((response) => {
+              if (!response.ok) throw new Error("Network Issue");
+              return response.json();
+            })
+            .then((data) => {
+              console.log(data);
+              setAddressData(data.address)
+              getCities(data?.address?.state?.id);
+              return data;
+            })
+            .catch((error) => console.error("Problem with fetch operations", error));
+    }
     function getCountries() {
         var requestOptions = {
             method: "GET",
@@ -65,28 +155,30 @@ const CreateEditAddress = ({ type }) => {
             })
             .catch((error) => console.log("error", error));
     }
-
+  
 
     useEffect(() => {
+        const shippingAddress = apiConfig.getAddressAPI;
+        const billingAddress = apiConfig.getBillingAddressAPI;
+        getAddressDetails( searchParams.get("addressType") === "Shipping" ? shippingAddress : billingAddress);
         getCountries();
         getCountryStates();
     }, [])
-    useEffect(() => {
-        console.log(address)
-    }, [address]);
+
+    const [searchParams, setSearchParams] = useSearchParams();
     return (
         <>
             <div id="site-main" className="site-main" >
                 <div id="main-content" className="main-content">
                     <div id="primary" className="content-area">
                         {/* Page Title */}
-                        <PageTitle current={"Billing Address"} />
+                        <PageTitle current={`${searchParams.get("addressType") || ""} Address `} />
 
                         <div id="content" className="site-content " role="main"  >
                             <div className="section-padding" >
                                 <div className="section-container p-l-r" >
                                     <div className="shop-checkout" >
-                                        <form
+                                        <form onSubmit={addOrUpdateBillingAddress}
                                             name="checkout"
                                             method="post"
                                             className="checkout"
@@ -98,7 +190,7 @@ const CreateEditAddress = ({ type }) => {
                                                 <div className="col-xl-8 col-lg-7 col-md-12 col-12">
                                                     <div className="customer-details">
                                                         <div className="billing-fields">
-                                                            <h3>Billing details</h3>
+                                                            <h3>{searchParams.get("addressType")} Details</h3>
                                                             <div className="billing-fields-wrapper">
                                                                 <p className="form-row form-row-first validate-required">
                                                                     <label>
@@ -112,7 +204,7 @@ const CreateEditAddress = ({ type }) => {
                                                                             type="text"
                                                                             className="input-text"
                                                                             name="name"
-                                                                            // value={name}
+                                                                            value={address?.name}
                                                                             onChange={(e) => handleChange(e)}
                                                                         />
                                                                     </span>
@@ -129,7 +221,7 @@ const CreateEditAddress = ({ type }) => {
                                                                             type="tel"
                                                                             className="input-text"
                                                                             name="phone"
-                                                                            // value={phone}
+                                                                            value={address?.phone}
                                                                             onChange={(e) => handleChange(e)}
                                                                         />
                                                                     </span>
@@ -146,7 +238,7 @@ const CreateEditAddress = ({ type }) => {
                                                                             type="email"
                                                                             className="input-text"
                                                                             name="email"
-                                                                            // value={email}
+                                                                            value={address?.email}
                                                                             autocomplete="off"
                                                                             onChange={(e) => handleChange(e)}
                                                                         />
@@ -164,9 +256,9 @@ const CreateEditAddress = ({ type }) => {
                                                                         <input
                                                                             type="text"
                                                                             className="input-text"
-                                                                            name="address_1"
+                                                                            name="address"
                                                                             placeholder="House number and street name"
-                                                                            // value={address}
+                                                                            value={address?.address}
                                                                             onChange={(e) => handleChange(e)}
                                                                         />
                                                                     </span>
@@ -182,7 +274,7 @@ const CreateEditAddress = ({ type }) => {
                                                                             className="input-text"
                                                                             name="address_2"
                                                                             placeholder="Apartment, suite, unit, etc. (optional)"
-                                                                        // value=""
+                                                                            value={address?.address_2}
                                                                         />
                                                                     </span>
                                                                 </p>
@@ -196,9 +288,9 @@ const CreateEditAddress = ({ type }) => {
                                                                     </label>
                                                                     <span className="input-wrapper">
                                                                         <select
-                                                                            name="country"
+                                                                            name="country_id"
                                                                             className="country-select custom-select"
-                                                                            // value={selectedConutryCode} // Set the selected option based on state
+                                                                            value={address?.country_id} // Set the selected option based on state
                                                                             onChange={(e) => handleChange(e)}
                                                                         >
                                                                             {countriesOptions?.map((option) => (
@@ -218,9 +310,9 @@ const CreateEditAddress = ({ type }) => {
                                                                     </label>
                                                                     <span className="input-wrapper">
                                                                         <select
-                                                                            name="state"
+                                                                            name="state_id"
                                                                             className="state-select custom-select"
-                                                                            // value={selectedStateOption} // Set the selected option based on state
+                                                                            value={address?.state_id} // Set the selected option based on state
                                                                             onChange={(e) => handleChange(e)}
                                                                         >
                                                                             {stateOptions?.map((option) => (
@@ -240,9 +332,9 @@ const CreateEditAddress = ({ type }) => {
                                                                     </label>
                                                                     <span className="input-wrapper">
                                                                         <select
-                                                                            name="city"
+                                                                            name="city_id"
                                                                             className="country-select custom-select"
-                                                                            // value={selectedCity} // Set the selected option based on state
+                                                                            value={address?.city_id} // Set the selected option based on state
                                                                             onChange={(e) => handleChange(e)}
                                                                         >
                                                                             {citiesOptions?.map((option) => (
@@ -265,15 +357,15 @@ const CreateEditAddress = ({ type }) => {
                                                                         <input
                                                                             type="text"
                                                                             className="input-text"
-                                                                            name="postcode"
-                                                                            // value={pincode}
+                                                                            name="pincode"
+                                                                            value={address?.pincode}
                                                                             onChange={(e) => handleChange(e)}
                                                                         />
                                                                     </span>
                                                                 </p>
                                                             </div>
                                                         </div>
-                                                        <div
+                                                        <Button
                                                             style={{
                                                                 background: "black",
                                                                 color: "white",
@@ -283,11 +375,12 @@ const CreateEditAddress = ({ type }) => {
                                                                 cursor: "pointer",
                                                                 marginBottom: "10px",
                                                             }}
-                                                        // onClick={addOrUpdateBillingAddress}
+                                                            type="submit"
+                                                            // onClick={() => addOrUpdateBillingAddress()}
                                                         >
                                                             Update Address
                                                             {/* {billingData ? "Update Address" : "Add Address"} */}
-                                                        </div>
+                                                        </Button>
                                                     </div>
                                                 </div>
 

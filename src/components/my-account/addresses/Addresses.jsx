@@ -9,7 +9,7 @@ const Addresses = () => {
 
   const authToken = localStorage.getItem('accessToken');
 
-  const fetchAddresses = (shipApiUrl, billApiUrl) => {
+  const fetchAddresses = async (shipApiUrl, billApiUrl) => {
     fetch(shipApiUrl, {
       method: "GET",
       headers: {
@@ -52,7 +52,7 @@ const Addresses = () => {
     const billingAddress = apiConfig.getBillingAddressAPI;
     fetchAddresses(shippingAddress, billingAddress);
   }, []);
-
+  
   return (
     <>
       <div className="my-account-addresses">

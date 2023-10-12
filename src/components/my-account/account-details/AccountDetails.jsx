@@ -1,13 +1,12 @@
 import React, { useEffect, useState } from "react";
 import apiConfig from "../../../config/apiConfig";
 import { useShoppingCart } from "../../../context/ShoppingCartContext";
+import { toast } from "react-toastify";
 
 const AccountDetails = () => {
-
-  const [profileData, setProfileData] = useState();
-  const { showSuccessToastMessage, showInfoToastMessage } = useShoppingCart();
-
-
+  const token = localStorage.getItem('accessToken');
+  const [profileData, setProfileData] = useState({});
+  // const { showSuccessToastMessage, showInfoToastMessage } = useShoppingCart();
   const handleChange = (e) => {
     e.preventDefault();
     // console.log(e.target.value);
@@ -17,20 +16,19 @@ const AccountDetails = () => {
     }))
   }
 
-  useEffect(() => { console.log(profileData) }, [profileData]);
-
   const onSubmit = (e) => {
-
+    console.log(profileData)
     e.preventDefault();
     const apiUrl = apiConfig.updateProfileAPI;
-    const token = localStorage.getItem('accessToken');
     const secret = apiConfig.secretKey;
 
-    if (profileData?.firstName && profileData?.lastName && profileData?.phone) {
+    if (profileData?.name && profileData?.phone) {
+      console.log("All good")
       const formData = new FormData();
 
       formData.append('secret', secret);
-      formData.append('name', profileData?.firstName + ' ' + profileData?.lastName);
+      formData.append('name', profileData?.name);
+      formData.append('phone', profileData?.phone);
       // formData.append('displayName', profileData.displayName);
 
 
@@ -45,21 +43,61 @@ const AccountDetails = () => {
       }).then(response => response.json())
         .then(data => {
           console.log(data);
-          showSuccessToastMessage(data.message);
-
+          if(data?.status){
+            toast.success(data.message, {
+              position: toast.POSITION.BOTTOM_LEFT,
+          });
+          }else{
+            toast.warning("Some error occurred.", {
+              position: toast.POSITION.BOTTOM_LEFT,
+          });
+          }
         })
         .catch(error => console.error(error, "Fetch operation Error"));
     } else {
-      showInfoToastMessage();
+      toast.warning("Field is empty.", {
+        position: toast.POSITION.BOTTOM_LEFT,
+    });
     }
   }
+  const getUserProfile = () =>{
+    fetch(apiConfig?.getUserApi, {
+      method: "GET",
+      headers: {
+        'Authorization': `Bearer ${token}`,
+      },
+    }).then(response => response.json())
+      .then(data => {
+        console.log(data);
+        setProfileData(
+          {
+            name : data?.name,
+            phone : data?.mobile,
+            email: data?.email,
+            // country_id : data?.country_id,
+            // state_id : data?.state_id,
+            // city_id : data?.city_id,
+            // image : data?.image
+          }
+        )
+        toast.info(data.message, {
+          position: toast.POSITION.BOTTOM_LEFT,
+      });
+        
+
+      })
+      .catch(error => console.error(error, "Fetch operation Error"));
+  }
+  useEffect(()=>{
+    if(Object.keys(profileData).length === 0) getUserProfile()
+  },[profileData])
 
   return (
     <>
 
       <div className="my-account-account-details">
         <form className="edit-account" >
-          <p className="form-row">
+          {/* <p className="form-row">
             <label for="account_first_name">
               First name <span className="required">*</span>
             </label>
@@ -69,15 +107,16 @@ const AccountDetails = () => {
               name="firstName"
               onChange={(e) => handleChange(e)}
             />
-          </p>
+          </p> */}
           <p className="form-row">
             <label>
-              Last name <span className="required">*</span>
+              Name <span className="required">*</span>
             </label>
             <input
               type="text"
               className="input-text"
-              name="lastName"
+              name="name"
+              value={profileData?.name}
               onChange={(e) => handleChange(e)}
 
             />
@@ -129,7 +168,7 @@ const AccountDetails = () => {
               type="number"
               className="input-text"
               name="phone"
-              // value={ }
+              value={profileData?.phone}
               onChange={(e) => handleChange(e)}
             />
             <span>
@@ -149,7 +188,7 @@ const AccountDetails = () => {
               type="email"
               className="input-text"
               name="email"
-              // value={ }
+              value={profileData?.email}
               disabled
             // onChange={(e) => handleChange(e)}
             />
