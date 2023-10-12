@@ -68,21 +68,28 @@ const Cart = () => {
     console.log("bearerToken", orders);
     const apiUrl = apiConfig.getCartDataAPI;
 
-    fetch(apiUrl, {
-      method: "GET",
-      headers: {
-        Authorization: `Bearer ${bearerToken}`,
-      },
-    })
-      .then((response) => response.json())
-      .then((data) => {
-        console.log("getCartData:", data.total);
-        setTotal(data.total);
-        setOrders(data.data);
+    if (bearerToken) {
+      fetch(apiUrl, {
+        method: "GET",
+        headers: {
+          Authorization: `Bearer ${bearerToken}`,
+        },
       })
-      .catch((error) => {
-        console.error("Error:", error);
-      });
+        .then((response) => response.json())
+        .then((data) => {
+          console.log("getCartData:", data.data);
+          setTotal(data.total);
+          setOrders(data.data);
+        })
+        .catch((error) => {
+          console.error("Error:", error);
+        });
+    } else {
+      const orders = JSON.parse(localStorage.getItem('cart'));
+      setOrders(orders.Items);
+    }
+
+
   }
 
   useEffect(() => {

@@ -34,8 +34,8 @@ const ShopDetails = (product) => {
       })
       .then((data) => {
         setData(data.data);
-        console.log("testimm", data);
-        console.log("testim", data.data.combinations);
+        console.log("testing", data.data);
+        // console.log("testim", data.data.combinations);
         setImage(
           `${data.data.images_path}/${data.data.combinations[0].images[0].image}`
         );
@@ -47,32 +47,6 @@ const ShopDetails = (product) => {
     fetchDetails();
   }, []);
 
-  // const handleAddRemove = (e, id) => {
-  //   e.preventDefault();
-  //   const formData = new FormData();
-  //   formData.append('product_id', id);
-  //   const token = localStorage.getItem('accessToken');
-  //   // console.log("shopDeatils", token);
-  //   const apiURl = apiConfig.addRemoveWishlistAPI;
-
-  //   fetch(apiURl, {
-  //     method: "POST",
-  //     headers: {
-  //       'Authorization': `Bearer ${token}`,
-  //       // "Content-Type": "application/json",
-  //       // Add any other headers your API requires
-  //     },
-  //     body: formData,
-  //   })
-  //     .then((response) => response.json())
-  //     .then((data) => {
-  //       console.log(data);
-  //       return data;
-  //     })
-  //     .catch((error) => {
-  //       console.error("Error:", error);
-  //     });
-  // }
 
   return (
     <div id="site-main" className="site-main">
@@ -281,7 +255,16 @@ const ShopDetails = (product) => {
                             </div>
                             <div
                               className="btn-add-to-cart"
-                              onClick={() => AddToCart({ id: data.product_id, type: 'simple_product' })}
+                              onClick={() => {
+                                const prod = {
+                                  id: data?.combinations[0].id,
+                                  price: data?.combinations?.[0]?.mainprice,
+                                  image_path: data?.images_path,
+                                  product_image: [`${data?.combinations[0]?.images[0]?.image}`],
+                                  product_name: { en: data?.product_name?.en }
+                                }
+                                AddToCart(prod);
+                              }}
                             >
                               <a href="#" className="button" tabindex="0">
                                 Add to cart
