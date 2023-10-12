@@ -86,7 +86,7 @@ const Listing = () => {
                         </div>
                       </div>
 
-                      <div className="block block-product-filter">
+                      {/* <div className="block block-product-filter">
                         <div className="block-title">
                           <h2>Price</h2>
                         </div>
@@ -170,9 +170,9 @@ const Listing = () => {
                             </div>
                           </div>
                         </div>
-                      </div>
+                      </div> */}
 
-                      <div className="block block-product-filter clearfix">
+                      {/* <div className="block block-product-filter clearfix">
                         <div className="block-title">
                           <h2>Size</h2>
                         </div>
@@ -189,7 +189,7 @@ const Listing = () => {
                             </li>
                           </ul>
                         </div>
-                      </div>
+                      </div> */}
                     </div>
 
                     <div className="col-xl-9 col-lg-9 col-md-12 col-12">
@@ -239,9 +239,8 @@ const Listing = () => {
                               style={{ cursor: "pointer" }}
                             >
                               <a
-                                className={`layout-grid nav-link ${
-                                  view === "grid" ? "active" : ""
-                                }`}
+                                className={`layout-grid nav-link ${view === "grid" ? "active" : ""
+                                  }`}
                                 data-toggle="tab"
                                 role="tab"
                               >
@@ -270,9 +269,8 @@ const Listing = () => {
                               style={{ cursor: "pointer" }}
                             >
                               <a
-                                className={`layout-list nav-link ${
-                                  view === "list" ? "active" : ""
-                                }`}
+                                className={`layout-list nav-link ${view === "list" ? "active" : ""
+                                  }`}
                                 data-toggle="tab"
                                 role="tab"
                               >
@@ -299,9 +297,8 @@ const Listing = () => {
                       <div className="tab-content">
                         {/* List Version  */}
                         <div
-                          className={`tab-pane fade ${
-                            view === "list" ? "show active" : ""
-                          }`}
+                          className={`tab-pane fade ${view === "list" ? "show active" : ""
+                            }`}
                           id="layout-list"
                           role="tabpanel"
                         >
@@ -313,9 +310,8 @@ const Listing = () => {
                         </div>
 
                         <div
-                          className={`tab-pane fade ${
-                            view === "grid" ? "show active" : ""
-                          }`}
+                          className={`tab-pane fade ${view === "grid" ? "show active" : ""
+                            }`}
                           id="layout-grid"
                           role="tabpanel"
                         >

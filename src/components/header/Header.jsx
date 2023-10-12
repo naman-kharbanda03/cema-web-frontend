@@ -12,15 +12,19 @@ const Header = () => {
   const handleNavigate = (name, link) => {
     navigate(`/listings?products=${link}`, { state: { name } });
   };
-  const { LOGGEDIN } = useContext(UserData);
 
+  const { LOGGEDIN } = useContext(UserData);
+  const [menuItems, setMenuItems] = useState([]);
   const [categories, setCategories] = useState();
   const { wishListCount, cartItemsCount } = useShoppingCart();
 
   const fetchDetails = () => {
-    fetch("https://www.demo609.amrithaa.com/backend-cema/public/api/navCategories", {
-      method: "GET",
-    })
+    fetch(
+      "https://www.demo609.amrithaa.com/backend-cema/public/api/navCategories",
+      {
+        method: "GET",
+      }
+    )
       .then((response) => {
         if (!response.ok) throw new Error("Network Issue");
         return response.json();
@@ -34,6 +38,19 @@ const Header = () => {
 
   useEffect(() => {
     fetchDetails();
+  }, []);
+
+  useEffect(() => {
+    (function () {
+      fetch(apiConfig.topMenu)
+        .then((res) => res.json())
+        .then((data) => {
+          setMenuItems(data);
+        })
+        .catch((e) => {
+          console.log(e);
+        });
+    })();
   }, []);
 
   return (
@@ -344,6 +361,18 @@ const Header = () => {
                             </div>
                           </div>
                         </li>
+
+                        {menuItems.map((items, key) => {
+                          return (
+                            <li className="level-0 menu-item" key={key}>
+                              <Link to="/contact">
+                                <span className="menu-item-text">
+                                  {items.title.en}
+                                </span>
+                              </Link>
+                            </li>
+                          );
+                        })}
                         <li className="level-0 menu-item">
                           <Link to="/contact">
                             <span className="menu-item-text">Contact</span>

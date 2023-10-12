@@ -71,10 +71,10 @@ export const ShoppingCartProvider = ({ children }) => {
     }, [wishListToggle]);
 
 
-    const handleAddRemoveWishlist = (e, id) => {
+    const handleAddRemoveWishlist = (e, product) => {
         e.preventDefault();
         const formData = new FormData();
-        formData.append('product_id', id);
+        formData.append('product_id', product?.id);
 
         const apiURl = apiConfig.addRemoveWishlistAPI;
         const token = localStorage.getItem('accessToken');
@@ -99,16 +99,27 @@ export const ShoppingCartProvider = ({ children }) => {
                     console.error("Error:", error);
                 });
         } else {
-            increaseDecreaseItemInLocalWishlist(id, 1, "simple_product");
+            increaseDecreaseItemInLocalWishlist(product);
         }
 
     }
-    const increaseDecreaseItemInLocalWishlist = (id) => {
+    const increaseDecreaseItemInLocalWishlist = (product) => {
         setWishListItems(currList => {
-            const foundIndex = currList.Items.findIndex(item => item === id);
+            const foundIndex = currList.Items.findIndex(item => item?.simple_product?.id === product?.id);
             if (foundIndex === -1) {
                 // If the item doesn't exist in the cart, add it.
-                const newItem = id;
+                // const newItem = product;
+                const newItem = {
+                    simple_product: {
+                        id: product?.id,
+                        product_name: {
+                            en: product?.product_name.en
+                        },
+                        image_path: product?.image_path,
+                        product_image: [`${product.product_image[0]}`]
+                    }
+                };
+
                 const updatedItems = [...currList.Items, newItem];
                 const updatedCount = currList.totalItems + 1;
                 showSuccessToastMessage("Item Added in Local WishList");
@@ -120,7 +131,7 @@ export const ShoppingCartProvider = ({ children }) => {
             } else {
                 // If the item exists, update its quantity.
                 const updatingItems = [...currList.Items];
-                const updatedItems = updatingItems.filter(item => item !== id);
+                const updatedItems = updatingItems.filter(item => item.simple_product.id !== product?.id);
                 const updatedCount = currList.totalItems - 1;
                 showSuccessToastMessage("Item Removed in Local WishList");
                 return {
@@ -137,7 +148,9 @@ export const ShoppingCartProvider = ({ children }) => {
 
     const addToWishlist2 = (wishlist) => {
         const bearerToken = localStorage.getItem('accessToken');
-        const product_ids = [...wishlist.Items];
+        // const product_ids = [...wishlist.Items];
+        // const wishListItems = wishlist.Items;
+        const product_ids = wishlist.Items.map(item => item.simple_product.id);
         if (bearerToken && wishlist.totalItems > 0) {
             const apiUrl = apiConfig.addToWishlistArrayAPI;
             var raw = JSON.stringify({
@@ -159,7 +172,6 @@ export const ShoppingCartProvider = ({ children }) => {
                     setWishListToggle(prev => !prev);
                 });
         } else {
-            console.log(2222)
             setWishListToggle(prev => !prev);
         }
     }
@@ -192,13 +204,19 @@ export const ShoppingCartProvider = ({ children }) => {
                     console.error("Error:", error);
                 });
         } else {
-            increaseItemInLocalCart(product?.id, 1, "simple_product");
+            increaseItemInLocalCart(1, product);
         }
     }
 
     const AddToCart2 = (cart) => {
-        const products = [...cart.Items];
+        // const products = [...cart.Items];
         const bearerToken = localStorage.getItem('accessToken');
+
+        const products = cart.Items.map(item => ({
+            quantity: `${item.qty}`,
+            type: "simple_product",
+            product_id: `${item.simple_product.id}`
+        }));
         if (bearerToken && cart.totalItems > 0) {
             const apiUrl = apiConfig.addToCartArrayAPI;
             var raw = JSON.stringify({
@@ -225,14 +243,24 @@ export const ShoppingCartProvider = ({ children }) => {
         }
     }
 
-    const increaseItemInLocalCart = (id, amt, type) => {
+    const increaseItemInLocalCart = (amt, product) => {
         setCartItems(currCart => {
-            const foundIndex = currCart.Items.findIndex(item => parseInt(item?.product_id, 10) === id);
+            const foundIndex = currCart.Items.findIndex(item => item?.simple_product?.id === product.id);
             if (foundIndex === -1) {
                 // If the item doesn't exist in the cart, add it.
-                const newItem = { quantity: `${amt}`, product_id: `${id}`, type: type };
+                // const newItem = { quantity: `${amt}`, product_id: `${id}`, type: type };
+                const newItem = {
+                    qty: 1,
+                    simple_product: {
+                        id: product?.id,
+                        actual_selling_price: product?.price,
+                        image_path: product?.image_path,
+                        product_image: [`${product?.product_image[0]}`],
+                        product_name: { en: product?.product_name?.en }
+                    }
+                };
                 const updatedItems = [...currCart.Items, newItem];
-                const updatedCount = currCart.totalItems + amt;
+                const updatedCount = currCart.totalItems + 1;
                 return {
                     ...currCart,
                     Items: updatedItems,
@@ -240,9 +268,11 @@ export const ShoppingCartProvider = ({ children }) => {
                 }
             } else {
                 // If the item exists, update its quantity.
+
                 const updatingItems = [...currCart.Items];
-                const previousQuantity = parseInt(updatingItems[foundIndex].quantity, 10);
-                updatingItems[foundIndex].quantity = `${previousQuantity + amt}`;
+                // const previousQuantity = parseInt(updatingItems[foundIndex].quantity, 10);
+                // updatingItems[foundIndex].quantity = `${previousQuantity + amt}`;
+                updatingItems[foundIndex].qty += amt;
                 const updatedCount = currCart.totalItems + amt;
                 return {
                     ...currCart,

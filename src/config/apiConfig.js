@@ -30,6 +30,9 @@ const apiConfig = {
   listingAPI: `${BASE_URL}/api/products`,
   slidersAPI: `${BASE_URL}/api/getSlider`,
   changePassword: `${BASE_URL}/api/password/change`,
+  // top-menu
+  topMenu: `${BASE_URL}/api/topmenus`,
+  homeSecondCategory: `${BASE_URL}/api/homeSecondcategories`,
 };
 
 export default apiConfig;

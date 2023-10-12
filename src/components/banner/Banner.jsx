@@ -1,10 +1,30 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import banner_11 from "../../asset/images/banner/banner-11.jpg";
 import banner_12 from "../../asset/images/banner/banner-12.jpg";
 import banner_13 from "../../asset/images/banner/banner-13.jpg";
 import banner_14 from "../../asset/images/banner/banner-14.jpg";
+import apiConfig from "../../config/apiConfig";
 
 const Banner = () => {
+  const [categories, setCategories] = useState([]);
+  useEffect(() => {
+    // categories data
+    (() => {
+      fetch(apiConfig.homeSecondCategory)
+        .then((res) => {
+          if (!res.ok) throw new Error("Network Issue");
+          return res.json();
+        })
+        .then((data) => {
+          const { categories } = data;
+          setCategories(categories);
+          console.log(categories);
+        })
+        .catch((e) => {
+          console.error("Problem with fetch operations", e);
+        });
+    })();
+  }, []);
   return (
     <div className="block block-banners layout-6 banners-effect no-space">
       <div className="row">
@@ -17,7 +37,7 @@ const Banner = () => {
                     <img
                       width={959}
                       height={837}
-                      src={banner_11}
+                      src={`https://www.demo609.amrithaa.com/backend-cema/public/images/category/${categories[0]?.image}`}
                       alt="Banner Image"
                     />
                   </a>
@@ -26,10 +46,10 @@ const Banner = () => {
                   <div className="info">
                     <div className="content">
                       <div className="banner-image-subtitle">
-                        NEW COLLECTION
+                        {categories[0]?.sub_title}
                       </div>
                       <a className="link-title" href="#">
-                        <h3 className="title-banner">Decor accessories</h3>
+                        <h3 className="title-banner">{categories[0]?.title}</h3>
                       </a>
                     </div>
                   </div>
@@ -57,10 +77,12 @@ const Banner = () => {
                     <div className="banner-wrapper-infor">
                       <div className="info">
                         <div className="content">
-                          <div className="banner-image-subtitle">FAVOURITE</div>
+                          <div className="banner-image-subtitle">
+                            {categories[1]?.sub_title}
+                          </div>
                           <a className="link-title" href="#">
                             <h3 className="title-banner">
-                              Dining &amp; Kitchen
+                              {categories[1]?.title}
                             </h3>
                           </a>
                         </div>
