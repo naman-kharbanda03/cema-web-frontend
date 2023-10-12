@@ -94,7 +94,16 @@ const Product = (props) => {
                                 >
                                     <a
                                         rel="nofollow"
-                                        onClick={() => AddToCart(product)}
+                                        onClick={() => {
+                                            const prod = {
+                                                id: product.id,
+                                                price: product.actual_selling_price,
+                                                image_path: product.image_path,
+                                                product_image: [`${product.product_image[0]}`],
+                                                product_name: { en: product.product_name.en }
+                                            }
+                                            AddToCart(prod);
+                                        }}
                                         className="product-btn button"
                                     >
                                         Add to cart
@@ -106,7 +115,8 @@ const Product = (props) => {
                                 >
                                     <button className="product-btn"
                                         onClick={(e) => {
-                                            handleAddRemoveWishlist(e, product.id)
+
+                                            handleAddRemoveWishlist(e, product)
                                             // document.documentElement.style.setProperty('--wishlist-color', 'white');
                                             // document.documentElement.style.setProperty('--wishlist-bk-color', 'black');
                                         }}
