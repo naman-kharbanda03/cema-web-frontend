@@ -43,7 +43,7 @@ const AccountDetails = () => {
       }).then(response => response.json())
         .then(data => {
           console.log(data);
-          if(data?.status){
+          if(!data?.status){
             toast.success(data.message, {
               position: toast.POSITION.BOTTOM_LEFT,
           });
