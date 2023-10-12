@@ -1,20 +1,11 @@
 import React, { useEffect, useState } from "react";
 import PageTitle from "../../components/page-tittle/PageTitle";
-
-import P613 from "../../asset/images/product/6-13.png";
-import P611 from "../../asset/images/product/6-11.png";
-import P64 from "../../asset/images/product/6-4.png";
-import P66 from "../../asset/images/product/6-6.png";
-import P67 from "../../asset/images/product/6-7.png";
-import P68 from "../../asset/images/product/6-8.png";
-import P69 from "../../asset/images/product/6-9.png";
-import P610 from "../../asset/images/product/6-10.png";
-import P615 from "../../asset/images/product/6-15.png";
 import { Link, useLocation } from "react-router-dom";
 import apiConfig from "../../config/apiConfig";
 import Category from "../../components/product-list/Category";
 // import { AddToCart } from "../../components/block/NewArrival";
 import { useShoppingCart } from "../../context/ShoppingCartContext";
+import Product from "../../components/product-list/product/Product";
 
 const Listing = () => {
   const [data, setData] = useState();
@@ -27,16 +18,21 @@ const Listing = () => {
   const products = params.get("products");
   const location = useLocation();
   const name = location.state ? location.state.name : null;
+  console.log(name);
 
   const token = localStorage.getItem('accessToken');
   const categoryListAPI = apiConfig.categoryListAPI;
   const { handleAddRemoveWishlist, AddToCart } = useShoppingCart();
+  const [view, setView] = useState('grid');
+
 
 
 
   const fetchDetails = () => {
+
+    const apiUrl = apiConfig.listingAPI;
     fetch(
-      `https://cema-backend.plasium.com/api/products?per_page=3&page=${currentPage}&${products}=1`,
+      `${apiUrl}?per_page=3&page=${currentPage}&${products}=1`,
       {
         method: "GET",
       }
@@ -67,8 +63,9 @@ const Listing = () => {
   };
 
   useEffect(() => {
+
     fetchDetails();
-  }, [currentPage]);
+  }, [currentPage, location.search]);
 
 
   return (
@@ -213,7 +210,7 @@ const Listing = () => {
                           </div>
                         </div>
                         <div className="products-topbar-right">
-                          <div className="products-sort dropdown">
+                          {/* <div className="products-sort dropdown">
                             <span
                               className="sort-toggle dropdown-toggle"
                               data-toggle="dropdown"
@@ -244,13 +241,38 @@ const Listing = () => {
                                 <a href="#">Sort by price: high to low</a>
                               </li>
                             </ul>
-                          </div>
+                          </div> */}
+                          <ul className="layout-toggle nav nav-tabs">
+                            <li className="nav-item" onClick={() => setView('grid')} style={{ cursor: 'pointer' }}>
+                              <a className={`layout-grid nav-link ${view === 'grid' ? 'active' : ''}`} data-toggle="tab" role="tab">
+                                <span className="icon-column">
+                                  <span class="layer first"><span></span><span></span><span></span></span><span class="layer middle"><span></span><span></span><span></span></span><span class="layer last"><span></span><span></span><span></span></span></span></a>
+                            </li>
+                            <li className="nav-item" onClick={() => setView('list')} style={{ cursor: 'pointer' }}>
+                              <a className={`layout-list nav-link ${view === 'list' ? 'active' : ''}`} data-toggle="tab" role="tab"><span className="icon-column"><span class="layer first"><span></span><span></span></span><span class="layer middle"><span></span><span></span></span><span class="layer last"><span></span><span></span></span></span></a>
+                            </li>
+                          </ul>
                         </div>
                       </div>
 
                       <div className="tab-content">
+
+                        {/* List Version  */}
                         <div
-                          className="tab-pane fade show active"
+                          className={`tab-pane fade ${view === 'list' ? 'show active' : ''}`}
+                          id="layout-list"
+                          role="tabpanel"
+                        >
+                          <div className="products-list list">
+                            {data?.map(product => (
+                              <Product current={product} />
+                            ))}
+                          </div>
+                        </div>
+
+
+                        <div
+                          className={`tab-pane fade ${view === 'grid' ? 'show active' : ''}`}
                           id="layout-grid"
                           role="tabpanel"
                         >
@@ -313,9 +335,9 @@ const Listing = () => {
                                       <div className="products-content">
                                         <div className="contents text-center">
                                           <h3 className="product-title">
-                                            <a href="#">
+                                            <Link to={`/product-details?product_id=${product.id}`}>
                                               {product?.product_name?.en}
-                                            </a>
+                                            </Link>
                                           </h3>
                                           <span className="price">
                                             KD{product.actual_selling_price}

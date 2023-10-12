@@ -16,7 +16,7 @@ const Header = (props) => {
   const { wishListCount, cartItemsCount } = useShoppingCart();
 
   const fetchDetails = () => {
-    fetch("https://cema-backend.plasium.com/api/navCategories", {
+    fetch("https://www.demo609.amrithaa.com/backend-cema/public/api/navCategories", {
       method: "GET",
     })
       .then((response) => {

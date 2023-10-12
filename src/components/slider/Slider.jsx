@@ -1,11 +1,14 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import banner_28 from "../../asset/images/banner/28.jpg";
 import banner_29 from "../../asset/images/banner/29r.jpg";
 import banner_30 from "../../asset/images/banner/30.jpg";
 import Slider from "react-slick";
 import $ from "jquery";
+import apiConfig from "../../config/apiConfig";
+import { Link } from "react-router-dom";
 
 const Sliders = () => {
+  const [sliderData, setSliderData] = useState([]);
   const settings = {
     pauseOnHover: false,
     slidesToShow: 1,
@@ -18,37 +21,54 @@ const Sliders = () => {
     autoplaySpeed: 5000,
   };
 
+  const fetchSliders = () => {
+    const apiUrl = apiConfig.slidersAPI;
+    fetch(apiUrl, {
+      method: 'GET',
+    }).then(response => response.json())
+      .then(data => {
+        console.log(data);
+        setSliderData(data.sliders);
+      }).catch(error => console.error("Fetch Issue in Slider", error));
+  }
+
+  useEffect(() => {
+    fetchSliders();
+  }, []);
   return (
     <div className="block block-sliders layout-9 diff-col nav-left auto-height m-b-0">
       <Slider {...settings}>
-        <div className="item slick-slide">
-          <div className="item-content">
-            <div className="item-info">
-              <div className="content background-1">
-                <div className="content-wrap">
-                  <h2 className="title-slider">
-                    Easy <br />
-                    Living
-                  </h2>
-                  <div className="description-slider">
-                    Best collections for your home
+        {sliderData.map(slider => (
+          <div className="item slick-slide">
+            <div className="item-content">
+              <div className="item-info">
+                <div className="content background-1">
+                  <div className="content-wrap">
+                    <h2 className="title-slider">
+                      Easy <br />
+                      Living
+                    </h2>
+                    <div className="description-slider">
+                      Best collections for your home
+                    </div>
+                    <Link to={"/products"} className="button-slider button-black" href="#">
+                      SHOP NOW
+                    </Link>
                   </div>
-                  <a className="button-slider button-black" href="#">
-                    SHOP NOW
-                  </a>
                 </div>
               </div>
-            </div>
-            <div className="content-image">
-              <img
-                width={959}
-                height={963}
-                src={banner_28}
-                alt="Image Slider"
-              />
+              <div className="content-image">
+                <img
+                  width={959}
+                  height={963}
+                  src={slider.image}
+                  alt="Image Slider"
+                />
+              </div>
             </div>
           </div>
-        </div>
+        ))}
+
         <div className="item slick-slide">
           <div className="item-content">
             <div className="item-info">
@@ -72,34 +92,6 @@ const Sliders = () => {
               <img
                 className="demo-img-1 img-fluid"
                 src={banner_29}
-                alt="Image Slider"
-              />
-            </div>
-          </div>
-        </div>
-        <div className="item slick-slide">
-          <div className="item-content">
-            <div className="item-info">
-              <div className="content background-3">
-                <div className="content-wrap">
-                  <h2 className="title-slider">
-                    Best <br />
-                    Collection
-                  </h2>
-                  <div className="description-slider">
-                    World wide best collections
-                  </div>
-                  <a className="button-slider button-black" href="#">
-                    SHOP NOW
-                  </a>
-                </div>
-              </div>
-            </div>
-            <div className="content-image">
-              <img
-                width={959}
-                height={963}
-                src={banner_30}
                 alt="Image Slider"
               />
             </div>

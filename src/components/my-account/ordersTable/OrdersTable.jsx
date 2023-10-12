@@ -16,7 +16,7 @@ const OrdersTable = () => {
 
   const openModal = (product_id) => {
     // const apiUrl = apiConfig.orderDetailsAPI;
-    const apiUrl = `https://cema-backend.plasium.com/api/orders/${product_id}`;
+    const apiUrl = `https://www.demo609.amrithaa.com/backend-cema/public/api/orders/${product_id}`;
 
     const token = localStorage.getItem('accessToken');
     fetch(apiUrl, {
