@@ -13,12 +13,9 @@ const ProductSlider = () => {
 
   const fetchDetails = () => {
     const apiUrl = apiConfig.categoryListAPI;
-    fetch(
-      `${apiUrl}?per_page=10&page=1`,
-      {
-        method: "GET",
-      }
-    )
+    fetch(`${apiUrl}?per_page=10&page=1`, {
+      method: "GET",
+    })
       .then((response) => {
         if (!response.ok) throw new Error("Network Issue");
         return response.json();
@@ -77,13 +74,21 @@ const ProductSlider = () => {
                     search: `?category=${cat.title?.en}&id=${cat.id}`,
                   }}
                 >
-                  <div className="item-image">
+                  <div
+                    className="item-image"
+                  >
                     <img
                       width={258}
                       height={258}
-                      src={`https://www.demo609.amrithaa.com/backend-cema/public/media/category/${cat?.image}`}
+                      style={{ height: "258px", width: "258px" }}
+                      src={
+                        cat?.image
+                          ? `https://www.demo609.amrithaa.com/backend-cema/public/media/category/${cat?.image}`
+                          : product_l3
+                      }
                       alt={cat.title?.en}
                     />
+                    {console.log(cat?.image)}
                   </div>
                 </Link>
                 <div className="product-cat-content-info">

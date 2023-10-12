@@ -18,10 +18,7 @@ const MyAccount = (props) => {
 
   const logoutHandler = () => {
     SETLOGGEDIN(false);
-    localStorage.removeItem("refreshToken");
-    localStorage.removeItem("accessToken");
-    localStorage.removeItem("expiresIn");
-    localStorage.removeItem("tokenType");
+    localStorage.clear();
   };
 
   const handleTabChange = (tab) => {
@@ -49,7 +46,8 @@ const MyAccount = (props) => {
   };
 
   const handleOrdersDetails = () => {
-    const apiUrl = "https://www.demo609.amrithaa.com/backend-cema/public/api/orders";
+    const apiUrl =
+      "https://www.demo609.amrithaa.com/backend-cema/public/api/orders";
     // setOrderDetails(() => fetchDetails(apiUrl));
     console.log(orderDetails);
   };

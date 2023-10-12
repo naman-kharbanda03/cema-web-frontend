@@ -27,6 +27,9 @@ const apiConfig = {
   addToWishlistArrayAPI: `${BASE_URL}/api/add_remove_wishlist_array`,
   listingAPI: `${BASE_URL}/api/products`,
   slidersAPI: `${BASE_URL}/api/getSlider`,
+  // top-menu
+  topMenu: `${BASE_URL}/api/topmenus`,
+  homeSecondCategory: `${BASE_URL}/api/homeSecondcategories`,
 };
 
 export default apiConfig;
