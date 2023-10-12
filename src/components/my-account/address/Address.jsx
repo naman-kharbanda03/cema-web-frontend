@@ -1,8 +1,11 @@
 import React, { useEffect, useState } from "react";
+import { Link } from "react-router-dom";
 import apiConfig from "../../../config/apiConfig";
 
 const Address = (props) => {
-  const [address, setAddress] = useState({})
+  // const [address, setAddress] = useState();
+  console.log(props);
+  const address = props.address;
 
   return (
     <>
@@ -11,24 +14,24 @@ const Address = (props) => {
         <header className="col-title">
           <h3> {props.type}</h3>
           {address === null ?
-            <a href="#" className="edit">
-              Edit
-            </a>
-            :
-            <a href="#" className="add" >
+            <Link to="/edit-address" className="add">
               Add
-            </a>
+            </Link>
+            :
+            <Link to="/edit-address" className="edit">
+              Edit
+            </Link>
           }
         </header>
         <address>
           {address !== {} ? <>
-            {address?.houseNo}
+            {address?.address}
             <br />
-            {address?.locality}
+            {address?.state?.name}
             <br />
-            {address?.street}
+            {address?.country?.name}
             <br />
-            {address?.city}, {address?.state} {address?.pincode}
+            {/* {address?.city}, {address?.state} {address?.pincode} */}
           </>
             :
             "Please Add Address"

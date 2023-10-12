@@ -1,13 +1,11 @@
 import React, { useEffect, useState } from "react";
 import apiConfig from "../../../config/apiConfig";
+import { useShoppingCart } from "../../../context/ShoppingCartContext";
 
 const AccountDetails = () => {
 
-  const [profileData, setProfileData] = useState({
-    firstName: '',
-    lastName: '',
-    displayName: ''
-  });
+  const [profileData, setProfileData] = useState();
+  const { showSuccessToastMessage, showInfoToastMessage } = useShoppingCart();
 
 
   const handleChange = (e) => {
@@ -19,43 +17,48 @@ const AccountDetails = () => {
     }))
   }
 
-  // useEffect(() => { console.log(profileData) }, [profileData]);
+  useEffect(() => { console.log(profileData) }, [profileData]);
 
   const onSubmit = (e) => {
+
     e.preventDefault();
     const apiUrl = apiConfig.updateProfileAPI;
     const token = localStorage.getItem('accessToken');
     const secret = apiConfig.secretKey;
 
-    const formData = new FormData();
+    if (profileData?.firstName && profileData?.lastName && profileData?.phone) {
+      const formData = new FormData();
 
-    formData.append('secret', secret);
-    formData.append('name', profileData.firstName + ' ' + profileData.lastName);
-    // formData.append('displayName', profileData.displayName);
+      formData.append('secret', secret);
+      formData.append('name', profileData?.firstName + ' ' + profileData?.lastName);
+      // formData.append('displayName', profileData.displayName);
 
 
-    fetch(apiUrl, {
-      method: "POST",
-      headers: {
-        'Authorization': `Bearer ${token}`,
-        // "Content-Type": "application/json",
-        // Add any other headers your API requires
-      },
-      body: formData,
-    }).then(response => response.json())
-      .then(data => {
-        console.log(data);
+      fetch(apiUrl, {
+        method: "POST",
+        headers: {
+          'Authorization': `Bearer ${token}`,
+          // "Content-Type": "application/json",
+          // Add any other headers your API requires
+        },
+        body: formData,
+      }).then(response => response.json())
+        .then(data => {
+          console.log(data);
+          showSuccessToastMessage(data.message);
 
-      })
-      .catch(error => console.error(error, "Fetch operation Error"))
-
+        })
+        .catch(error => console.error(error, "Fetch operation Error"));
+    } else {
+      showInfoToastMessage();
+    }
   }
 
   return (
     <>
 
       <div className="my-account-account-details">
-        <form className="edit-account" onSubmit={(e) => onSubmit(e)}>
+        <form className="edit-account" >
           <p className="form-row">
             <label for="account_first_name">
               First name <span className="required">*</span>
@@ -80,24 +83,7 @@ const AccountDetails = () => {
             />
           </p>
           <div className="clear"></div>
-          <p className="form-row">
-            <label>
-              Display name <span className="required">*</span>
-            </label>
-            <input
-              type="text"
-              className="input-text"
-              name="displayName"
-              onChange={(e) => handleChange(e)}
 
-            />
-            <span>
-              <em>
-                This will be how your name will be displayed in the account
-                section and in reviews
-              </em>
-            </span>
-          </p>
           <div className="clear"></div>
           {/* <fieldset>
             <legend>Password change</legend>
@@ -135,6 +121,45 @@ const AccountDetails = () => {
               />
             </p>
           </fieldset> */}
+          <p className="form-row">
+            <label>
+              Mobile Number <span className="required">*</span>
+            </label>
+            <input
+              type="number"
+              className="input-text"
+              name="phone"
+              // value={ }
+              onChange={(e) => handleChange(e)}
+            />
+            <span>
+              <em>
+                This will be how your name will be displayed in the account
+                section and in reviews
+              </em>
+            </span>
+          </p>
+          <div className="clear"></div>
+
+          <p className="form-row">
+            <label>
+              E-mail <span className="required">*</span>
+            </label>
+            <input
+              type="email"
+              className="input-text"
+              name="email"
+              // value={ }
+              disabled
+            // onChange={(e) => handleChange(e)}
+            />
+            <span>
+              <em>
+                This will be how your name will be displayed in the account
+                section and in reviews
+              </em>
+            </span>
+          </p>
           <div className="clear"></div>
           <p className="form-row">
             <button
@@ -142,7 +167,7 @@ const AccountDetails = () => {
               className="button"
               name="save_account_details"
               value="Save changes"
-            // onClick={(e) => onSubmit(e)}
+              onClick={(e) => onSubmit(e)}
 
             >
               Save changes

@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import image from "../../asset/images/product/3.jpg";
 import { Link } from "react-router-dom";
 import { useShoppingCart } from "../../context/ShoppingCartContext";
+import apiConfig from "../../config/apiConfig";
 
 const CartProduct = (props) => {
   const { ordersData: orderData, orderQtyChanged } = props;
@@ -37,7 +38,8 @@ const CartProduct = (props) => {
       id: order?.id,
       variant_id: "",
     };
-    fetch("https://cema-backend.plasium.com/api/updateCartQuantity", {
+    const apiUrl = apiConfig.updateCartAPI;
+    fetch(apiUrl, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
@@ -62,7 +64,8 @@ const CartProduct = (props) => {
       price: order?.simple_product?.price,
       offerprice: order?.simple_product?.offer_price,
     };
-    fetch(`https://cema-backend.plasium.com/api/removeFromCart/${order?.id}`, {
+    const apiUrl = apiConfig.removeFromCartAPI;
+    fetch(`${apiUrl}/${order?.id}`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",

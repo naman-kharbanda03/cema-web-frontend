@@ -366,36 +366,6 @@ const ShopCheckout = () => {
                                   />
                                 </span>
                               </p>
-                              {/* <p className="form-row form-row-last validate-required">
-                                <label>
-                                  Last name{" "}
-                                  <span className="required" title="required">
-                                    *
-                                  </span>
-                                </label>
-                                <span className="input-wrapper">
-                                  <input
-                                    type="text"
-                                    className="input-text"
-                                    name="billing_last_name"
-                                    value={"Amit Please send"}
-                                  />
-                                </span>
-                              </p> */}
-                              {/* <p className="form-row form-row-wide">
-                                <label>
-                                  Company name{" "}
-                                  <span className="optional">(optional)</span>
-                                </label>
-                                <span className="input-wrapper">
-                                  <input
-                                    type="text"
-                                    className="input-text"
-                                    name="billing_company"
-                                    value={"Amit Please send"}
-                                  />
-                                </span>
-                              </p> */}
                               <p className="form-row form-row-wide validate-required validate-phone">
                                 <label>
                                   Phone{" "}

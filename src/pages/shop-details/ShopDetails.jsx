@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import greyImage from "../../asset/images/product/1-2.jpg";
 import PageTitle from "../../components/page-tittle/PageTitle";
 import { useShoppingCart } from "../../context/ShoppingCartContext";
@@ -10,17 +10,20 @@ const ShopDetails = (product) => {
   const [data, setData] = useState();
   const [image, setImage] = useState("");
   const [activeTabId, setActiveTabId] = useState(1);
+  const targetRef = useRef(null);
+
 
   const url = new URL(window.location.href);
   const params = new URLSearchParams(url.search);
   const product_id = params.get("product_id");
 
-  const { AddToCart } = useShoppingCart();
+  const { AddToCart, handleAddRemoveWishlist } = useShoppingCart();
   const [quant, setQuant] = useState(0);
 
   const fetchDetails = () => {
+    const apiUrl = apiConfig.productDetailsAPI;
     fetch(
-      `https://cema-backend.plasium.com/api/products/${product_id}/simple_product`,
+      `${apiUrl}/${product_id}/simple_product`,
       {
         method: "GET",
       }
@@ -31,7 +34,7 @@ const ShopDetails = (product) => {
       })
       .then((data) => {
         setData(data.data);
-        console.log("testimm", data.data);
+        console.log("testimm", data);
         console.log("testim", data.data.combinations);
         setImage(
           `${data.data.images_path}/${data.data.combinations[0].images[0].image}`
@@ -44,32 +47,32 @@ const ShopDetails = (product) => {
     fetchDetails();
   }, []);
 
-  const handleAddRemove = (e, id) => {
-    e.preventDefault();
-    const formData = new FormData();
-    formData.append('product_id', id);
-    const token = localStorage.getItem('accessToken');
-    // console.log("shopDeatils", token);
-    const apiURl = apiConfig.addRemoveWishlistAPI;
+  // const handleAddRemove = (e, id) => {
+  //   e.preventDefault();
+  //   const formData = new FormData();
+  //   formData.append('product_id', id);
+  //   const token = localStorage.getItem('accessToken');
+  //   // console.log("shopDeatils", token);
+  //   const apiURl = apiConfig.addRemoveWishlistAPI;
 
-    fetch(apiURl, {
-      method: "POST",
-      headers: {
-        'Authorization': `Bearer ${token}`,
-        // "Content-Type": "application/json",
-        // Add any other headers your API requires
-      },
-      body: formData,
-    })
-      .then((response) => response.json())
-      .then((data) => {
-        console.log(data);
-        return data;
-      })
-      .catch((error) => {
-        console.error("Error:", error);
-      });
-  }
+  //   fetch(apiURl, {
+  //     method: "POST",
+  //     headers: {
+  //       'Authorization': `Bearer ${token}`,
+  //       // "Content-Type": "application/json",
+  //       // Add any other headers your API requires
+  //     },
+  //     body: formData,
+  //   })
+  //     .then((response) => response.json())
+  //     .then((data) => {
+  //       console.log(data);
+  //       return data;
+  //     })
+  //     .catch((error) => {
+  //       console.error("Error:", error);
+  //     });
+  // }
 
   return (
     <div id="site-main" className="site-main">
@@ -189,8 +192,19 @@ const ShopDetails = (product) => {
                           <p>Rating: {2.5} out of 5</p>
                         </div>
                         <div className="description">
-                          <p>{data?.description.en}</p>
+                          {data?.description.en.length > 100
+                            ?
+                            <>
+                              <p>{`${data?.description.en.slice(0, 100)}...`}</p>
+                              <span onClick={() => {
+                                targetRef.current.scrollIntoView({ behavior: 'smooth' })
+                              }}
+                                style={{ cursor: 'pointer' }}
+                              >Read more</span>
+                            </> : data?.description.en}
+                          {/* <p>{data?.description.en}</p> */}
                         </div>
+
                         <div className="variations">
                           <table cellspacing="0">
                             <tbody>
@@ -278,32 +292,28 @@ const ShopDetails = (product) => {
                             <button className="product-btn">Buy It Now</button>
                           </div>
                           <div className="btn-wishlist" data-title="Wishlist">
-                            <button className="product-btn" onClick={(e) => handleAddRemove(e, data.product_id)}>
+                            <button className="product-btn" onClick={(e) => handleAddRemoveWishlist(e, data.product_id)}>
                               Add to wishlist
                             </button>
                           </div>
-                          <div className="btn-compare" data-title="Compare">
+                          {/* <div className="btn-compare" data-title="Compare">
                             <button className="product-btn">Compare</button>
-                          </div>
+                          </div> */}
                         </div>
                         <div className="product-meta">
                           <span className="sku-wrapper">
-                            SKU: <span className="sku">D2300-3-2-2</span>
+                            SKU: <span className="sku">{data?.SKU}</span>
                           </span>
                           <span className="posted-in">
                             Category:{" "}
                             <a href="shop-grid-left.html" rel="tag">
-                              Furniture
+                              {data?.category_id}
                             </a>
                           </span>
                           <span className="tagged-as">
                             Tags:{" "}
                             <a href="shop-grid-left.html" rel="tag">
-                              Hot
-                            </a>
-                            ,{" "}
-                            <a href="shop-grid-left.html" rel="tag">
-                              Trend
+                              {data?.tags}
                             </a>
                           </span>
                         </div>
@@ -380,6 +390,7 @@ const ShopDetails = (product) => {
                             }`}
                           id="description"
                           role="tabpanel"
+                          ref={targetRef}
                         >
                           <p>{data?.key_features?.en}</p>
                         </div>

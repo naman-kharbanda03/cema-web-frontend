@@ -10,6 +10,7 @@ import apiConfig from "../../config/apiConfig";
 import Error from "../error/Error";
 import { ToastContainer, toast } from "react-toastify";
 import Dropdown from 'react-bootstrap/Dropdown';
+import { useShoppingCart } from "../../context/ShoppingCartContext";
 
 
 
@@ -29,6 +30,7 @@ const ProductList = () => {
   const [productList, setProductList] = useState([]);
   const [filteredProductList, setFilteredProductList] = useState([]);
   const [brands, setBrands] = useState([]);
+  const { AddToCart, handleAddRemoveWishlist } = useShoppingCart();
 
   const [categoryDetails, setCategoryDetails] = useState({
     category: {},
@@ -37,36 +39,42 @@ const ProductList = () => {
   const [categories, setCategories] = useState({});
   const [productsLoaded, setProductsLoaded] = useState(false);
 
-  const [selectedSize, setSelectedSize] = useState('All');
-  const [selectedPrice, setSelectedPrice] = useState('');
-  const [selectedBrand, setSelectedBrand] = useState('All');
+  const [filter, setFilter] = useState({
+    minPrice: 0,
+    maxPrice: 1000000,
+  });
+  const [filterToggle, setFilterToggle] = useState(false);
+  const [view, setView] = useState('grid');
 
-  const showInfoToastMessage = () => {
-    toast.info("Invalid Coupon code !", {
-      position: toast.POSITION.BOTTOM_LEFT,
-    });
-  };
-
-  const showSuccessToastMessage = (msg) => {
-    toast.success(msg, {
-      position: toast.POSITION.BOTTOM_LEFT,
-    });
-  };
-
+  const handleFilter = (e) => {
+    setFilter(prev => ({
+      ...prev,
+      [e.target.name]: e.target.value
+    }))
+  }
 
   useEffect(() => {
     const queryParams = new URLSearchParams(location.search);
     const categoryID = queryParams.get('id');
-    let categoryDetailsAPI = "";
+    const query = {
+      currency: "INR",
+      page: currentPage,
+      per_page: 10,
+      price_range: `${filter?.minPrice}-${filter?.maxPrice}`,
+      // brand: filter?.brand,
+    };
+    const queryString = new URLSearchParams(query).toString();
 
+    let urlAPI = "";
+    const categoryDetailAPI = apiConfig.categoryDetailsAPI;
     if (categoryID === null) {
-      categoryDetailsAPI = `https://cema-backend.plasium.com/api/category/0?currency=INR&page=${currentPage}&per_page=3`;
+      urlAPI = `${categoryDetailAPI}/0?${queryString}`;
     }
     else {
-      categoryDetailsAPI = `https://cema-backend.plasium.com/api/category/${categoryID}?currency=INR&page=${currentPage}&per_page=3`;
+      urlAPI = `${categoryDetailAPI}/${categoryID}?${queryString}`;
     }
 
-    fetch(categoryDetailsAPI, {
+    fetch(urlAPI, {
       method: "GET"
     })
       .then((response) => {
@@ -88,7 +96,7 @@ const ProductList = () => {
       .catch((error) => console.error("Problem with fetch operations", error));
 
 
-  }, [location.search, currentPage]);
+  }, [location.search, currentPage, filterToggle]);
 
   useEffect(() => {
     const categoryListAPI = apiConfig.categoryListAPI;
@@ -129,50 +137,10 @@ const ProductList = () => {
 
 
   useEffect(() => {
-    // setProductList(categoryDetails.products);
     setFilteredProductList(productList);
     setProductsLoaded(true);
   }, [productList])
 
-
-  const handleSizeChange = (event) => {
-    console.log(event.target.getAttribute('value'));
-    const newSize = event.target.getAttribute('value');
-
-    setSelectedSize(newSize);
-    // Filter products based on selected size, price range, and brand
-    filterProducts(newSize, selectedPrice, selectedBrand);
-  };
-
-  const handleBrandChange = (newBrand) => {
-    // const newBrand = event.target.value;
-    console.log(newBrand);
-    setSelectedBrand(newBrand);
-
-    // Filter products based on selected size, price range, and brand
-    filterProducts(selectedSize, selectedPrice, newBrand);
-  };
-
-  const filterProducts = (size, price, brand) => {
-    let filtered = productList;
-    // Filter by size
-    if (size !== 'All') {
-      filtered = filtered.filter((product) => product.type === size);
-    }
-
-    // Filter by price range
-    if (price !== '') {
-      filtered = filtered.filter((product) => product.price <= parseInt(price));
-    }
-
-    // Filter by brand
-    if (brand !== 'All') {
-      filtered = filtered.filter((product) => product.brand_name === brand);
-    }
-
-    // Update the filtered products state
-    setFilteredProductList(filtered);
-  };
   const handlePage = (page) => {
     setCurrentPage(page);
   }
@@ -218,11 +186,27 @@ const ProductList = () => {
                       <div className="block-content">
                         <div id="slider-range" className="price-filter-wrap">
                           <div className="filter-item price-filter">
-                            <div className="layout-slider">
+                            <div className="layout-slider" style={{ display: 'flex' }}>
                               <input
                                 id="price-filter"
-                                name="price"
+                                name="minPrice"
+                                style={{ width: '20%' }}
+                                onChange={(e) => handleFilter(e)}
                               />
+                              <br />
+                              <input
+                                id="price-filter"
+                                name="maxPrice"
+                                style={{ marginLeft: '3%', width: '20%' }}
+                                onChange={(e) => handleFilter(e)}
+
+                              />
+                              <button
+                                style={{ marginLeft: '5%', width: '20%' }}
+                                onClick={() => setFilterToggle(prev => !prev)}
+                              >
+                                Go
+                              </button>
                             </div>
                             <div className="layout-slider-settings"></div>
                           </div>
@@ -276,7 +260,7 @@ const ProductList = () => {
                       </div>
                       <div className="block-content">
                         <ul className="filter-items image">
-                          {brands.map(brand => <Brands brand={brand} bf={handleBrandChange} />)}
+                          {brands.map(brand => <Brands brand={brand} bf={setFilter} />)}
                         </ul>
                       </div>
                     </div>
@@ -289,12 +273,28 @@ const ProductList = () => {
                           Showing all {filteredProductList.length} results
                         </div>
                       </div>
+                      <div className="products-topbar-right">
+                        <ul className="layout-toggle nav nav-tabs">
+                          <li className="nav-item" onClick={() => setView('grid')}>
+                            <a className={`layout-grid nav-link ${view === 'grid' ? 'active' : ''}`} data-toggle="tab" href="#layout-grid" role="tab">
+                              <span className="icon-column">
+                                <span class="layer first"><span></span><span></span><span></span></span><span class="layer middle"><span></span><span></span><span></span></span><span class="layer last"><span></span><span></span><span></span></span></span></a>
+                          </li>
+                          <li className="nav-item" onClick={() => setView('list')}>
+                            <a className={`layout-list nav-link ${view === 'list' ? 'active' : ''}`} data-toggle="tab" href="#layout-list" role="tab"><span className="icon-column"><span class="layer first"><span></span><span></span></span><span class="layer middle"><span></span><span></span></span><span class="layer last"><span></span><span></span></span></span></a>
+                          </li>
+                        </ul>
+                      </div>
                     </div>
 
-                    {/* List Version  */}
+
+
+
                     <div className="tab-content">
+
+                      {/* List Version  */}
                       <div
-                        className="tab-pane fade show active"
+                        className={`tab-pane fade ${view === 'list' ? 'show active' : ''}`}
                         id="layout-list"
                         role="tabpanel"
                       >
@@ -302,6 +302,88 @@ const ProductList = () => {
                           {filteredProductList.map(product => (
                             <Product current={product} />
                           ))}
+                        </div>
+                      </div>
+
+                      {/* Grid Version  */}
+                      <div
+                        className={`tab-pane fade ${view === 'grid' ? 'show active' : ''}`}
+                        id="layout-grid"
+                        role="tabpanel"
+                      >
+                        <div className="products-list grid">
+                          <div className="row">
+                            {filteredProductList?.map((product) => (
+                              <div
+                                className="col-xl-3 col-lg-4 col-md-4 col-sm-6"
+                                key={product.id}
+                              >
+                                <div className="items">
+                                  <div className="products-entry clearfix product-wapper">
+                                    <div className="products-thumb">
+                                      <div className="product-lable">
+                                        <div className="onsale">-23%</div>
+                                        {/*/to ask what to show */}
+                                        <div className="hot">Hot</div>
+                                      </div>
+                                      <div className="product-thumb-hover">
+                                        <Link
+                                          to={`/product-details?product_id=${product.id}`}
+                                        >
+                                          <img
+                                            width={600}
+                                            height={600}
+                                            src={`${product.image_path}/${product.product_image?.[0]}`}
+                                            className="hover-image back"
+                                            alt="image not available"
+                                          />
+                                        </Link>
+                                      </div>
+                                      <div className="product-button">
+                                        <div
+                                          className="btn-add-to-cart"
+                                          data-title="Add to cart"
+                                        >
+                                          <a
+                                            rel="nofollow"
+                                            onClick={() => AddToCart(product)}
+                                            className="product-btn button"
+
+                                          >
+                                            Add to cart
+                                          </a>
+                                        </div>
+                                        <div
+                                          className="btn-wishlist"
+                                          data-title="Wishlist"
+                                        >
+                                          <button className="product-btn"
+                                            onClick={(e) => {
+                                              handleAddRemoveWishlist(e, product.id)
+                                            }}
+                                          >
+                                            Add to wishlist
+                                          </button>
+                                        </div>
+                                      </div>
+                                    </div>
+                                    <div className="products-content">
+                                      <div className="contents text-center">
+                                        <h3 className="product-title">
+                                          <Link to={`/product-details?product_id=${product.id}`}>
+                                            {product?.product_name?.en}
+                                          </Link>
+                                        </h3>
+                                        <span className="price">
+                                          KD{product.actual_selling_price}
+                                        </span>
+                                      </div>
+                                    </div>
+                                  </div>
+                                </div>
+                              </div>
+                            ))}
+                          </div>
                         </div>
                       </div>
                     </div>
@@ -317,7 +399,7 @@ const ProductList = () => {
                           </li> : ""
                         }
                         {currentPage - 1 > 0 ? <li onClick={() => setCurrentPage(page => page - 1)}><a class="page-numbers" href="#">{currentPage - 1}</a></li> : ""}
-                        <li><span aria-current="page" class="page-numbers current">{currentPage}</span></li>
+                        {currentPage !== lastPage ? <li><span aria-current="page" class="page-numbers current">{currentPage}</span></li> : ''}
                         {currentPage + 1 <= lastPage ? <li onClick={() => setCurrentPage(page => page + 1)}><a class="page-numbers" href="#">{currentPage + 1}</a></li> : ""}
 
                         {currentPage !== lastPage ?

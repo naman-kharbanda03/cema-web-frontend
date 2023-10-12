@@ -16,10 +16,12 @@ import ShopDetails from "./pages/shop-details/ShopDetails";
 import { ShoppingCartProvider } from "./context/ShoppingCartContext";
 import Error from "./pages/error/Error";
 import { useEffect, useState } from "react";
+import CreateEditAddress from "./pages/createEditAddress/CreateEditAddress";
 
 function App() {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   useEffect(() => console.log(isLoggedIn), [isLoggedIn]);
+
   return (
     <div
       id="page"
@@ -39,8 +41,7 @@ function App() {
           <Route path="/shop-checkout" element={<ShopCheckout />} />
           <Route path="/wishlist" element={<ShopWishlist />} />
           <Route path="/product-details" element={<ShopDetails />} />
-          <Route path="/new-arrivals" element={<ProductList />} />
-          <Route path="/best-seller" element={<ProductList />} />
+          <Route path="/edit-address" element={<CreateEditAddress />} />
         </Routes>
         <Footer />
         <BackToTop />

@@ -39,7 +39,7 @@ const MyAccount = (props) => {
 
   const handleOrdersDetails = () => {
     const apiUrl = "https://cema-backend.plasium.com/api/orders";
-    setOrderDetails(() => fetchDetails(apiUrl));
+    // setOrderDetails(() => fetchDetails(apiUrl));
     console.log(orderDetails);
   };
   const handleAddress = () => {
@@ -84,7 +84,7 @@ const MyAccount = (props) => {
                               role="tab"
                               onClick={() => {
                                 handleTabChange("orders");
-                                handleOrdersDetails();
+                                // handleOrdersDetails();
                               }}
                             >
                               Orders

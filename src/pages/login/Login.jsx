@@ -1,6 +1,9 @@
 import React, { useEffect, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import PageTitle from "../../components/page-tittle/PageTitle";
+import WishListTable from "../../components/wishlist/WishListTable";
+import apiConfig from "../../config/apiConfig";
+import { useShoppingCart } from "../../context/ShoppingCartContext";
 
 const Login = (props) => {
   const [loginData, setLoginData] = useState({
@@ -10,6 +13,7 @@ const Login = (props) => {
   const [error, setError] = useState("");
   const [response, setResponse] = useState("");
   const [isAuthenticated, setIsAuthentcated] = useState(false);
+  const { setCartToggle, setWishListToggle, AddToCart2, addToWishlist2 } = useShoppingCart();
   const navigate = useNavigate();
 
   const [registerData, setRegisterData] = useState({
@@ -38,7 +42,8 @@ const Login = (props) => {
     formData.append("email", loginData.email);
     formData.append("password", loginData.password);
 
-    fetch("https://cema-backend.plasium.com/api/login", {
+    const apiUrl = apiConfig.loginAPI;
+    fetch(apiUrl, {
       method: "POST",
       headers: {
         // "Content-Type": "application/json",
@@ -49,12 +54,12 @@ const Login = (props) => {
       .then((response) => response.json())
       .then((data) => {
         // this.setState({ responseMessage: data.message }); // Handle the response data
-        console.log(data);
         if (data.access_token) {
           localStorage.setItem("tokenType", data.token_type); // Store the token in localStorage
           localStorage.setItem("accessToken", data.access_token);
           localStorage.setItem("expiresIn", data.expires_in);
           localStorage.setItem("refreshToken", data.refresh_token);
+          addLocalCartToDB();
           props.auth(true);
           return navigate("/");
         } else if (data.status === "fail") alert(data.msg);
@@ -63,6 +68,12 @@ const Login = (props) => {
         console.error("Error:", error);
       });
   };
+  const addLocalCartToDB = () => {
+    const cart = JSON.parse(localStorage.getItem('cart'));
+    const wishlist = JSON.parse(localStorage.getItem('wishlist'));
+    AddToCart2(cart);
+    addToWishlist2(wishlist);
+  }
 
   const handleRegister = function (e) {
     e.preventDefault();
@@ -143,7 +154,7 @@ const Login = (props) => {
                                     onChange={(e) => handleChange(e, "login")}
                                   />
                                 </div>
-                                <div className="rememberme-lost">
+                                {/* <div className="rememberme-lost">
                                   <div className="remember-me">
                                     <input
                                       name="rememberme"
@@ -159,7 +170,7 @@ const Login = (props) => {
                                       Lost your password?
                                     </Link>
                                   </div>
-                                </div>
+                                </div> */}
                                 <div className="button-login">
                                   <input
                                     type="submit"
@@ -182,7 +193,6 @@ const Login = (props) => {
                               <form
                                 method="post"
                                 className="register"
-                                onSubmit={(e) => handleRegister(e)}
                               >
                                 <div className="name">
                                   <label>
@@ -246,6 +256,8 @@ const Login = (props) => {
                                     className="button"
                                     name="register"
                                     defaultValue="Register"
+                                    onClick={(e) => handleRegister(e)}
+
                                   />
                                 </div>
                               </form>

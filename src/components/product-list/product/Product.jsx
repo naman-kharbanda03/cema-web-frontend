@@ -124,8 +124,8 @@ const Product = (props) => {
                                 </div> */}
                             </div>
                             <div className="product-description">
-
                                 <div dangerouslySetInnerHTML={{ __html: desc }} />
+                                {/* <span>Read more</span> */}
                             </div>
                         </div>
                     </div>
