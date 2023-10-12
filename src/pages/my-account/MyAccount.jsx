@@ -9,6 +9,7 @@ import OrdersTable from "../../components/my-account/ordersTable/OrdersTable";
 import PageTitle from "../../components/page-tittle/PageTitle";
 import { useContext } from "react";
 import { UserData } from "../../context/UserContext";
+import { Navigate } from "react-router-dom";
 
 const MyAccount = (props) => {
   const [orderDetails, setOrderDetails] = useState([{}]);
@@ -137,14 +138,14 @@ const MyAccount = (props) => {
                           <li className="nav-item">
                             <a
                               className={`nav-link ${
-                                activeTab === "forgot-password" ? "active" : ""
+                                activeTab === "change-password" ? "active" : ""
                               }`}
                               data-toggle="tab"
-                              href="#forgot-password"
+                              href="#change-password"
                               role="tab"
-                              onClick={() => handleTabChange("forgot-password")}
+                              onClick={() => handleTabChange("change-password")}
                             >
-                              Forgot Password
+                              Change Password
                             </a>
                           </li>
                           <li className="nav-item">
@@ -198,9 +199,9 @@ const MyAccount = (props) => {
                         </div>
                         <div
                           className={`tab-pane fade ${
-                            activeTab === "forgot-password" ? "show active" : ""
+                            activeTab === "change-password" ? "show active" : ""
                           }`}
-                          id="forgot-password"
+                          id="change-password"
                           role="tabpanel"
                         >
                           <ForgotPassword />

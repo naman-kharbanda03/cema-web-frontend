@@ -13,6 +13,8 @@ const apiConfig = {
   getOrderAPI: `${BASE_URL}/api/orders`,
   getAddressAPI: `${BASE_URL}/api/manageaddress`,
   getBillingAddressAPI: `${BASE_URL}/api/billing-address`,
+  createUpdateShipAddress : `${BASE_URL}/api/create-address`,
+  createUpdateBillAddress : `${BASE_URL}/api/create-billing-address`,
   updateProfileAPI: `${BASE_URL}/api/update/profile`,
   getUserApi: `${BASE_URL}/api/myprofile`,
   secretKey: secretKey,
@@ -27,6 +29,7 @@ const apiConfig = {
   addToWishlistArrayAPI: `${BASE_URL}/api/add_remove_wishlist_array`,
   listingAPI: `${BASE_URL}/api/products`,
   slidersAPI: `${BASE_URL}/api/getSlider`,
+  changePassword: `${BASE_URL}/api/password/change`,
 };
 
 export default apiConfig;
