@@ -31195,6 +31195,9 @@ body i[class~="slick-arrow"][class~="fa-angle-right"] {
   margin-bottom: 10px;
   color: #000;
 }
+.shop-details .product-tabs #review-form .comment-form-rating .star-ratings{
+  margin:-3px 10px;
+}
 .shop-details .product-tabs #review-form .comment-form-rating .stars {
   padding-top: 0;
   display: inline-block;

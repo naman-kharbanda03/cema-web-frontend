@@ -5,14 +5,17 @@ import { useShoppingCart } from "../../context/ShoppingCartContext";
 import { act } from "react-dom/test-utils";
 import StarRatings from "react-star-ratings";
 import apiConfig from "../../config/apiConfig";
+import { toast } from "react-toastify";
 
 const ShopDetails = (product) => {
   const [data, setData] = useState();
   const [image, setImage] = useState("");
   const [activeTabId, setActiveTabId] = useState(1);
+  const [review, setReview] = useState({})
+  const [toggleForm, SetForm] = useState(false)
   const targetRef = useRef(null);
 
-
+  const token = localStorage.getItem('accessToken');
   const url = new URL(window.location.href);
   const params = new URLSearchParams(url.search);
   const product_id = params.get("product_id");
@@ -33,7 +36,19 @@ const ShopDetails = (product) => {
         return response.json();
       })
       .then((data) => {
+        console.log("cart -->", data?.data)
         setData(data.data);
+        setReview(
+          {
+            quality: 0,
+            Price: 0,
+            Value: 0,
+            product_id: data?.data?.product_id,
+            review: "",
+            name: "",
+            email: ""
+          }
+        )
         console.log("testing", data.data);
         // console.log("testim", data.data.combinations);
         setImage(
@@ -42,7 +57,62 @@ const ShopDetails = (product) => {
       })
       .catch((error) => console.error("Problem with fetch operations", error));
   };
+  const giveReview = (e) =>{
+    e.preventDefault();
+    if(!review?.name || !review?.email || !review?.review){
+      toast.warning("Please fill all the fields", {
+        position: toast.POSITION.BOTTOM_LEFT,
+    });
+    return
+    }
+    const formData = new FormData();
+    Object.keys(review).map((key) =>{
+      formData.append(key, review[key])
+    })
+    fetch(apiConfig.addProductReview,{
+        method: "POST",
+        headers: {
+          'Authorization': `Bearer ${token}`,
+        },
+        body: formData
+      })
+      .then((response) => {
+        if (!response.ok) throw new Error("Network Issue");
+        return response.json();
+      })
+      .then((data) => {
+        console.log(data)
+        setReview( prevState =>
+          {
+            return {
+            ...prevState,
+            quality: 0,
+            review: "",
+            name: "",
+            email: ""
+            }
+          }
+        )
+        toast.success(data.message, {
+          position: toast.POSITION.BOTTOM_LEFT,
+      });
+      })
+      .catch((error) => {
+        //console.error("Problem with fetch operations", error)
+        toast.warning("Review Already Added!", {
+          position: toast.POSITION.BOTTOM_LEFT,
+      });
+      });
+  }
+  const onChangeHandler = (e) =>{
+    setReview((prevState)=> {
+      return {
+       ...prevState,
+       [e.target.name] : e.target.value
+      }
 
+     })
+  }
   useEffect(() => {
     fetchDetails();
   }, []);
@@ -261,14 +331,14 @@ const ShopDetails = (product) => {
                                   price: data?.combinations?.[0]?.mainprice,
                                   image_path: data?.images_path,
                                   product_image: [`${data?.combinations[0]?.images[0]?.image}`],
-                                  product_name: { en: data?.product_name?.en }
+                                  product_name: { en: data?.product_name?.en },
+                                  type : data?.type || "simple_product"
+
                                 }
                                 AddToCart(prod);
                               }}
                             >
-                              <a href="#" className="button" tabindex="0">
-                                Add to cart
-                              </a>
+                              Add to cart
                             </div>
                           </div>
                           <div className="btn-quick-buy" data-title="Wishlist">
@@ -454,14 +524,16 @@ const ShopDetails = (product) => {
                                 <span
                                   id="reply-title"
                                   className="comment-reply-title"
+                                  onClick={() => SetForm(!toggleForm)}
                                 >
                                   Add a review
                                 </span>
-                                <form
+                                {toggleForm && <form
                                   action=""
                                   method="post"
                                   id="comment-form"
                                   className="comment-form"
+                                  onSubmit={giveReview}
                                 >
                                   <p className="comment-notes">
                                     <span id="email-notes">
@@ -470,9 +542,9 @@ const ShopDetails = (product) => {
                                     Required fields are marked{" "}
                                     <span className="required">*</span>
                                   </p>
-                                  <div className="comment-form-rating">
+                                  <div className="comment-form-rating d-flex">
                                     <label for="rating">Your rating</label>
-                                    <p className="stars">
+                                    {/* <p className="stars">
                                       <span>
                                         <a className="star-1" href="#">
                                           1
@@ -490,30 +562,51 @@ const ShopDetails = (product) => {
                                           5
                                         </a>
                                       </span>
-                                    </p>
+                                    </p> */}
+                                    <StarRatings 
+                                            style={{margin: "-3px 10px"}}
+                                              rating={review?.quality}
+                                              starRatedColor="gold"
+                                              starHoverColor="gold"
+                                              numberOfStars={5}
+                                              starDimension="18px"
+                                              starSpacing="2px"
+                                              changeRating={(rate)=> {
+                                                setReview((prevState)=> {
+                                                 return {
+                                                  ...prevState,
+                                                  quality : rate
+                                                 }
+
+                                                })
+                                              }}
+                                            />
                                   </div>
                                   <p className="comment-form-comment">
                                     <textarea
                                       id="comment"
-                                      name="comment"
+                                      name="review"
                                       placeholder="Your Reviews *"
                                       cols="45"
                                       rows="8"
                                       aria-required="true"
                                       required=""
+                                      value={review?.review}
+                                      onChange={onChangeHandler}
                                     ></textarea>
                                   </p>
                                   <div className="content-info-reviews">
                                     <p className="comment-form-author">
                                       <input
                                         id="author"
-                                        name="author"
+                                        name="name"
                                         placeholder="Name *"
                                         type="text"
-                                        value=""
                                         size="30"
                                         aria-required="true"
                                         required=""
+                                        value={review?.name}
+                                        onChange={onChangeHandler}
                                       />
                                     </p>
                                     <p className="comment-form-email">
@@ -522,10 +615,11 @@ const ShopDetails = (product) => {
                                         name="email"
                                         placeholder="Email *"
                                         type="email"
-                                        value=""
                                         size="30"
                                         aria-required="true"
                                         required=""
+                                        value={review?.email}
+                                        onChange={onChangeHandler}
                                       />
                                     </p>
                                     <p className="form-submit">
@@ -538,7 +632,7 @@ const ShopDetails = (product) => {
                                       />
                                     </p>
                                   </div>
-                                </form>
+                                </form>}
                               </div>
                             </div>
                             <div className="clear"></div>

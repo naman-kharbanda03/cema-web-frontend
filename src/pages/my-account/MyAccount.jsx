@@ -9,11 +9,12 @@ import OrdersTable from "../../components/my-account/ordersTable/OrdersTable";
 import PageTitle from "../../components/page-tittle/PageTitle";
 import { useContext } from "react";
 import { UserData } from "../../context/UserContext";
-import { Navigate } from "react-router-dom";
+import { Navigate, useSearchParams } from "react-router-dom";
 
-const MyAccount = (props) => {
+const MyAccount = (props) => { 
+  const [searchParams, setSearchParams] = useSearchParams();
   const [orderDetails, setOrderDetails] = useState([{}]);
-  const [activeTab, setActiveTab] = useState("dashboard");
+  const [activeTab, setActiveTab] = useState(searchParams.get("activeTab") || "dashboard");
   const [ordersLoaded, setOrdersLoaded] = useState(false);
   const { SETLOGGEDIN } = useContext(UserData);
 
@@ -174,7 +175,7 @@ const MyAccount = (props) => {
                           id="orders"
                           role="tabpanel"
                         >
-                          <OrdersTable orders={orderDetails} />
+                          <OrdersTable orders={orderDetails} orderId={searchParams.get("orderId") || false} />
                         </div>
                         <div
                           className={`tab-pane fade ${

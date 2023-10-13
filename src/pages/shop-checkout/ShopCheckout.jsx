@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import PageTitle from "../../components/page-tittle/PageTitle";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
+import { toast } from "react-toastify";
 
 const ShopCheckout = () => {
   const [orders, setOrders] = useState();
@@ -202,7 +203,7 @@ const ShopCheckout = () => {
       .then((result) => console.log(result))
       .catch((error) => console.log("error", error));
   };
-
+  const navigate = useNavigate()
   const placeOrder = () => {
     const bearerToken = localStorage.getItem("accessToken");
     const formdata = {
@@ -216,8 +217,15 @@ const ShopCheckout = () => {
       },
       body: JSON.stringify(formdata),
     })
-      .then((response) => response.text())
-      .then((result) => console.log(result))
+      .then((response) => response.json())
+      .then((result) => {
+        toast.success(result.message, {
+          position: toast.POSITION.BOTTOM_LEFT,
+      });
+      setTimeout(() => {
+        navigate(`/account?activeTab=orders&orderId=${"EODD"+result?.order_id}`)
+      }, 1000)
+      })
       .catch((error) => console.log("error", error));
   };
 

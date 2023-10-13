@@ -33,6 +33,8 @@ const apiConfig = {
   // top-menu
   topMenu: `${BASE_URL}/api/topmenus`,
   homeSecondCategory: `${BASE_URL}/api/homeSecondcategories`,
+  //rating
+  addProductReview :`${BASE_URL}/api/addSimpleProductReview`, 
 };
 
 export default apiConfig;

@@ -5,7 +5,7 @@ import apiConfig from "../../../config/apiConfig";
 
 
 
-const OrdersTable = () => {
+const OrdersTable = ({orderId}) => {
 
   const [orders, setOrders] = useState([]);
 
@@ -17,7 +17,7 @@ const OrdersTable = () => {
 
   const openModal = (product_id) => {
     // const apiUrl = apiConfig.orderDetailsAPI;
-    const apiUrl = `https://www.demo609.amrithaa.com/backend-cema/public/api/orders/${product_id}`;
+    const apiUrl = `https://www.demo609.amrithaa.com/backend-cema/public/api/orders/${"65291b4fbc21d"}`;
 
     const token = localStorage.getItem('accessToken');
     fetch(apiUrl, {
@@ -47,7 +47,7 @@ const OrdersTable = () => {
         return response.json();
       })
       .then((data) => {
-        console.log(data);
+        console.log(data.orders);
         setOrders(data.orders);
         return data.orders;
       })
@@ -57,9 +57,14 @@ const OrdersTable = () => {
   useEffect(() => {
     const apiUrl = apiConfig.getOrderAPI;
     fetchDetails(apiUrl);
-    console.log(orders);
   }, []);
-
+  useEffect(()=>{
+    if(orderId && orders?.length > 0){
+      let prodId = orders.filter((order) => order?.order_id === orderId)[0]?.id
+      openModal(prodId)
+      setShowModal(true)
+    }
+  }, [orders])
   return (
     <>
       <div className="my-account-orders">
