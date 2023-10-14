@@ -13,8 +13,8 @@ const apiConfig = {
   getOrderAPI: `${BASE_URL}/api/orders`,
   getAddressAPI: `${BASE_URL}/api/manageaddress`,
   getBillingAddressAPI: `${BASE_URL}/api/billing-address`,
-  createUpdateShipAddress : `${BASE_URL}/api/create-address`,
-  createUpdateBillAddress : `${BASE_URL}/api/create-billing-address`,
+  createUpdateShipAddress: `${BASE_URL}/api/create-address`,
+  createUpdateBillAddress: `${BASE_URL}/api/create-billing-address`,
   updateProfileAPI: `${BASE_URL}/api/update/profile`,
   getUserApi: `${BASE_URL}/api/myprofile`,
   secretKey: secretKey,
@@ -33,8 +33,9 @@ const apiConfig = {
   // top-menu
   topMenu: `${BASE_URL}/api/topmenus`,
   homeSecondCategory: `${BASE_URL}/api/homeSecondcategories`,
+  homeFirstCategory: `${BASE_URL}/api/homeFirstcategories`,
   //rating
-  addProductReview :`${BASE_URL}/api/addSimpleProductReview`, 
+  addProductReview: `${BASE_URL}/api/addSimpleProductReview`,
 };
 
 export default apiConfig;

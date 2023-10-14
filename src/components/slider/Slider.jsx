@@ -61,6 +61,7 @@ const Sliders = () => {
                 <img
                   width={959}
                   height={963}
+                  // style={{ height: '450px', objectFit: 'contain' }}
                   src={slider.image}
                   alt="Image Slider"
                 />
@@ -69,7 +70,7 @@ const Sliders = () => {
           </div>
         ))}
 
-        <div className="item slick-slide">
+        {/* <div className="item slick-slide">
           <div className="item-content">
             <div className="item-info">
               <div className="content background-2">
@@ -96,7 +97,7 @@ const Sliders = () => {
               />
             </div>
           </div>
-        </div>
+        </div> */}
       </Slider>
     </div>
   );

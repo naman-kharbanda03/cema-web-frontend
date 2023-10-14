@@ -10,7 +10,7 @@ const Banner = () => {
   useEffect(() => {
     // categories data
     (() => {
-      fetch(apiConfig.homeSecondCategory)
+      fetch(apiConfig.homeFirstCategory)
         .then((res) => {
           if (!res.ok) throw new Error("Network Issue");
           return res.json();
