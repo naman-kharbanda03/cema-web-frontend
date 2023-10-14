@@ -38,45 +38,14 @@ const WishListTable = () => {
 
             }).catch((error) => console.error("Problem with fetch", error));
         } else {
-            if (wishListCount > 0) {
-                const wishlistLocalOrder = JSON.parse(localStorage.getItem('wishlist'));
-                setOrderData(wishlistLocalOrder?.Items);
 
-            }
+            const wishlistLocalOrder = JSON.parse(localStorage.getItem('wishlist'));
+            setOrderData(wishlistLocalOrder?.Items);
+
         }
 
     }, [wishListCount]);
 
-    useEffect(() => console.log(orderData), [orderData]);
-
-    // const handleAddRemove = (e, id) => {
-    //     e.preventDefault();
-    //     const formData = new FormData();
-    //     formData.append('product_id', id);
-    //     const apiURl = apiConfig.addRemoveWishlistAPI;
-    //     fetch(apiURl, {
-    //         method: "POST",
-    //         headers: {
-    //             'Authorization': `Bearer ${token}`,
-    //             // "Content-Type": "application/json",
-    //             // Add any other headers your API requires
-    //         },
-    //         body: formData,
-    //     })
-    //         .then((response) => response.json())
-    //         .then((data) => {
-    //             console.log(data);
-    //             if (data.status === "success") {
-    //                 setOrderData(prevData => {
-    //                     return prevData.filter(order => order.simple_product.id !== id);
-    //                 });
-    //             }
-    //             return orderData;
-    //         })
-    //         .catch((error) => {
-    //             console.error("Error:", error);
-    //         });
-    // }
 
     return (
         <>
@@ -87,7 +56,12 @@ const WishListTable = () => {
                             {orderData.map(order => (
                                 <>
                                     <tr className="wishlist-item">
-                                        <td className="wishlist-item-remove" onClick={(e) => handleAddRemoveWishlist(e, order?.simple_product?.id)}>
+                                        <td className="wishlist-item-remove" onClick={(e) => {
+                                            const prod = {
+                                                id: order?.simple_product?.id,
+                                            }
+                                            handleAddRemoveWishlist(e, prod)
+                                        }}>
                                             <span></span>
                                         </td>
                                         <td className="wishlist-item-image">
@@ -130,7 +104,12 @@ const WishListTable = () => {
                                                         rel="nofollow"
                                                         href="#"
                                                         className="product-btn button"
-                                                        onClick={(e) => handleAddRemoveWishlist(e, order.simple_product?.id)}
+                                                        onClick={(e) => {
+                                                            const prod = {
+                                                                id: order?.simple_product?.id,
+                                                            }
+                                                            handleAddRemoveWishlist(e, prod)
+                                                        }}
                                                     >
                                                         Remove
                                                     </a>

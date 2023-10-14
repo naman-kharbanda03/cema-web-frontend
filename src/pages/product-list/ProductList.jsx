@@ -11,6 +11,7 @@ import Error from "../error/Error";
 import { ToastContainer, toast } from "react-toastify";
 import Dropdown from 'react-bootstrap/Dropdown';
 import { useShoppingCart } from "../../context/ShoppingCartContext";
+import ProductGrid from "../../components/product-list/product-grid/ProductGrid";
 
 
 
@@ -61,9 +62,10 @@ const ProductList = () => {
       page: currentPage,
       per_page: 10,
       price_range: `${filter?.minPrice}-${filter?.maxPrice}`,
-      // brand: filter?.brand,
+      brand: filter.brand ? filter.brand : '',
     };
     const queryString = new URLSearchParams(query).toString();
+    console.log(queryString);
 
     let urlAPI = "";
     const categoryDetailAPI = apiConfig.categoryDetailsAPI;
@@ -190,16 +192,17 @@ const ProductList = () => {
                               <input
                                 id="price-filter"
                                 name="minPrice"
-                                style={{ width: '20%' }}
+                                style={{ width: '20%', textAlign: 'center' }}
                                 onChange={(e) => handleFilter(e)}
+                                placeholder='Min'
                               />
                               <br />
                               <input
                                 id="price-filter"
                                 name="maxPrice"
-                                style={{ marginLeft: '3%', width: '20%' }}
+                                style={{ marginLeft: '3%', width: '20%', textAlign: 'center' }}
                                 onChange={(e) => handleFilter(e)}
-
+                                placeholder='Max'
                               />
                               <button
                                 style={{ marginLeft: '5%', width: '20%' }}
@@ -260,7 +263,7 @@ const ProductList = () => {
                       </div>
                       <div className="block-content">
                         <ul className="filter-items image">
-                          {brands.map(brand => <Brands brand={brand} bf={setFilter} />)}
+                          {brands.map(brand => <Brands brand={brand} bf={setFilter} ft={setFilterToggle} f={filter} />)}
                         </ul>
                       </div>
                     </div>
@@ -314,74 +317,9 @@ const ProductList = () => {
                         <div className="products-list grid">
                           <div className="row">
                             {filteredProductList?.map((product) => (
-                              <div
-                                className="col-xl-3 col-lg-4 col-md-4 col-sm-6"
-                                key={product.id}
-                              >
-                                <div className="items">
-                                  <div className="products-entry clearfix product-wapper">
-                                    <div className="products-thumb">
-                                      <div className="product-lable">
-                                        <div className="onsale">-23%</div>
-                                        {/*/to ask what to show */}
-                                        <div className="hot">Hot</div>
-                                      </div>
-                                      <div className="product-thumb-hover">
-                                        <Link
-                                          to={`/product-details?product_id=${product.id}`}
-                                        >
-                                          <img
-                                            width={600}
-                                            height={600}
-                                            src={`${product.image_path}/${product.product_image?.[0]}`}
-                                            className="hover-image back"
-                                            alt="image not available"
-                                          />
-                                        </Link>
-                                      </div>
-                                      <div className="product-button">
-                                        <div
-                                          className="btn-add-to-cart"
-                                          data-title="Add to cart"
-                                        >
-                                          <a
-                                            rel="nofollow"
-                                            onClick={() => AddToCart(product)}
-                                            className="product-btn button"
-
-                                          >
-                                            Add to cart
-                                          </a>
-                                        </div>
-                                        <div
-                                          className="btn-wishlist"
-                                          data-title="Wishlist"
-                                        >
-                                          <button className="product-btn"
-                                            onClick={(e) => {
-                                              handleAddRemoveWishlist(e, product.id)
-                                            }}
-                                          >
-                                            Add to wishlist
-                                          </button>
-                                        </div>
-                                      </div>
-                                    </div>
-                                    <div className="products-content">
-                                      <div className="contents text-center">
-                                        <h3 className="product-title">
-                                          <Link to={`/product-details?product_id=${product.id}`}>
-                                            {product?.product_name?.en}
-                                          </Link>
-                                        </h3>
-                                        <span className="price">
-                                          KD{product.actual_selling_price}
-                                        </span>
-                                      </div>
-                                    </div>
-                                  </div>
-                                </div>
-                              </div>
+                              <>
+                                <ProductGrid current={product} />
+                              </>
                             ))}
                           </div>
                         </div>

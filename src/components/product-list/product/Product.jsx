@@ -35,14 +35,14 @@ const Product = (props) => {
                                     <img
                                         width="600"
                                         height="600"
-                                        src={product.image_path + "/" + product.product_image[0]}
+                                        src={product.image_path.replace('gallery', `${product.thumbnail}`)}
                                         className="post-image"
                                         alt=""
                                     />
                                     <img
                                         width="600"
                                         height="600"
-                                        src={product.image_path + "/" + product.product_image[0]}
+                                        src={product.image_path.replace('gallery', `${product.hover_thumbnail}`)}
                                         className="hover-image back"
                                         alt=""
                                     />
@@ -102,7 +102,7 @@ const Product = (props) => {
                                                 product_image: [`${product.product_image[0]}`],
                                                 product_name: { en: product.product_name.en }
                                             }
-                                            AddToCart(prod);
+                                            AddToCart(prod, 1);
                                         }}
                                         className="product-btn button"
                                     >

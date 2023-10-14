@@ -4,12 +4,24 @@ const Brands = (props) => {
     const name = props.brand.name;
     return (
         <>
-            <li name="brand" onClick={() => props.bf(prev => ({
-                ...prev,
-                ["brand"]: props.brand.id
-            }))}>
+            <li name="brand" onClick={() => {
+                if (props.f?.brand !== props.brand.id) {
+                    props.bf(prev => ({
+                        ...prev,
+                        ["brand"]: props.brand.id
+                    }))
+                    props.ft(prev => !prev);
+                }
+                else {
+                    props.bf(prev => ({
+                        ...prev,
+                        ["brand"]: ''
+                    }))
+                    props.ft(prev => !prev);
+                }
+            }}>
                 <span>
-                    <img src="images/brand/1.jpg" alt={name} />
+                    <img src={`https://www.demo609.amrithaa.com/backend-cema/public/images/brands/${props.brand?.image}`} alt={name} />
                 </span>
             </li>
         </>

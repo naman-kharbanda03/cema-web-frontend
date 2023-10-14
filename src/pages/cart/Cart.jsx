@@ -14,6 +14,8 @@ const Cart = () => {
   const [couponCode, setCouponCode] = useState("");
   const [isCouponSuccess, setCoupanSuccess] = useState(false);
   const [couponData, setCouponData] = useState();
+  const { cartItemsCount } = useShoppingCart();
+
   const handleCouponCodeChange = (e) => {
     setCouponCode(e.target.value);
     setCoupanSuccess(false);
@@ -94,7 +96,7 @@ const Cart = () => {
 
   useEffect(() => {
     getCartDetails();
-  }, []);
+  }, [cartItemsCount]);
 
   useEffect(() => {
     getCartDetails();

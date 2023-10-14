@@ -116,7 +116,8 @@ export const ShoppingCartProvider = ({ children }) => {
                             en: product?.product_name.en
                         },
                         image_path: product?.image_path,
-                        product_image: [`${product.product_image[0]}`]
+                        product_image: [`${product.product_image[0]}`],
+                        stock: product?.stock
                     }
                 };
 
@@ -176,9 +177,11 @@ export const ShoppingCartProvider = ({ children }) => {
         }
     }
 
-    const AddToCart = (product) => {
+
+
+    const AddToCart = (product, amt) => {
         const formData = {
-            quantity: 1,
+            quantity: amt,
             product_id: product?.id,
             type: product?.type,
             price: product?.actual_selling_price,
@@ -204,7 +207,7 @@ export const ShoppingCartProvider = ({ children }) => {
                     console.error("Error:", error);
                 });
         } else {
-            increaseItemInLocalCart(1, product);
+            increaseItemInLocalCart(amt, product);
         }
     }
 
@@ -250,7 +253,7 @@ export const ShoppingCartProvider = ({ children }) => {
                 // If the item doesn't exist in the cart, add it.
                 // const newItem = { quantity: `${amt}`, product_id: `${id}`, type: type };
                 const newItem = {
-                    qty: 1,
+                    qty: amt,
                     simple_product: {
                         id: product?.id,
                         actual_selling_price: product?.price,
@@ -270,8 +273,6 @@ export const ShoppingCartProvider = ({ children }) => {
                 // If the item exists, update its quantity.
 
                 const updatingItems = [...currCart.Items];
-                // const previousQuantity = parseInt(updatingItems[foundIndex].quantity, 10);
-                // updatingItems[foundIndex].quantity = `${previousQuantity + amt}`;
                 updatingItems[foundIndex].qty += amt;
                 const updatedCount = currCart.totalItems + amt;
                 return {
@@ -314,6 +315,29 @@ export const ShoppingCartProvider = ({ children }) => {
         setCartItemsCount(cartItems.totalItems);
     }, [cartItems])
 
+    const removeFromLocalCart = (product) => {
+        // If the item exists, update its quantity.
+        setCartItems(currCart => {
+            const foundIndex = currCart.Items.findIndex(item => item?.simple_product?.id === product.id);
+            if (foundIndex !== -1) {
+                const updatingItems = [...currCart.Items];
+                const updatedItems = updatingItems.filter(item => item.simple_product.id !== product?.id);
+
+                const amt = updatingItems[foundIndex].qty;
+                const updatedCount = currCart.totalItems - amt;
+                showSuccessToastMessage("Item Removed in Local Cart");
+                console.log(updatedItems);
+                return {
+                    ...currCart,
+                    Items: updatedItems,
+                    totalItems: updatedCount,
+                }
+            }
+        });
+
+
+    }
+
 
 
     return (
@@ -329,6 +353,7 @@ export const ShoppingCartProvider = ({ children }) => {
             showInfoToastMessage,
             AddToCart2,
             addToWishlist2,
+            removeFromLocalCart
         }}>
             {children}
             <ToastContainer />

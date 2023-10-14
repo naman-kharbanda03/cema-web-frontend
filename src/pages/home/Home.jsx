@@ -49,7 +49,11 @@ const Home = () => {
                         <h2>New Arrivals</h2>
                       </div>
                       <div className="block-content">
-                        <NewArrival />
+                        <div class="products-list grid">
+                          <div class="row">
+                            <NewArrival />
+                          </div>
+                        </div>
                         <div className="products-loadmore">
                           <div className="btn button-outline loadmore">
                             <div className="lds-ellipsis">
@@ -59,7 +63,7 @@ const Home = () => {
                               <div />
                             </div>
 
-                            <Link to={"/new-arrivals"}>
+                            <Link to={"/listings?products=new_arrival"}>
                               <span>View more</span>
                             </Link>
 
@@ -116,15 +120,8 @@ const Home = () => {
               </section>
             </div>
           </div>
-        </div>
-      </div>
-
-      {/* <div class="page-preloader">
-        <div class="loader">
-          <div></div>
-          <div></div>
-        </div>
-      </div> */}
+        </div >
+      </div >
     </>
   );
 };

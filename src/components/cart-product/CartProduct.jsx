@@ -7,11 +7,9 @@ import apiConfig from "../../config/apiConfig";
 const CartProduct = (props) => {
   const { ordersData: orderData, orderQtyChanged } = props;
   const order = orderData;
-  const initialQty = order?.qty ? parseInt(order.qty) : 0;
-  const [orderQnty, setOrderQnty] = useState(initialQty);
-  const { setCartToggle } = useShoppingCart();
-
-  console.log("akku", orderData);
+  // const initialQty = order?.qty ? parseInt(ordersData.qty) : 0;
+  const [orderQnty, setOrderQnty] = useState(order?.qty);
+  const { setCartToggle, removeFromLocalCart } = useShoppingCart();
 
   const increaseQty = () => {
     setOrderQnty(orderQnty + 1);
@@ -65,24 +63,31 @@ const CartProduct = (props) => {
       offerprice: order?.simple_product?.offer_price,
     };
     const apiUrl = apiConfig.removeFromCartAPI;
-    fetch(`${apiUrl}/${order?.id}`, {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-        Authorization: `Bearer ${bearerToken}`,
-      },
-      body: JSON.stringify(formdata),
-    })
-      .then((response) => response.text())
-      .then((result) => {
-        console.log(result)
-        setCartToggle(prev => !prev);
-
+    if (bearerToken) {
+      fetch(`${apiUrl}/${order?.id}`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${bearerToken}`,
+        },
+        body: JSON.stringify(formdata),
       })
-      .catch((error) => console.log("error", error));
+        .then((response) => response.text())
+        .then((result) => {
+          console.log(result)
+          setCartToggle(prev => !prev);
+
+        })
+        .catch((error) => console.log("error", error));
+    } else {
+      const prod = {
+        id: order?.simple_product.id
+      };
+      removeFromLocalCart(prod);
+    }
+
   };
 
-  console.log("ordersData", order);
   return (
     <tr className="cart-item">
       <td className="product-thumbnail">
@@ -118,7 +123,7 @@ const CartProduct = (props) => {
             min={0}
             max
             name="quantity"
-            value={orderQnty}
+            value={order.qty}
             title="Qty"
             size={4}
             placeholder
@@ -136,7 +141,7 @@ const CartProduct = (props) => {
       <td className="product-remove">
         <a
           className="remove"
-          onClick={removeProduct}
+          onClick={() => removeProduct()}
           style={{ cursor: "pointer" }}
         >
           ×

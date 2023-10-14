@@ -21,7 +21,7 @@ const ShopDetails = (product) => {
   const product_id = params.get("product_id");
 
   const { AddToCart, handleAddRemoveWishlist } = useShoppingCart();
-  const [quant, setQuant] = useState(0);
+  const [quant, setQuant] = useState(1);
 
   const fetchDetails = () => {
     const apiUrl = apiConfig.productDetailsAPI;
@@ -57,61 +57,60 @@ const ShopDetails = (product) => {
       })
       .catch((error) => console.error("Problem with fetch operations", error));
   };
-  const giveReview = (e) =>{
+  const giveReview = (e) => {
     e.preventDefault();
-    if(!review?.name || !review?.email || !review?.review){
+    if (!review?.name || !review?.email || !review?.review) {
       toast.warning("Please fill all the fields", {
         position: toast.POSITION.BOTTOM_LEFT,
-    });
-    return
+      });
+      return
     }
     const formData = new FormData();
-    Object.keys(review).map((key) =>{
+    Object.keys(review).map((key) => {
       formData.append(key, review[key])
     })
-    fetch(apiConfig.addProductReview,{
-        method: "POST",
-        headers: {
-          'Authorization': `Bearer ${token}`,
-        },
-        body: formData
-      })
+    fetch(apiConfig.addProductReview, {
+      method: "POST",
+      headers: {
+        'Authorization': `Bearer ${token}`,
+      },
+      body: formData
+    })
       .then((response) => {
         if (!response.ok) throw new Error("Network Issue");
         return response.json();
       })
       .then((data) => {
         console.log(data)
-        setReview( prevState =>
-          {
-            return {
+        setReview(prevState => {
+          return {
             ...prevState,
             quality: 0,
             review: "",
             name: "",
             email: ""
-            }
           }
+        }
         )
         toast.success(data.message, {
           position: toast.POSITION.BOTTOM_LEFT,
-      });
+        });
       })
       .catch((error) => {
         //console.error("Problem with fetch operations", error)
         toast.warning("Review Already Added!", {
           position: toast.POSITION.BOTTOM_LEFT,
-      });
+        });
       });
   }
-  const onChangeHandler = (e) =>{
-    setReview((prevState)=> {
+  const onChangeHandler = (e) => {
+    setReview((prevState) => {
       return {
-       ...prevState,
-       [e.target.name] : e.target.value
+        ...prevState,
+        [e.target.name]: e.target.value
       }
 
-     })
+    })
   }
   useEffect(() => {
     fetchDetails();
@@ -332,10 +331,10 @@ const ShopDetails = (product) => {
                                   image_path: data?.images_path,
                                   product_image: [`${data?.combinations[0]?.images[0]?.image}`],
                                   product_name: { en: data?.product_name?.en },
-                                  type : data?.type || "simple_product"
+                                  type: data?.type || "simple_product"
 
                                 }
-                                AddToCart(prod);
+                                AddToCart(prod, quant);
                               }}
                             >
                               Add to cart
@@ -345,7 +344,16 @@ const ShopDetails = (product) => {
                             <button className="product-btn">Buy It Now</button>
                           </div>
                           <div className="btn-wishlist" data-title="Wishlist">
-                            <button className="product-btn" onClick={(e) => handleAddRemoveWishlist(e, data.product_id)}>
+                            <button className="product-btn" onClick={(e) => {
+                              const prod = {
+                                id: data.product_id,
+                                product_name: { en: data?.product_name?.en },
+                                image_path: data?.images_path,
+                                product_image: [`${data?.combinations[0].images[0].image}`],
+                                stock: data.combinations[0].stock
+                              }
+                              handleAddRemoveWishlist(e, prod)
+                            }}>
                               Add to wishlist
                             </button>
                           </div>
@@ -563,24 +571,24 @@ const ShopDetails = (product) => {
                                         </a>
                                       </span>
                                     </p> */}
-                                    <StarRatings 
-                                            style={{margin: "-3px 10px"}}
-                                              rating={review?.quality}
-                                              starRatedColor="gold"
-                                              starHoverColor="gold"
-                                              numberOfStars={5}
-                                              starDimension="18px"
-                                              starSpacing="2px"
-                                              changeRating={(rate)=> {
-                                                setReview((prevState)=> {
-                                                 return {
-                                                  ...prevState,
-                                                  quality : rate
-                                                 }
+                                    <StarRatings
+                                      style={{ margin: "-3px 10px" }}
+                                      rating={review?.quality}
+                                      starRatedColor="gold"
+                                      starHoverColor="gold"
+                                      numberOfStars={5}
+                                      starDimension="18px"
+                                      starSpacing="2px"
+                                      changeRating={(rate) => {
+                                        setReview((prevState) => {
+                                          return {
+                                            ...prevState,
+                                            quality: rate
+                                          }
 
-                                                })
-                                              }}
-                                            />
+                                        })
+                                      }}
+                                    />
                                   </div>
                                   <p className="comment-form-comment">
                                     <textarea

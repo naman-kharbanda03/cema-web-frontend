@@ -1,12 +1,11 @@
-import React from "react";
-import product_6_16 from "../../asset/images/product/6-16.png";
-import product_6_17 from "../../asset/images/product/6-17.png";
-import product_6_19 from "../../asset/images/product/6-19.png";
-import product_6_5 from "../../asset/images/product/6-5.png";
-import product_6_4 from "../../asset/images/product/6-4.png";
+import React, { useEffect, useState } from "react";
+
 
 import Slider from "react-slick";
+import apiConfig from "../../config/apiConfig";
+import { useShoppingCart } from "../../context/ShoppingCartContext";
 const BestSellerSlider = () => {
+  const { handleAddRemoveWishlist, AddToCart } = useShoppingCart();
   const settings = {
     pauseOnHover: false,
     slidesToShow: 5,
@@ -35,268 +34,101 @@ const BestSellerSlider = () => {
       },
     ],
   };
+  const [data, setData] = useState([]);
+
+  const fetchDetails = () => {
+    const apiUrl = apiConfig.listingAPI;
+    fetch(`${apiUrl}?best_seller=1`, {
+      method: "GET",
+    })
+      .then((response) => {
+        if (!response.ok) throw new Error("Network Issue");
+        return response.json();
+      })
+      .then((data) => {
+        console.log("test", data.data.data);
+        setData(data.data.data);
+      })
+      .catch((error) => console.error("Problem with fetch operations", error));
+  };
+
+  useEffect(() => {
+    fetchDetails();
+  }, []);
+
   return (
     <div className="slick-sliders products-list sestsellers grid">
       <Slider {...settings}>
-        <div className="item item-product slick-slide">
-          <div className="products-entry clearfix product-wapper">
-            <div className="products-thumb">
-              <div className="product-thumb-hover">
-                <a href="#">
-                  <img
-                    width={600}
-                    height={600}
-                    src={product_6_16}
-                    className="hover-image back"
-                    alt
-                  />
-                </a>
-              </div>
-              <div className="product-button">
-                <div className="btn-add-to-cart" data-title="Add to cart">
-                  <a rel="nofollow" href="#" className="product-btn button">
-                    Add to cart
+        {data.map(product => (
+          <div className="item item-product slick-slide">
+            <div className="products-entry clearfix product-wapper">
+              <div className="products-thumb">
+                <div className="product-thumb-hover">
+                  <a href="#">
+                    <img
+                      width={600}
+                      height={600}
+                      src={product.image_path?.replace('gallery', `${product?.thumbnail}`)}
+                      className="post-image"
+                      alt
+                    />
+                    <img
+                      width={600}
+                      height={600}
+                      src={product.image_path?.replace('gallery', `${product?.hover_thumbnail}`)}
+                      className="hover-image back"
+                      alt
+                    />
                   </a>
                 </div>
-                <div className="btn-wishlist" data-title="Wishlist">
-                  <button className="product-btn">Add to wishlist</button>
+                <div className="product-button">
+                  <div className="btn-add-to-cart" data-title="Add to cart">
+                    <a rel="nofollow" href="#" className="product-btn button"
+                      onClick={() => {
+                        const prod = {
+                          id: product.id,
+                          product_name: { en: product.product_name?.en },
+                          image_path: product?.images_path,
+                          product_image: [`${product.product_image[0]}`],
+                          stock: product.stock
+                        };
+                        AddToCart(prod, 1);
+                      }}
+                    >
+                      Add to cart
+                    </a>
+                  </div>
+                  <div className="btn-wishlist" data-title="Wishlist">
+                    <button className="product-btn"
+                      onClick={(e) => {
+                        const prod = {
+                          id: product.id,
+                          product_name: { en: product.product_name?.en },
+                          image_path: product.images_path,
+                          product_image: [`${product.product_image[0]}`],
+                          stock: product.stock
+                        }
+                        handleAddRemoveWishlist(e, prod)
+                      }}
+                    >Add to wishlist</button>
+                  </div>
                 </div>
               </div>
-            </div>
-            <div className="products-content">
-              <div className="contents text-center">
-                <h3 className="product-title">
-                  <a href="#">Demo Product</a>
-                </h3>
-                <span className="price">KD150.00</span>
+              <div className="products-content">
+                <div className="contents text-center">
+                  <h3 className="product-title">
+                    <a href="#">{product.product_name.en}</a>
+                  </h3>
+                  <span className="price">KD{product.price}</span>
+                </div>
               </div>
             </div>
           </div>
-        </div>
-        <div className="item item-product slick-slide">
-          <div className="products-entry clearfix product-wapper">
-            <div className="products-thumb">
-              <div className="product-thumb-hover">
-                <a href="#">
-                  <img
-                    width={600}
-                    height={600}
-                    src={product_6_17}
-                    className="hover-image back"
-                    alt
-                  />
-                </a>
-              </div>
-              <div className="product-button">
-                <div className="btn-add-to-cart" data-title="Add to cart">
-                  <a rel="nofollow" href="#" className="product-btn button">
-                    Add to cart
-                  </a>
-                </div>
-                <div className="btn-wishlist" data-title="Wishlist">
-                  <button className="product-btn">Add to wishlist</button>
-                </div>
-              </div>
-            </div>
-            <div className="products-content">
-              <div className="contents text-center">
-                <h3 className="product-title">
-                  <a href="#">Demo Product</a>
-                </h3>
-                <span className="price">KD150.00</span>
-              </div>
-            </div>
-          </div>
-        </div>
-        <div className="item item-product slick-slide">
-          <div className="products-entry clearfix product-wapper">
-            <div className="products-thumb">
-              <div className="product-lable">
-                <div className="onsale">-33%</div>
-              </div>
-              <div className="product-thumb-hover">
-                <a href="#">
-                  <img
-                    width={600}
-                    height={600}
-                    src={product_6_19}
-                    className="hover-image back"
-                    alt
-                  />
-                </a>
-              </div>
-              <div className="product-button">
-                <div className="btn-add-to-cart" data-title="Add to cart">
-                  <a rel="nofollow" href="#" className="product-btn button">
-                    Add to cart
-                  </a>
-                </div>
-                <div className="btn-wishlist" data-title="Wishlist">
-                  <button className="product-btn">Add to wishlist</button>
-                </div>
-              </div>
-            </div>
-            <div className="products-content">
-              <div className="contents text-center">
-                <h3 className="product-title">
-                  <a href="#">Demo Product</a>
-                </h3>
-                <span className="price">KD150.00</span>
-              </div>
-            </div>
-          </div>
-        </div>
-        <div className="item item-product slick-slide">
-          <div className="products-entry clearfix product-wapper">
-            <div className="products-thumb">
-              <div className="product-thumb-hover">
-                <a href="#">
-                  <img
-                    width={600}
-                    height={600}
-                    src={product_6_5}
-                    className="hover-image back"
-                    alt
-                  />
-                </a>
-              </div>
-              <div className="product-button">
-                <div className="btn-add-to-cart" data-title="Add to cart">
-                  <a rel="nofollow" href="#" className="product-btn button">
-                    Add to cart
-                  </a>
-                </div>
-                <div className="btn-wishlist" data-title="Wishlist">
-                  <button className="product-btn">Add to wishlist</button>
-                </div>
-              </div>
-            </div>
-            <div className="products-content">
-              <div className="contents text-center">
-                <h3 className="product-title">
-                  <a href="#">Demo Product</a>
-                </h3>
-                <span className="price">KD150.00</span>
-              </div>
-            </div>
-          </div>
-        </div>
-        <div className="item item-product slick-slide">
-          <div className="products-entry clearfix product-wapper">
-            <div className="products-thumb">
-              <div className="product-lable">
-                <div className="onsale">-33%</div>
-              </div>
-              <div className="product-thumb-hover">
-                <a href="#">
-                  <img
-                    width={600}
-                    height={600}
-                    src={product_6_4}
-                    className="hover-image back"
-                    alt
-                  />
-                </a>
-              </div>
-              <div className="product-button">
-                <div className="btn-add-to-cart" data-title="Add to cart">
-                  <a rel="nofollow" href="#" className="product-btn button">
-                    Add to cart
-                  </a>
-                </div>
-                <div className="btn-wishlist" data-title="Wishlist">
-                  <button className="product-btn">Add to wishlist</button>
-                </div>
-              </div>
-            </div>
-            <div className="products-content">
-              <div className="contents text-center">
-                <h3 className="product-title">
-                  <a href="#">Demo Product</a>
-                </h3>
-                <span className="price">KD150.00</span>
-              </div>
-            </div>
-          </div>
-        </div>
-        <div className="item item-product slick-slide">
-          <div className="products-entry clearfix product-wapper">
-            <div className="products-thumb">
-              <div className="product-lable">
-                <div className="onsale">-33%</div>
-              </div>
-              <div className="product-thumb-hover">
-                <a href="#">
-                  <img
-                    width={600}
-                    height={600}
-                    src={product_6_4}
-                    className="hover-image back"
-                    alt
-                  />
-                </a>
-              </div>
-              <div className="product-button">
-                <div className="btn-add-to-cart" data-title="Add to cart">
-                  <a rel="nofollow" href="#" className="product-btn button">
-                    Add to cart
-                  </a>
-                </div>
-                <div className="btn-wishlist" data-title="Wishlist">
-                  <button className="product-btn">Add to wishlist</button>
-                </div>
-              </div>
-            </div>
-            <div className="products-content">
-              <div className="contents text-center">
-                <h3 className="product-title">
-                  <a href="#">Demo Product</a>
-                </h3>
-                <span className="price">KD150.00</span>
-              </div>
-            </div>
-          </div>
-        </div>
-        <div className="item item-product slick-slide">
-          <div className="products-entry clearfix product-wapper">
-            <div className="products-thumb">
-              <div className="product-lable">
-                <div className="onsale">-33%</div>
-              </div>
-              <div className="product-thumb-hover">
-                <a href="#">
-                  <img
-                    width={600}
-                    height={600}
-                    src={product_6_4}
-                    className="hover-image back"
-                    alt
-                  />
-                </a>
-              </div>
-              <div className="product-button">
-                <div className="btn-add-to-cart" data-title="Add to cart">
-                  <a rel="nofollow" href="#" className="product-btn button">
-                    Add to cart
-                  </a>
-                </div>
-                <div className="btn-wishlist" data-title="Wishlist">
-                  <button className="product-btn">Add to wishlist</button>
-                </div>
-              </div>
-            </div>
-            <div className="products-content">
-              <div className="contents text-center">
-                <h3 className="product-title">
-                  <a href="#">Demo Product</a>
-                </h3>
-                <span className="price">KD150.00</span>
-              </div>
-            </div>
-          </div>
-        </div>
-      </Slider>
-    </div>
+
+        ))
+        }
+      </Slider >
+    </div >
   );
 };
 
