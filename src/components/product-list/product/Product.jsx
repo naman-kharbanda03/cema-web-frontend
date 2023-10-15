@@ -48,7 +48,7 @@ const Product = (props) => {
                                     />
                                 </Link>
                             </div>
-                            <span
+                            {/* <span
                                 className="product-quickview"
                                 data-title="Quick View"
                             >
@@ -58,7 +58,7 @@ const Product = (props) => {
                                 >
                                     Quick View <i className="icon-search"></i>
                                 </a>
-                            </span>
+                            </span> */}
                         </div>
                     </div>
                     <div className="col-md-8">

@@ -1,7 +1,4 @@
 import React, { useEffect, useState } from "react";
-import banner_28 from "../../asset/images/banner/28.jpg";
-import banner_29 from "../../asset/images/banner/29r.jpg";
-import banner_30 from "../../asset/images/banner/30.jpg";
 import Slider from "react-slick";
 import $ from "jquery";
 import apiConfig from "../../config/apiConfig";

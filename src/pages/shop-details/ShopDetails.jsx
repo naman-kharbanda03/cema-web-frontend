@@ -407,8 +407,8 @@ const ShopDetails = (product) => {
                 <div className="section-padding">
                   <div className="section-container p-l-r">
                     <div className="product-tabs-wrap">
-                      <ul className="nav nav-tabs" role="tablist">
-                        <li className="nav-item">
+                      <ul className="nav nav-tabs" role="tablist" >
+                        <li className="nav-item" >
                           <a
                             className={`nav-link ${activeTabId === 1 ? "active" : ""
                               }`}
@@ -453,7 +453,7 @@ const ShopDetails = (product) => {
                           role="tabpanel"
                           ref={targetRef}
                         >
-                          <p>{data?.key_features?.en}</p>
+                          <p>{data?.description?.en}</p>
                         </div>
                         <div
                           className={`tab-pane fade  ${activeTabId === 2 ? " show active" : ""
@@ -485,7 +485,7 @@ const ShopDetails = (product) => {
                           <div id="reviews" className="product-reviews">
                             <div id="comments">
                               <h2 className="reviews-title">
-                                1 review for <span>Bora Armchair</span>
+                                1 review for <span>{data?.product_name.en}</span>
                               </h2>
                               <ol className="comment-list">
                                 <li className="review">
@@ -533,6 +533,7 @@ const ShopDetails = (product) => {
                                   id="reply-title"
                                   className="comment-reply-title"
                                   onClick={() => SetForm(!toggleForm)}
+                                  style={{ cursor: 'pointer' }}
                                 >
                                   Add a review
                                 </span>
@@ -552,25 +553,6 @@ const ShopDetails = (product) => {
                                   </p>
                                   <div className="comment-form-rating d-flex">
                                     <label for="rating">Your rating</label>
-                                    {/* <p className="stars">
-                                      <span>
-                                        <a className="star-1" href="#">
-                                          1
-                                        </a>
-                                        <a className="star-2" href="#">
-                                          2
-                                        </a>
-                                        <a className="star-3" href="#">
-                                          3
-                                        </a>
-                                        <a className="star-4" href="#">
-                                          4
-                                        </a>
-                                        <a className="star-5" href="#">
-                                          5
-                                        </a>
-                                      </span>
-                                    </p> */}
                                     <StarRatings
                                       style={{ margin: "-3px 10px" }}
                                       rating={review?.quality}

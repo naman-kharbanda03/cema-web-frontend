@@ -69,12 +69,14 @@ const BestSellerSlider = () => {
                       width={600}
                       height={600}
                       src={product.image_path?.replace('gallery', `${product?.thumbnail}`)}
+                      style={{ height: '328px', objectFit: 'contain' }}
                       className="post-image"
                       alt
                     />
                     <img
                       width={600}
                       height={600}
+                      style={{ height: '328px', objectFit: 'contain' }}
                       src={product.image_path?.replace('gallery', `${product?.hover_thumbnail}`)}
                       className="hover-image back"
                       alt

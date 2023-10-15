@@ -31023,6 +31023,7 @@ body i[class~="slick-arrow"][class~="fa-angle-right"] {
   color: #868686;
   padding: 0 0 5px 0;
   position: relative;
+  cursor: pointer;
 }
 .shop-details .product-tabs .nav-tabs .nav-item a:before {
   position: absolute;
@@ -31195,8 +31196,8 @@ body i[class~="slick-arrow"][class~="fa-angle-right"] {
   margin-bottom: 10px;
   color: #000;
 }
-.shop-details .product-tabs #review-form .comment-form-rating .star-ratings{
-  margin:-3px 10px;
+.shop-details .product-tabs #review-form .comment-form-rating .star-ratings {
+  margin: -3px 10px;
 }
 .shop-details .product-tabs #review-form .comment-form-rating .stars {
   padding-top: 0;

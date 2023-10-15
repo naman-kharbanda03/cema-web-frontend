@@ -4,7 +4,7 @@ import { Navigate } from "react-router-dom";
 
 const Protected = ({ children }) => {
   const { LOGGEDIN } = useContext(UserData);
-  if (!LOGGEDIN) return <Navigate to={"/"} />;
+  if (!LOGGEDIN) return <Navigate to={"/login"} />;
   return children;
 };
 

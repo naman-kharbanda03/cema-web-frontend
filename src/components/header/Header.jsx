@@ -13,10 +13,10 @@ const Header = () => {
     navigate(`/listings?products=${link}`, { state: { name } });
   };
 
-  const { LOGGEDIN } = useContext(UserData);
+  const { LOGGEDIN } = useContext(UserData);              // Variable Description
   const [menuItems, setMenuItems] = useState([]);
   const [categories, setCategories] = useState();
-  const { wishListCount, cartItemsCount } = useShoppingCart();
+  const { wishListCount, cartItemsCount } = useShoppingCart();         // Imported Functions from Global Variables or States or Context
 
   const fetchDetails = () => {
     fetch(
@@ -118,7 +118,7 @@ const Header = () => {
           </div>
         </div>
       </div>
-      <div className="header-mobile">
+      <div className="header-mobile" >
         <div className="section-padding">
           <div className="section-container large">
             <div className="row">

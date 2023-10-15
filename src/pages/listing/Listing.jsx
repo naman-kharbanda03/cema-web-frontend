@@ -6,6 +6,7 @@ import Category from "../../components/product-list/Category";
 // import { AddToCart } from "../../components/block/NewArrival";
 import { useShoppingCart } from "../../context/ShoppingCartContext";
 import Product from "../../components/product-list/product/Product";
+import ProductGrid from "../../components/product-list/product-grid/ProductGrid";
 
 const Listing = () => {
   const [data, setData] = useState();
@@ -17,7 +18,7 @@ const Listing = () => {
   const params = new URLSearchParams(url.search);
   const products = params.get("products");
   const location = useLocation();
-  const name = location.pathname.slice(1);
+  const name = products.split('_').join(' ');
 
   const token = localStorage.getItem("accessToken");
   const categoryListAPI = apiConfig.categoryListAPI;
@@ -26,7 +27,7 @@ const Listing = () => {
 
   const fetchDetails = () => {
     const apiUrl = apiConfig.listingAPI;
-    fetch(`${apiUrl}?per_page=3&page=${currentPage}&${products}=1`, {
+    fetch(`${apiUrl}?per_page=4&page=${currentPage}&${products}=1`, {
       method: "GET",
     })
       .then((response) => {
@@ -63,8 +64,10 @@ const Listing = () => {
       <div id="site-main" className="site-main">
         <div id="main-content" className="main-content">
           <div id="primary" className="content-area">
+
             {/* Page Info */}
             <PageTitle current={name} />
+
             {/* Page Content  */}
             <div id="content" className="site-content" role="main">
               <div className="section-padding">
@@ -317,80 +320,10 @@ const Listing = () => {
                         >
                           <div className="products-list grid">
                             <div className="row">
-                              {data?.map((product) => (
-                                <div
-                                  className="col-xl-3 col-lg-4 col-md-4 col-sm-6"
-                                  key={product.id}
-                                >
-                                  <div className="items">
-                                    <div className="products-entry clearfix product-wapper">
-                                      <div className="products-thumb">
-                                        <div className="product-lable">
-                                          <div className="onsale">-23%</div>
-                                          {/*/to ask what to show */}
-                                          <div className="hot">Hot</div>
-                                        </div>
-                                        <div className="product-thumb-hover">
-                                          <Link
-                                            to={`/product-details?product_id=${product.id}`}
-                                          >
-                                            <img
-                                              width={600}
-                                              height={600}
-                                              src={`${product.image_path}/${product.product_image?.[0]}`}
-                                              className="hover-image back"
-                                              alt="image not available"
-                                            />
-                                          </Link>
-                                        </div>
-                                        <div className="product-button">
-                                          <div
-                                            className="btn-add-to-cart"
-                                            data-title="Add to cart"
-                                          >
-                                            <a
-                                              rel="nofollow"
-                                              onClick={() => AddToCart(product)}
-                                              className="product-btn button"
-                                            >
-                                              Add to cart
-                                            </a>
-                                          </div>
-                                          <div
-                                            className="btn-wishlist"
-                                            data-title="Wishlist"
-                                          >
-                                            <button
-                                              className="product-btn"
-                                              onClick={(e) => {
-                                                handleAddRemoveWishlist(
-                                                  e,
-                                                  product.id
-                                                );
-                                              }}
-                                            >
-                                              Add to wishlist
-                                            </button>
-                                          </div>
-                                        </div>
-                                      </div>
-                                      <div className="products-content">
-                                        <div className="contents text-center">
-                                          <h3 className="product-title">
-                                            <Link
-                                              to={`/product-details?product_id=${product.id}`}
-                                            >
-                                              {product?.product_name?.en}
-                                            </Link>
-                                          </h3>
-                                          <span className="price">
-                                            KD{product.actual_selling_price}
-                                          </span>
-                                        </div>
-                                      </div>
-                                    </div>
-                                  </div>
-                                </div>
+                              {data?.map(product => (
+                                <>
+                                  <ProductGrid current={product} />
+                                </>
                               ))}
                             </div>
                           </div>
