@@ -14,6 +14,7 @@ import "./asset/css/slick-theme.css";
 import "./asset/css/mmenu.min.css";
 
 import Popper from "popper.js";
+import "./index.css";
 
 import "./asset/css/app.css";
 import "./asset/css/responsive.css";

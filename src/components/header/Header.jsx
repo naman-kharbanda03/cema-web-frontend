@@ -13,10 +13,10 @@ const Header = () => {
     navigate(`/listings?products=${link}`, { state: { name } });
   };
 
-  const { LOGGEDIN } = useContext(UserData);              // Variable Description
+  const { LOGGEDIN } = useContext(UserData); // Variable Description
   const [menuItems, setMenuItems] = useState([]);
   const [categories, setCategories] = useState();
-  const { wishListCount, cartItemsCount } = useShoppingCart();         // Imported Functions from Global Variables or States or Context
+  const { wishListCount, cartItemsCount } = useShoppingCart(); // Imported Functions from Global Variables or States or Context
 
   const fetchDetails = () => {
     fetch(
@@ -30,7 +30,6 @@ const Header = () => {
         return response.json();
       })
       .then((data) => {
-        // console.log("testing", data.data);
         setCategories(data.data);
       })
       .catch((error) => console.error("Problem with fetch operations", error));
@@ -45,6 +44,7 @@ const Header = () => {
       fetch(apiConfig.topMenu)
         .then((res) => res.json())
         .then((data) => {
+          console.log(data);
           setMenuItems(data);
         })
         .catch((e) => {
@@ -52,6 +52,26 @@ const Header = () => {
         });
     })();
   }, []);
+
+  const fetchCategoryById = (id) => {
+    switch (id) {
+      case "1":
+        return { name: "Jeans", link: "/products?category=Jeans" };
+
+      case "2":
+        return { name: "Skirts", link: "/products?category=Skirt" };
+
+      case "3":
+        return {
+          name: "Tops & T-shirts",
+          link: "/products?category=Tops%20&%20T-shirts",
+        };
+
+      default:
+        return { name: "T-shirts", link: "/products?category=T-shirts" };
+        break;
+    }
+  };
 
   return (
     <header
@@ -118,7 +138,7 @@ const Header = () => {
           </div>
         </div>
       </div>
-      <div className="header-mobile" >
+      <div className="header-mobile">
         <div className="section-padding">
           <div className="section-container large">
             <div className="row">
@@ -363,16 +383,72 @@ const Header = () => {
                         </li>
 
                         {menuItems.map((items, key) => {
+                          if (items.link_by === "url")
+                            return (
+                              <li className="level-0 menu-item" key={key}>
+                                <Link to={items.url}>
+                                  <span className="menu-item-text">
+                                    {items.title.en}
+                                  </span>
+                                </Link>
+                              </li>
+                            );
                           return (
-                            <li className="level-0 menu-item" key={key}>
-                              <Link to="/contact">
-                                <span className="menu-item-text">
-                                  {items.title.en}
-                                </span>
-                              </Link>
+                            <li className="level-0 menu-item menu-item-has-children mega-menu mega-menu-fullwidth">
+                              <a href="javascript:;">
+                                <Link to="">
+                                  <span className="menu-item-text">
+                                    {items.title.en}
+                                  </span>
+                                </Link>
+                              </a>
+                              <div className="sub-menu">
+                                <div className="row">
+                                  {items.linked_parent?.map((cat) => (
+                                    <div className="col-md-4">
+                                      <div className="menu-section">
+                                        {/* <Link
+                                          to={{
+                                            pathname: "/products",
+                                            search: `?category=${category.title?.en}&id=${category.id}`,
+                                          }}
+                                        > */}
+                                        <Link
+                                          className="sub-menu-title"
+                                          to={fetchCategoryById(cat).link}
+                                        >
+                                          {fetchCategoryById(cat).name}
+                                        </Link>
+                                        {/* </Link> */}
+                                        {/* <ul className="menu-list">
+                                          {category?.subcategory.map(
+                                            (subCategory) => (
+                                              <Link
+                                                to={{
+                                                  pathname: "/products",
+                                                  search: `?category=${subCategory.title.en}&id=${subCategory.id}`,
+                                                }}
+                                              >
+                                                <li>
+                                                  <a href="javascript:;">
+                                                    <span className="menu-item-text">
+                                                      {subCategory?.title?.en}
+                                                    </span>
+                                                  </a>
+                                                </li>
+                                              </Link>
+                                            )
+                                          )}
+                                        </ul> */}
+                                      </div>
+                                    </div>
+                                  ))}
+                                </div>
+                              </div>
                             </li>
                           );
                         })}
+
                         <li className="level-0 menu-item">
                           <Link to="/contact">
                             <span className="menu-item-text">Contact</span>

@@ -2,11 +2,11 @@ import React, { useEffect, useState } from "react";
 import banner_23 from "../../asset/images/banner/banner-23.jpg";
 import banner_24 from "../../asset/images/banner/banner-24.jpg";
 import apiConfig from "../../config/apiConfig";
+import { Link } from "react-router-dom";
 
 const Banner2 = () => {
   const [categories, setCategories] = useState([]);
   useEffect(() => {
-    // categories data
     (() => {
       fetch(apiConfig.homeSecondCategory)
         .then((res) => {
@@ -16,7 +16,6 @@ const Banner2 = () => {
         .then((data) => {
           const { categories } = data;
           setCategories(categories);
-          console.log(categories);
         })
         .catch((e) => {
           console.error("Problem with fetch operations", e);
@@ -26,7 +25,7 @@ const Banner2 = () => {
   return (
     <div className="block-widget-wrap">
       <div className="row">
-        {categories.map(category => (
+        {categories.map((category) => (
           <>
             <div className="col-md-6">
               <div className="block-widget-banner layout-13 m-b-0">
@@ -36,7 +35,7 @@ const Banner2 = () => {
                       <a href="#">
                         <img
                           className="demo-img img-fluid"
-                          src={banner_23}
+                          src={`${category?.image_path}/${category?.image}`}
                           alt="Banner Image"
                         />
                       </a>
@@ -45,16 +44,17 @@ const Banner2 = () => {
                       <div className="info">
                         <div className="content">
                           <a className="link-title" href="#">
-                            <h3 className="title-banner">
-                              20 - 60% <br /> {category.title}
-                            </h3>
+                            <h3 className="title-banner">{category.title}</h3>
                           </a>
                           <div className="banner-image-description">
                             {category.sub_title}
                           </div>
-                          <a className="button button-outline white" href="#">
+                          <Link
+                            className="button button-outline white"
+                            to="/products"
+                          >
                             SHOP NOW
-                          </a>
+                          </Link>
                         </div>
                       </div>
                     </div>

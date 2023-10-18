@@ -40,9 +40,11 @@ const ProductSlider = () => {
     autoplay: false,
     focusOnSelect: true,
     dots: false,
+    infinite: false,
     arrows: true,
     cssEase: "linear",
-    autoplaySpeed: 5000,
+    className: "center" ,
+    autoplaySpeed: 1000,
     responsive: [
       {
         breakpoint: 600,
@@ -74,13 +76,11 @@ const ProductSlider = () => {
                     search: `?category=${cat.title?.en}&id=${cat.id}`,
                   }}
                 >
-                  <div
-                    className="item-image"
-                  >
+                  <div className="item-image">
                     <img
                       width={258}
                       height={258}
-                      style={{ height: "330px", objectFit: 'contain' }}
+                      style={{ height: "330px", objectFit: "contain" }}
                       src={
                         cat?.image
                           ? `https://www.demo609.amrithaa.com/backend-cema/public/media/category/${cat?.image}`

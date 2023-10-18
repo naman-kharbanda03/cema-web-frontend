@@ -5,17 +5,18 @@ import { useShoppingCart } from "../../context/ShoppingCartContext";
 import { act } from "react-dom/test-utils";
 import StarRatings from "react-star-ratings";
 import apiConfig from "../../config/apiConfig";
+import styles from "./ShopDetails.module.css";
 import { toast } from "react-toastify";
 
 const ShopDetails = (product) => {
   const [data, setData] = useState();
   const [image, setImage] = useState("");
   const [activeTabId, setActiveTabId] = useState(1);
-  const [review, setReview] = useState({})
-  const [toggleForm, SetForm] = useState(false)
+  const [review, setReview] = useState({});
+  const [toggleForm, SetForm] = useState(false);
   const targetRef = useRef(null);
 
-  const token = localStorage.getItem('accessToken');
+  const token = localStorage.getItem("accessToken");
   const url = new URL(window.location.href);
   const params = new URLSearchParams(url.search);
   const product_id = params.get("product_id");
@@ -25,30 +26,25 @@ const ShopDetails = (product) => {
 
   const fetchDetails = () => {
     const apiUrl = apiConfig.productDetailsAPI;
-    fetch(
-      `${apiUrl}/${product_id}/simple_product`,
-      {
-        method: "GET",
-      }
-    )
+    fetch(`${apiUrl}/${product_id}/simple_product`, {
+      method: "GET",
+    })
       .then((response) => {
         if (!response.ok) throw new Error("Network Issue");
         return response.json();
       })
       .then((data) => {
-        console.log("cart -->", data?.data)
+        console.log("cart -->", data?.data);
         setData(data.data);
-        setReview(
-          {
-            quality: 0,
-            Price: 0,
-            Value: 0,
-            product_id: data?.data?.product_id,
-            review: "",
-            name: "",
-            email: ""
-          }
-        )
+        setReview({
+          quality: 0,
+          Price: 0,
+          Value: 0,
+          product_id: data?.data?.product_id,
+          review: "",
+          name: "",
+          email: "",
+        });
         console.log("testing", data.data);
         // console.log("testim", data.data.combinations);
         setImage(
@@ -63,35 +59,34 @@ const ShopDetails = (product) => {
       toast.warning("Please fill all the fields", {
         position: toast.POSITION.BOTTOM_LEFT,
       });
-      return
+      return;
     }
     const formData = new FormData();
     Object.keys(review).map((key) => {
-      formData.append(key, review[key])
-    })
+      formData.append(key, review[key]);
+    });
     fetch(apiConfig.addProductReview, {
       method: "POST",
       headers: {
-        'Authorization': `Bearer ${token}`,
+        Authorization: `Bearer ${token}`,
       },
-      body: formData
+      body: formData,
     })
       .then((response) => {
         if (!response.ok) throw new Error("Network Issue");
         return response.json();
       })
       .then((data) => {
-        console.log(data)
-        setReview(prevState => {
+        console.log(data);
+        setReview((prevState) => {
           return {
             ...prevState,
             quality: 0,
             review: "",
             name: "",
-            email: ""
-          }
-        }
-        )
+            email: "",
+          };
+        });
         toast.success(data.message, {
           position: toast.POSITION.BOTTOM_LEFT,
         });
@@ -102,20 +97,18 @@ const ShopDetails = (product) => {
           position: toast.POSITION.BOTTOM_LEFT,
         });
       });
-  }
+  };
   const onChangeHandler = (e) => {
     setReview((prevState) => {
       return {
         ...prevState,
-        [e.target.name]: e.target.value
-      }
-
-    })
-  }
+        [e.target.name]: e.target.value,
+      };
+    });
+  };
   useEffect(() => {
     fetchDetails();
   }, []);
-
 
   return (
     <div id="site-main" className="site-main">
@@ -235,16 +228,26 @@ const ShopDetails = (product) => {
                           <p>Rating: {2.5} out of 5</p>
                         </div>
                         <div className="description">
-                          {data?.description.en.length > 100
-                            ?
+                          {data?.description.en.length > 100 ? (
                             <>
-                              <p>{`${data?.description.en.slice(0, 100)}...`}</p>
-                              <span onClick={() => {
-                                targetRef.current.scrollIntoView({ behavior: 'smooth' })
-                              }}
-                                style={{ cursor: 'pointer' }}
-                              >Read more</span>
-                            </> : data?.description.en}
+                              <p>{`${data?.description.en.slice(
+                                0,
+                                100
+                              )}...`}</p>
+                              <span
+                                onClick={() => {
+                                  targetRef.current.scrollIntoView({
+                                    behavior: "smooth",
+                                  });
+                                }}
+                                style={{ cursor: "pointer" }}
+                              >
+                                Read more
+                              </span>
+                            </>
+                          ) : (
+                            data?.description.en
+                          )}
                           {/* <p>{data?.description.en}</p> */}
                         </div>
 
@@ -329,11 +332,12 @@ const ShopDetails = (product) => {
                                   id: data?.combinations[0].id,
                                   price: data?.combinations?.[0]?.mainprice,
                                   image_path: data?.images_path,
-                                  product_image: [`${data?.combinations[0]?.images[0]?.image}`],
+                                  product_image: [
+                                    `${data?.combinations[0]?.images[0]?.image}`,
+                                  ],
                                   product_name: { en: data?.product_name?.en },
-                                  type: data?.type || "simple_product"
-
-                                }
+                                  type: data?.type || "simple_product",
+                                };
                                 AddToCart(prod, quant);
                               }}
                             >
@@ -344,19 +348,25 @@ const ShopDetails = (product) => {
                             <button className="product-btn">Buy It Now</button>
                           </div>
                           <div className="btn-wishlist" data-title="Wishlist">
-                            <button className="product-btn" onClick={(e) => {
-                              const prod = {
-                                id: data.product_id,
-                                product_name: { en: data?.product_name?.en },
-                                image_path: data?.images_path,
-                                product_image: [`${data?.combinations[0].images[0].image}`],
-                                stock: data.combinations[0].stock
-                              }
-                              handleAddRemoveWishlist(e, prod)
-                            }}>
+                            <button
+                              className={`product-btn ${styles.wishlist}`}
+                              onClick={(e) => {
+                                const prod = {
+                                  id: data.product_id,
+                                  product_name: { en: data?.product_name?.en },
+                                  image_path: data?.images_path,
+                                  product_image: [
+                                    `${data?.combinations[0].images[0].image}`,
+                                  ],
+                                  stock: data.combinations[0].stock,
+                                };
+                                handleAddRemoveWishlist(e, prod);
+                              }}
+                            >
                               Add to wishlist
                             </button>
                           </div>
+
                           {/* <div className="btn-compare" data-title="Compare">
                             <button className="product-btn">Compare</button>
                           </div> */}
@@ -407,11 +417,12 @@ const ShopDetails = (product) => {
                 <div className="section-padding">
                   <div className="section-container p-l-r">
                     <div className="product-tabs-wrap">
-                      <ul className="nav nav-tabs" role="tablist" >
-                        <li className="nav-item" >
+                      <ul className="nav nav-tabs" role="tablist">
+                        <li className="nav-item">
                           <a
-                            className={`nav-link ${activeTabId === 1 ? "active" : ""
-                              }`}
+                            className={`nav-link ${
+                              activeTabId === 1 ? "active" : ""
+                            }`}
                             data-toggle="tab"
                             // href="#description"
                             role="tab"
@@ -422,8 +433,9 @@ const ShopDetails = (product) => {
                         </li>
                         <li className="nav-item">
                           <a
-                            className={`nav-link ${activeTabId === 2 ? "active" : ""
-                              }`}
+                            className={`nav-link ${
+                              activeTabId === 2 ? "active" : ""
+                            }`}
                             data-toggle="tab"
                             // href="#additional-information"
                             role="tab"
@@ -434,8 +446,9 @@ const ShopDetails = (product) => {
                         </li>
                         <li className="nav-item">
                           <a
-                            className={`nav-link ${activeTabId === 3 ? "active" : ""
-                              }`}
+                            className={`nav-link ${
+                              activeTabId === 3 ? "active" : ""
+                            }`}
                             data-toggle="tab"
                             // href="#reviews"
                             role="tab"
@@ -447,8 +460,9 @@ const ShopDetails = (product) => {
                       </ul>
                       <div className="tab-content">
                         <div
-                          className={`tab-pane fade  ${activeTabId === 1 ? " show active" : ""
-                            }`}
+                          className={`tab-pane fade  ${
+                            activeTabId === 1 ? " show active" : ""
+                          }`}
                           id="description"
                           role="tabpanel"
                           ref={targetRef}
@@ -456,8 +470,9 @@ const ShopDetails = (product) => {
                           <p>{data?.description?.en}</p>
                         </div>
                         <div
-                          className={`tab-pane fade  ${activeTabId === 2 ? " show active" : ""
-                            }`}
+                          className={`tab-pane fade  ${
+                            activeTabId === 2 ? " show active" : ""
+                          }`}
                           id="additional-information"
                           role="tabpanel"
                         >
@@ -477,15 +492,17 @@ const ShopDetails = (product) => {
                           </table>
                         </div>
                         <div
-                          className={`tab-pane fade  ${activeTabId === 3 ? " show active" : ""
-                            }`}
+                          className={`tab-pane fade  ${
+                            activeTabId === 3 ? " show active" : ""
+                          }`}
                           id="reviews"
                           role="tabpanel"
                         >
                           <div id="reviews" className="product-reviews">
                             <div id="comments">
                               <h2 className="reviews-title">
-                                1 review for <span>{data?.product_name.en}</span>
+                                1 review for{" "}
+                                <span>{data?.product_name.en}</span>
                               </h2>
                               <ol className="comment-list">
                                 <li className="review">
@@ -533,96 +550,98 @@ const ShopDetails = (product) => {
                                   id="reply-title"
                                   className="comment-reply-title"
                                   onClick={() => SetForm(!toggleForm)}
-                                  style={{ cursor: 'pointer' }}
+                                  style={{ cursor: "pointer" }}
                                 >
                                   Add a review
                                 </span>
-                                {toggleForm && <form
-                                  action=""
-                                  method="post"
-                                  id="comment-form"
-                                  className="comment-form"
-                                  onSubmit={giveReview}
-                                >
-                                  <p className="comment-notes">
-                                    <span id="email-notes">
-                                      Your email address will not be published.
-                                    </span>{" "}
-                                    Required fields are marked{" "}
-                                    <span className="required">*</span>
-                                  </p>
-                                  <div className="comment-form-rating d-flex">
-                                    <label for="rating">Your rating</label>
-                                    <StarRatings
-                                      style={{ margin: "-3px 10px" }}
-                                      rating={review?.quality}
-                                      starRatedColor="gold"
-                                      starHoverColor="gold"
-                                      numberOfStars={5}
-                                      starDimension="18px"
-                                      starSpacing="2px"
-                                      changeRating={(rate) => {
-                                        setReview((prevState) => {
-                                          return {
-                                            ...prevState,
-                                            quality: rate
-                                          }
-
-                                        })
-                                      }}
-                                    />
-                                  </div>
-                                  <p className="comment-form-comment">
-                                    <textarea
-                                      id="comment"
-                                      name="review"
-                                      placeholder="Your Reviews *"
-                                      cols="45"
-                                      rows="8"
-                                      aria-required="true"
-                                      required=""
-                                      value={review?.review}
-                                      onChange={onChangeHandler}
-                                    ></textarea>
-                                  </p>
-                                  <div className="content-info-reviews">
-                                    <p className="comment-form-author">
-                                      <input
-                                        id="author"
-                                        name="name"
-                                        placeholder="Name *"
-                                        type="text"
-                                        size="30"
+                                {toggleForm && (
+                                  <form
+                                    action=""
+                                    method="post"
+                                    id="comment-form"
+                                    className="comment-form"
+                                    onSubmit={giveReview}
+                                  >
+                                    <p className="comment-notes">
+                                      <span id="email-notes">
+                                        Your email address will not be
+                                        published.
+                                      </span>{" "}
+                                      Required fields are marked{" "}
+                                      <span className="required">*</span>
+                                    </p>
+                                    <div className="comment-form-rating d-flex">
+                                      <label for="rating">Your rating</label>
+                                      <StarRatings
+                                        style={{ margin: "-3px 10px" }}
+                                        rating={review?.quality}
+                                        starRatedColor="gold"
+                                        starHoverColor="gold"
+                                        numberOfStars={5}
+                                        starDimension="18px"
+                                        starSpacing="2px"
+                                        changeRating={(rate) => {
+                                          setReview((prevState) => {
+                                            return {
+                                              ...prevState,
+                                              quality: rate,
+                                            };
+                                          });
+                                        }}
+                                      />
+                                    </div>
+                                    <p className="comment-form-comment">
+                                      <textarea
+                                        id="comment"
+                                        name="review"
+                                        placeholder="Your Reviews *"
+                                        cols="45"
+                                        rows="8"
                                         aria-required="true"
                                         required=""
-                                        value={review?.name}
+                                        value={review?.review}
                                         onChange={onChangeHandler}
-                                      />
+                                      ></textarea>
                                     </p>
-                                    <p className="comment-form-email">
-                                      <input
-                                        id="email"
-                                        name="email"
-                                        placeholder="Email *"
-                                        type="email"
-                                        size="30"
-                                        aria-required="true"
-                                        required=""
-                                        value={review?.email}
-                                        onChange={onChangeHandler}
-                                      />
-                                    </p>
-                                    <p className="form-submit">
-                                      <input
-                                        name="submit"
-                                        type="submit"
-                                        id="submit"
-                                        className="submit"
-                                        value="Submit"
-                                      />
-                                    </p>
-                                  </div>
-                                </form>}
+                                    <div className="content-info-reviews">
+                                      <p className="comment-form-author">
+                                        <input
+                                          id="author"
+                                          name="name"
+                                          placeholder="Name *"
+                                          type="text"
+                                          size="30"
+                                          aria-required="true"
+                                          required=""
+                                          value={review?.name}
+                                          onChange={onChangeHandler}
+                                        />
+                                      </p>
+                                      <p className="comment-form-email">
+                                        <input
+                                          id="email"
+                                          name="email"
+                                          placeholder="Email *"
+                                          type="email"
+                                          size="30"
+                                          aria-required="true"
+                                          required=""
+                                          value={review?.email}
+                                          onChange={onChangeHandler}
+                                        />
+                                      </p>
+                                      <p className="form-submit">
+                                        <input
+                                          name="submit"
+                                          type="submit"
+                                          id="submit"
+                                          className="submit"
+                                          value="Submit"
+                                        />
+                                      </p>
+                                    </div>
+                                  </form>
+                                )}
                               </div>
                             </div>
                             <div className="clear"></div>

@@ -1,0 +1,4 @@
+.wishlist::before{
+    content: "\e634" !important;
+    font-family: themify !important;
+}

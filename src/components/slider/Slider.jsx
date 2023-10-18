@@ -21,13 +21,14 @@ const Sliders = () => {
   const fetchSliders = () => {
     const apiUrl = apiConfig.slidersAPI;
     fetch(apiUrl, {
-      method: 'GET',
-    }).then(response => response.json())
-      .then(data => {
-        console.log(data);
+      method: "GET",
+    })
+      .then((response) => response.json())
+      .then((data) => {
         setSliderData(data.sliders);
-      }).catch(error => console.error("Fetch Issue in Slider", error));
-  }
+      })
+      .catch((error) => console.error("Fetch Issue in Slider", error));
+  };
 
   useEffect(() => {
     fetchSliders();
@@ -35,20 +36,20 @@ const Sliders = () => {
   return (
     <div className="block block-sliders layout-9 diff-col nav-left auto-height m-b-0">
       <Slider {...settings}>
-        {sliderData.map(slider => (
+        {sliderData.map((slider) => (
           <div className="item slick-slide">
             <div className="item-content">
               <div className="item-info">
                 <div className="content background-1">
                   <div className="content-wrap">
-                    <h2 className="title-slider">
-                      Easy <br />
-                      Living
-                    </h2>
+                    <h2 className="title-slider">{slider?.topheading?.en}</h2>
                     <div className="description-slider">
-                      Best collections for your home
+                      {slider?.heading?.en}
                     </div>
-                    <Link to={"/products"} className="button-slider button-black" href="#">
+                    <Link
+                      to={"/products"}
+                      className="button-slider button-black"
+                    >
                       SHOP NOW
                     </Link>
                   </div>
@@ -58,7 +59,6 @@ const Sliders = () => {
                 <img
                   width={959}
                   height={963}
-                  // style={{ height: '450px', objectFit: 'contain' }}
                   src={slider.image}
                   alt="Image Slider"
                 />
