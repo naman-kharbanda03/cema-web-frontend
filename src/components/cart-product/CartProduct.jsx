@@ -9,7 +9,8 @@ const CartProduct = (props) => {
   const order = orderData;
   // const initialQty = order?.qty ? parseInt(ordersData.qty) : 0;
   const [orderQnty, setOrderQnty] = useState(order?.qty);
-  const { setCartToggle, removeFromLocalCart } = useShoppingCart();
+  const { setCartToggle, removeFromLocalCart, increaseItemInLocalCart } = useShoppingCart();
+  console.log(order);
 
   const increaseQty = () => {
     setOrderQnty(orderQnty + 1);
@@ -37,20 +38,28 @@ const CartProduct = (props) => {
       variant_id: "",
     };
     const apiUrl = apiConfig.updateCartAPI;
-    fetch(apiUrl, {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-        Authorization: `Bearer ${bearerToken}`,
-      },
-      body: JSON.stringify(formdata),
-    })
-      .then((response) => response.text())
-      .then((result) => {
-        console.log(result);
-        setCartToggle(prev => !prev);
+    if (bearerToken) {
+      fetch(apiUrl, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${bearerToken}`,
+        },
+        body: JSON.stringify(formdata),
       })
-      .catch((error) => console.log("error", error));
+        .then((response) => response.text())
+        .then((result) => {
+          console.log(result);
+          setCartToggle(prev => !prev);
+        })
+        .catch((error) => console.log("error", error));
+    } else {
+      const prod = {
+        id: order?.simple_product.id
+      };
+
+      increaseItemInLocalCart(qty - orderQnty, prod);
+    }
   };
 
   const decreaseQtyUtils = () => {
@@ -91,7 +100,7 @@ const CartProduct = (props) => {
   return (
     <tr className="cart-item">
       <td className="product-thumbnail">
-        <Link to={`/product-details?product_id=${order?.id}`}>
+        <Link to={`/product-details?product_id=${order?.simple_product?.id}`}>
           <img
             width={600}
             height={600}
@@ -101,14 +110,14 @@ const CartProduct = (props) => {
           />
         </Link>
         <div className="product-name">
-          <Link to={`/product-details?product_id=${order?.id}`}>
+          <Link to={`/product-details?product_id=${order?.simple_product?.id}`}>
             {order?.simple_product?.product_name?.en}
           </Link>
         </div>
       </td>
       <td className="product-price">
         <span className="price">
-          KD{order?.simple_product?.actual_selling_price}
+          KD {order?.simple_product?.actual_selling_price}
         </span>
       </td>
       <td className="product-quantity">
@@ -136,7 +145,7 @@ const CartProduct = (props) => {
         </div>
       </td>
       <td className="product-subtotal">
-        <span>KD{order?.simple_product?.actual_selling_price * orderQnty}</span>
+        <span>KD {Math.round((order?.simple_product?.actual_selling_price * orderQnty * 100)) / 100}</span>
       </td>
       <td className="product-remove">
         <a

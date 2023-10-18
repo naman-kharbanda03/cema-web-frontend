@@ -88,12 +88,9 @@ const Cart = () => {
         });
     } else {
       const orders = JSON.parse(localStorage.getItem('cart'));
-      setOrders(orders.Items);
+      setOrders(orders?.Items);
     }
-
-
   }
-
   useEffect(() => {
     getCartDetails();
   }, [cartItemsCount]);
@@ -208,7 +205,7 @@ const Cart = () => {
                               <div className="cart-subtotal">
                                 <div className="title">Subtotal</div>
                                 <div>
-                                  <span>KD{couponData?.subtotal || total}</span>
+                                  <span>KD {couponData?.subtotal || total}</span>
                                 </div>
                               </div>
 
@@ -255,7 +252,7 @@ const Cart = () => {
                               <div className="order-total">
                                 <div className="title">Total</div>
                                 <div>
-                                  <span>KD{total}</span>
+                                  <span>KD {total}</span>
                                 </div>
                               </div>
                             </div>

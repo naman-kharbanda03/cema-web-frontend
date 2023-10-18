@@ -24,7 +24,7 @@ const ProductGrid = (props) => {
                                 >
                                     <img
                                         width={600}
-                                        style={{ height: '328px', objectFit: 'contain' }}
+                                        style={{ width: '300px', height: '328px', objectFit: 'contain' }}
                                         // src={product.image_path + '/' + product.thumbnail}
                                         src={product.image_path?.replace('gallery', `${product?.thumbnail}`)}
                                         className="post-image "
@@ -33,7 +33,7 @@ const ProductGrid = (props) => {
                                     <img
                                         width="600"
                                         height="600"
-                                        style={{ height: '328px', objectFit: 'contain' }}
+                                        style={{ width: '300px', height: '328px', objectFit: 'contain' }}
 
                                         src={product.image_path?.replace('gallery', `${product?.hover_thumbnail}`)}
                                         // src={product.image_path + '/' + product.hover_thumbnail}
@@ -45,15 +45,17 @@ const ProductGrid = (props) => {
                             <div className="product-button">
                                 <div
                                     className="btn-add-to-cart"
-                                    data-title="Add to cart"
+                                    data-title={product.stock > 0 ? 'Add to cart' : 'Out of stock'}
+                                    aria-disabled
                                 >
                                     <a
                                         rel="nofollow"
-                                        onClick={() => AddToCart(product, 1)}
+                                        onClick={() => {
+                                            if (product.stock > 0) AddToCart(product, 1)
+                                        }}
                                         className="product-btn button"
-
                                     >
-                                        Add to cart
+                                        {product.stock > 0 ? 'Add to cart' : 'Out of stock'}
                                     </a>
                                 </div>
                                 <div

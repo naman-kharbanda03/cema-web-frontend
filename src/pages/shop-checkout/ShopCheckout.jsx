@@ -221,10 +221,10 @@ const ShopCheckout = () => {
       .then((result) => {
         toast.success(result.message, {
           position: toast.POSITION.BOTTOM_LEFT,
-      });
-      setTimeout(() => {
-        navigate(`/account?activeTab=orders&orderId=${"EODD"+result?.order_id}`)
-      }, 1000)
+        });
+        setTimeout(() => {
+          navigate(`/account?activeTab=orders&orderId=${"EODD" + result?.order_id}`)
+        }, 1000)
       })
       .catch((error) => console.log("error", error));
   };
@@ -409,7 +409,6 @@ const ShopCheckout = () => {
                                   />
                                 </span>
                               </p>
-
                               <p className="form-row address-field validate-required form-row-wide">
                                 <label>
                                   Street address{" "}
@@ -443,7 +442,6 @@ const ShopCheckout = () => {
                                   />
                                 </span>
                               </p>
-
                               <p className="form-row form-row-wide validate-required">
                                 <label>
                                   Country / Region{" "}
@@ -510,7 +508,6 @@ const ShopCheckout = () => {
                                   </select>
                                 </span>
                               </p>
-
                               <p className="form-row address-field validate-required validate-postcode form-row-wide">
                                 <label>
                                   Postcode / ZIP{" "}
@@ -894,12 +891,12 @@ const ShopCheckout = () => {
                                 <span>{datta?.discount_amount}</span>
                               </div>
                             </div>
-                            <div className="cart-subtotal">
+                            {/* <div className="cart-subtotal">
                               <h2>Shipping Charges</h2>
                               <div className="subtotal-price">
                                 <span>Amit Please send</span>
                               </div>
-                            </div>
+                            </div> */}
                             <div className="order-total">
                               <h2>Total</h2>
                               <div className="total-price">

@@ -10,7 +10,7 @@ const WishListTable = () => {
     const [orderData, setOrderData] = useState([]);
     // const [toggle, setToggle] = useState(false);
     // const [wishListCount, setWishListCount] = useState();
-    const { handleAddRemoveWishlist, wishListCount } = useShoppingCart();
+    const { handleAddRemoveWishlist, wishListCount, AddToCart } = useShoppingCart();
     // const token = "eyJ0eXAiOiJKV1QiLCJhbGciOiJSUzI1NiJ9.eyJhdWQiOiIyIiwianRpIjoiMDg5ZTBiNWU4N2E0ZmUxMDhlNTIyMTZkMGQyZTQ3MmVhZWVmYWEzOWZiMDQ3NDlmNmFkYmM1YjViYjQ1YjUwMmIyODRlZTliOWRiYzM0NzIiLCJpYXQiOjE2OTYwOTMyNDUuODg0MzU2LCJuYmYiOjE2OTYwOTMyNDUuODg0MzU3LCJleHAiOjE3Mjc3MTU2NDUuODc0Nzc1LCJzdWIiOiIxMiIsInNjb3BlcyI6W119.m-wW2OK1tQc9Iobe6cFRogBjlpGhC5y7sGx0tDiYWNhXid-8rIwRfgnWccEMl5_gdJJbwJEtq1vYww2Fs3xA9Dgt343D4mI-ms32GQHnqvyySmWCHj5bOzh6kYOQo2qh0ADZuIZVT_OsZYmrPyzfk_k5epEHzc03OX_9iQoxKiWbODtNT_lEuTsYFV1iYf4bXhcRnFEICfIG_g7e2cOEnNlHb2rf2jrxN4RWnmvtsetBFj_JxpIc31yIpca8Enml1PvrxL101qzk4OmKFQJbEGVYf6cNxxf9IbVcYZLKumx-sbUiimfVLqLsvoTFogFPY0VI-T9Anvqscn5Mso44tpV3tc2iGNGF9SGFnP-g3KOfLWT_ztoLQ3rH0blm03omri32nQQP4CnZFic6zjN9HKknALQ1_P52VfU4CWFOHyqUrUcNLB98wBU-jHeyUUUdwcXyAF9F2io3xAyKqw2uRiiQ2p0t0A0WUU-_Xvc1xGdBEo5bIZUxc5qYm3u4Q8rbcg6wfmFPFLHVv0ZoYSUtnXngZQZ1xv5__GU8U94UgbWRNfIgTZuKOvLEj8hEa7fyGx_IVzLzh3gcHSGMA9ysZ8l_dDzgxs3cehOHIPhBqvvjitmSefBsYacx2NPN3MnCJAzXe6p1StTLRRNIchGDpduRDgxVAHYnCV76tv20__A";
 
     useEffect(() => {
@@ -50,7 +50,7 @@ const WishListTable = () => {
     return (
         <>
             <div className="shop-wishlist">
-                {orderData.length > 0 ?
+                {orderData?.length > 0 ?
                     <table className="wishlist-items">
                         <tbody>
                             {orderData.map(order => (
@@ -87,18 +87,33 @@ const WishListTable = () => {
                                         </td>
                                         <td className="wishlist-item-actions">
                                             <div className="wishlist-item-stock">{order?.simple_product?.stock > 0 ? "In Stock" : "Out of Stock"}</div>
+
                                             <div className="wishlist-item-add">
                                                 <div
                                                     className="btn-add-to-cart"
                                                     data-title="Add to cart"
                                                 >
-                                                    <a
-                                                        rel="nofollow"
-                                                        href="#"
-                                                        className="product-btn button"
-                                                    >
-                                                        Add to cart
-                                                    </a>{" "}
+                                                    {order?.simple_product?.stock > 0
+                                                        ? <a
+                                                            rel="nofollow"
+                                                            href="#"
+                                                            className="product-btn button"
+                                                            onClick={() => {
+                                                                const prod = {
+                                                                    id: order?.simple_product?.id,
+                                                                    price: order?.simple_product?.price,
+                                                                    image_path: order?.simple_product?.image_path,
+                                                                    product_image: [`${order?.simple_product?.product_image[0]}`],
+                                                                    product_name: { en: order?.simple_product?.product_name?.en },
+                                                                    type: order?.simple_product?.type || "simple_product",
+                                                                }
+                                                                AddToCart(prod, 1);
+                                                            }}
+                                                        >
+                                                            Add to cart
+                                                        </a>
+                                                        : ''}
+                                                    {" "}
                                                     &nbsp;&nbsp;
                                                     <a
                                                         rel="nofollow"

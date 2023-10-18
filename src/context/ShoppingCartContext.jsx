@@ -117,7 +117,8 @@ export const ShoppingCartProvider = ({ children }) => {
                         },
                         image_path: product?.image_path,
                         product_image: [`${product.product_image[0]}`],
-                        stock: product?.stock
+                        stock: product?.stock,
+                        price: product.price
                     }
                 };
 
@@ -259,7 +260,7 @@ export const ShoppingCartProvider = ({ children }) => {
                         actual_selling_price: product?.price,
                         image_path: product?.image_path,
                         product_image: [`${product?.product_image[0]}`],
-                        product_name: { en: product?.product_name?.en }
+                        product_name: { en: product?.product_name?.en },
                     }
                 };
                 const updatedItems = [...currCart.Items, newItem];
@@ -343,6 +344,7 @@ export const ShoppingCartProvider = ({ children }) => {
     return (
         <ShoppingCartContext.Provider value={{
             handleAddRemoveWishlist,
+            increaseItemInLocalCart,
             wishListCount,
             cartItemsCount,
             setCartToggle,

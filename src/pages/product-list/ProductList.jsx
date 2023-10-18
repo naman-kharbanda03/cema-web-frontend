@@ -75,10 +75,13 @@ const ProductList = () => {
     else {
       urlAPI = `${categoryDetailAPI}/${categoryID}?${queryString}`;
     }
-
-    fetch(urlAPI, {
-      method: "GET"
-    })
+    const request = {
+      method: "GET",
+      headers: {
+        'Authorization': `Bearer ${localStorage.getItem('accessToken')}`,
+      },
+    }
+    fetch(urlAPI, request)
       .then((response) => {
         if (!response.ok) throw new Error("Network Issue");
         return response.json();

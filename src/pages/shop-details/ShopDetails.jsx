@@ -12,8 +12,11 @@ const ShopDetails = (product) => {
   const [data, setData] = useState();
   const [image, setImage] = useState("");
   const [activeTabId, setActiveTabId] = useState(1);
-  const [review, setReview] = useState({});
-  const [toggleForm, SetForm] = useState(false);
+  const [reviews, setReviews] = useState();
+  const [review, setReview] = useState();
+  const [thumb, setThumb] = useState();
+
+  const [toggleForm, SetForm] = useState(false)
   const targetRef = useRef(null);
 
   const token = localStorage.getItem("accessToken");
@@ -36,20 +39,17 @@ const ShopDetails = (product) => {
       .then((data) => {
         console.log("cart -->", data?.data);
         setData(data.data);
-        setReview({
-          quality: 0,
-          Price: 0,
-          Value: 0,
-          product_id: data?.data?.product_id,
-          review: "",
-          name: "",
-          email: "",
-        });
+        setReviews(data?.data?.ratingsAndreviews);
         console.log("testing", data.data);
+        let thumbnail = data.data.thumbnail_path + '/' + data.data.thumbnail;
+        let hover = data.data.thumbnail_path + '/' + data.data.hover_thumbnail;
+        let A = [thumbnail, hover];
+        setThumb(A);
+        setImage(thumbnail);
         // console.log("testim", data.data.combinations);
-        setImage(
-          `${data.data.images_path}/${data.data.combinations[0].images[0].image}`
-        );
+        // setImage(
+        //   `${data.data.images_path}/${data.data.combinations[0].images[0].image}`
+        // );
       })
       .catch((error) => console.error("Problem with fetch operations", error));
   };
@@ -84,9 +84,11 @@ const ShopDetails = (product) => {
             quality: 0,
             review: "",
             name: "",
-            email: "",
-          };
-        });
+            email: ""
+          }
+        }
+        )
+
         toast.success(data.message, {
           position: toast.POSITION.BOTTOM_LEFT,
         });
@@ -102,9 +104,13 @@ const ShopDetails = (product) => {
     setReview((prevState) => {
       return {
         ...prevState,
-        [e.target.name]: e.target.value,
-      };
-    });
+        [e.target.name]: e.target.value
+      }
+
+    })
+  }
+  const scrollToSection = () => {
+    targetRef.current.scrollIntoView({ behavior: 'smooth' });
   };
   useEffect(() => {
     fetchDetails();
@@ -152,7 +158,24 @@ const ShopDetails = (product) => {
                                 data-vertical='"true"'
                                 data-verticalswiping='"true"'
                               >
-                                {data?.combinations[0].images.map((images) => (
+                                {thumb?.map(img => (
+                                  <div className="img-item slick-slide">
+                                    <span className="img-thumbnail-scroll">
+                                      <img
+                                        width="600"
+                                        height="500"
+                                        src={img}
+                                        alt=""
+                                        onClick={() =>
+                                          setImage(
+                                            img
+                                          )
+                                        }
+                                      />
+                                    </span>
+                                  </div>
+                                ))}
+                                {data?.combinations[0]?.images.map((images) => (
                                   <div className="img-item slick-slide">
                                     <span className="img-thumbnail-scroll">
                                       <img
@@ -169,6 +192,7 @@ const ShopDetails = (product) => {
                                     </span>
                                   </div>
                                 ))}
+
                               </div>
                             </div>
                           </div>
@@ -218,14 +242,14 @@ const ShopDetails = (product) => {
                         </span>
                         <div className="rating">
                           <StarRatings
-                            rating={2.5}
+                            rating={review?.rating}
                             starRatedColor="gold"
                             starHoverColor="gold"
                             numberOfStars={5}
                             starDimension="24px"
                             starSpacing="2px"
                           />
-                          <p>Rating: {2.5} out of 5</p>
+                          <p>Rating: {reviews?.rating} out of 5</p>
                         </div>
                         <div className="description">
                           {data?.description.en.length > 100 ? (
@@ -336,33 +360,29 @@ const ShopDetails = (product) => {
                                     `${data?.combinations[0]?.images[0]?.image}`,
                                   ],
                                   product_name: { en: data?.product_name?.en },
-                                  type: data?.type || "simple_product",
-                                };
-                                AddToCart(prod, quant);
+                                  type: data?.type || "simple_product"
+                                }
+                                if (data?.combinations?.[0]?.stock > 0) AddToCart(prod, quant);
                               }}
                             >
-                              Add to cart
+                              {data?.combinations?.[0]?.stock > 0 ? `Add to cart` : `Out of stock`}
                             </div>
                           </div>
                           <div className="btn-quick-buy" data-title="Wishlist">
                             <button className="product-btn">Buy It Now</button>
                           </div>
                           <div className="btn-wishlist" data-title="Wishlist">
-                            <button
-                              className={`product-btn ${styles.wishlist}`}
-                              onClick={(e) => {
-                                const prod = {
-                                  id: data.product_id,
-                                  product_name: { en: data?.product_name?.en },
-                                  image_path: data?.images_path,
-                                  product_image: [
-                                    `${data?.combinations[0].images[0].image}`,
-                                  ],
-                                  stock: data.combinations[0].stock,
-                                };
-                                handleAddRemoveWishlist(e, prod);
-                              }}
-                            >
+                            <button className="product-btn" onClick={(e) => {
+                              const prod = {
+                                id: data.product_id,
+                                product_name: { en: data?.product_name?.en },
+                                image_path: data?.images_path,
+                                product_image: [`${data?.combinations[0].images[0].image}`],
+                                stock: data.combinations[0].stock,
+                                price: data?.combinations?.[0]?.mainprice
+                              }
+                              handleAddRemoveWishlist(e, prod)
+                            }}>
                               Add to wishlist
                             </button>
                           </div>
@@ -420,22 +440,23 @@ const ShopDetails = (product) => {
                       <ul className="nav nav-tabs" role="tablist">
                         <li className="nav-item">
                           <a
-                            className={`nav-link ${
-                              activeTabId === 1 ? "active" : ""
-                            }`}
+                            className={`nav-link ${activeTabId === 1 ? "active" : ""
+                              }`}
                             data-toggle="tab"
                             // href="#description"
                             role="tab"
-                            onClick={() => setActiveTabId(1)}
+                            onClick={() => {
+                              setActiveTabId(1);
+                              scrollToSection();
+                            }}
                           >
                             Description
                           </a>
                         </li>
                         <li className="nav-item">
                           <a
-                            className={`nav-link ${
-                              activeTabId === 2 ? "active" : ""
-                            }`}
+                            className={`nav-link ${activeTabId === 2 ? "active" : ""
+                              }`}
                             data-toggle="tab"
                             // href="#additional-information"
                             role="tab"
@@ -446,9 +467,8 @@ const ShopDetails = (product) => {
                         </li>
                         <li className="nav-item">
                           <a
-                            className={`nav-link ${
-                              activeTabId === 3 ? "active" : ""
-                            }`}
+                            className={`nav-link ${activeTabId === 3 ? "active" : ""
+                              }`}
                             data-toggle="tab"
                             // href="#reviews"
                             role="tab"
@@ -460,9 +480,8 @@ const ShopDetails = (product) => {
                       </ul>
                       <div className="tab-content">
                         <div
-                          className={`tab-pane fade  ${
-                            activeTabId === 1 ? " show active" : ""
-                          }`}
+                          className={`tab-pane fade  ${activeTabId === 1 ? " show active" : ""
+                            }`}
                           id="description"
                           role="tabpanel"
                           ref={targetRef}
@@ -470,9 +489,8 @@ const ShopDetails = (product) => {
                           <p>{data?.description?.en}</p>
                         </div>
                         <div
-                          className={`tab-pane fade  ${
-                            activeTabId === 2 ? " show active" : ""
-                          }`}
+                          className={`tab-pane fade  ${activeTabId === 2 ? " show active" : ""
+                            }`}
                           id="additional-information"
                           role="tabpanel"
                         >
@@ -492,56 +510,57 @@ const ShopDetails = (product) => {
                           </table>
                         </div>
                         <div
-                          className={`tab-pane fade  ${
-                            activeTabId === 3 ? " show active" : ""
-                          }`}
+                          className={`tab-pane fade  ${activeTabId === 3 ? " show active" : ""
+                            }`}
                           id="reviews"
                           role="tabpanel"
                         >
                           <div id="reviews" className="product-reviews">
                             <div id="comments">
                               <h2 className="reviews-title">
-                                1 review for{" "}
-                                <span>{data?.product_name.en}</span>
+                                {reviews?.length} review for <span>{data?.product_name.en}</span>
                               </h2>
                               <ol className="comment-list">
-                                <li className="review">
-                                  <div className="content-comment-container">
-                                    <div className="comment-container">
-                                      <img
-                                        src="media/user.jpg"
-                                        className="avatar"
-                                        height="60"
-                                        width="60"
-                                        alt=""
-                                      />
-                                      <div className="comment-text">
-                                        <div className="rating small">
-                                          <div className="rating">
-                                            <StarRatings
-                                              rating={2.5}
-                                              starRatedColor="gold"
-                                              starHoverColor="gold"
-                                              numberOfStars={5}
-                                              starDimension="24px"
-                                              starSpacing="2px"
-                                            />
-                                            <p>Rating: {2.5} out of 5</p>
+                                {reviews?.map(review => (
+                                  <li className="review">
+                                    <div className="content-comment-container">
+                                      <div className="comment-container">
+                                        {/* <img
+                                          src="media/user.jpg"
+                                          className="avatar"
+                                          height="60"
+                                          width="60"
+                                          alt=""
+                                        /> */}
+                                        <div className="comment-text">
+                                          <div className="rating small">
+                                            <div className="rating">
+                                              <StarRatings
+                                                rating={review.rating}
+                                                starRatedColor="gold"
+                                                starHoverColor="gold"
+                                                numberOfStars={5}
+                                                starDimension="24px"
+                                                starSpacing="2px"
+                                              />
+                                              <p>Rating: {review.rating} out of 5</p>
+                                            </div>
+                                          </div>
+                                          <div className="review-author">
+                                            {review?.user}
+                                          </div>
+                                          <div className="review-time">
+                                            {review?.created_at}
                                           </div>
                                         </div>
-                                        <div className="review-author">
-                                          Peter Capidal
-                                        </div>
-                                        <div className="review-time">
-                                          January 12, 2022
-                                        </div>
+                                      </div>
+                                      <div className="description">
+                                        <p>{review?.review}</p>
                                       </div>
                                     </div>
-                                    <div className="description">
-                                      <p>good</p>
-                                    </div>
-                                  </div>
-                                </li>
+                                  </li>
+                                ))}
+
                               </ol>
                             </div>
                             <div id="review-form">

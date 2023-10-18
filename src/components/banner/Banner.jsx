@@ -46,7 +46,7 @@ const Banner = () => {
                   <div className="info">
                     <div className="content">
                       <div className="banner-image-subtitle">
-                        {categories[0]?.sub_title}
+                        {categories[0]?.description}
                       </div>
                       <a className="link-title" href="#">
                         <h3 className="title-banner">{categories[0]?.title}</h3>
@@ -69,7 +69,7 @@ const Banner = () => {
                         <img
                           width={961}
                           height={419}
-                          src={banner_12}
+                          src={`https://www.demo609.amrithaa.com/backend-cema/public/images/category/${categories[1]?.image}`}
                           alt="Banner Image"
                         />
                       </a>
@@ -78,7 +78,7 @@ const Banner = () => {
                       <div className="info">
                         <div className="content">
                           <div className="banner-image-subtitle">
-                            {categories[1]?.sub_title}
+                            {categories[1]?.description}
                           </div>
                           <a className="link-title" href="#">
                             <h3 className="title-banner">
@@ -103,7 +103,7 @@ const Banner = () => {
                         <img
                           width={481}
                           height={419}
-                          src={banner_13}
+                          src={`https://www.demo609.amrithaa.com/backend-cema/public/images/category/${categories[2]?.image}`}
                           alt="Banner Image"
                         />
                       </a>
@@ -112,10 +112,10 @@ const Banner = () => {
                       <div className="info">
                         <div className="content">
                           <div className="banner-image-subtitle">
-                            FREE SHIPPING
+                            {categories[2]?.description}
                           </div>
                           <a className="link-title" href="#">
-                            <h3 className="title-banner">Home Decor</h3>
+                            <h3 className="title-banner">{categories[2]?.title}</h3>
                           </a>
                         </div>
                       </div>
@@ -133,7 +133,7 @@ const Banner = () => {
                         <img
                           width={481}
                           height={419}
-                          src={banner_14}
+                          src={`https://www.demo609.amrithaa.com/backend-cema/public/images/category/${categories[3]?.image}`}
                           alt="Banner Image"
                         />
                       </a>
@@ -141,9 +141,13 @@ const Banner = () => {
                     <div className="banner-wrapper-infor">
                       <div className="info">
                         <div className="content">
-                          <div className="banner-image-subtitle">30% OFF</div>
+                          <div className="banner-image-subtitle">
+                            {categories[3]?.description}
+                          </div>
                           <a className="link-title" href="#">
-                            <h3 className="title-banner">Interior lighting</h3>
+                            <h3 className="title-banner">
+                              {categories[3]?.title}
+                            </h3>
                           </a>
                         </div>
                       </div>

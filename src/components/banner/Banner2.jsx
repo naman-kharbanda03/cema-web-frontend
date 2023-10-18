@@ -1,8 +1,7 @@
 import React, { useEffect, useState } from "react";
-import banner_23 from "../../asset/images/banner/banner-23.jpg";
-import banner_24 from "../../asset/images/banner/banner-24.jpg";
-import apiConfig from "../../config/apiConfig";
 import { Link } from "react-router-dom";
+import apiConfig from "../../config/apiConfig";
+// import { Link } from "react-router-dom";
 
 const Banner2 = () => {
   const [categories, setCategories] = useState([]);
@@ -44,17 +43,19 @@ const Banner2 = () => {
                       <div className="info">
                         <div className="content">
                           <a className="link-title" href="#">
-                            <h3 className="title-banner">{category.title}</h3>
+                            <h3 className="title-banner">
+                              {category.title} <br /> {category.sub_title}
+                            </h3>
                           </a>
                           <div className="banner-image-description">
-                            {category.sub_title}
+                            {category.description}
                           </div>
-                          <Link
-                            className="button button-outline white"
-                            to="/products"
-                          >
-                            SHOP NOW
+                          <Link to="/products">
+                            <a className="button button-outline white" href="#">
+                              SHOP NOW
+                            </a>
                           </Link>
+
                         </div>
                       </div>
                     </div>

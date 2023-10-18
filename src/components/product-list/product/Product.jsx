@@ -9,7 +9,7 @@ import { useShoppingCart } from "../../../context/ShoppingCartContext";
 const Product = (props) => {
 
     const product = props.current;
-    const [desc, setDesc] = useState(product.description)
+    const [desc, setDesc] = useState(product.product_detail);
     // console.log(product.thumbpath + '/' + product.images[0].image);
     const { increaseItem, getQuantity } = useShoppingCart();
     const token = localStorage.getItem('accessToken');
@@ -73,14 +73,14 @@ const Product = (props) => {
                             <div className="rating">
                                 <div className="rating">
                                     <StarRatings
-                                        rating={2.5}
+                                        rating={product.product_rating}
                                         starRatedColor="gold"
                                         starHoverColor="gold"
                                         numberOfStars={5}
                                         starDimension="24px"
                                         starSpacing="2px"
                                     />
-                                    <p>Rating: {2.5} out of 5</p>
+                                    <p>Rating: {product.product_rating} out of 5</p>
                                 </div>
                                 <div className="review-count">
                                     (1<span> review</span>)
@@ -102,11 +102,11 @@ const Product = (props) => {
                                                 product_image: [`${product.product_image[0]}`],
                                                 product_name: { en: product.product_name.en }
                                             }
-                                            AddToCart(prod, 1);
+                                            if (product.stock > 0) AddToCart(prod, 1);
                                         }}
                                         className="product-btn button"
                                     >
-                                        Add to cart
+                                        {product.stock > 0 ? 'Add to cart' : 'Out of Stock'}
                                     </a>
                                 </div>
                                 <div
@@ -114,9 +114,9 @@ const Product = (props) => {
                                     data-title="Wishlist"
                                 >
                                     <button className="product-btn"
+                                        // style={{ backgroundColor: 'black', color: 'white' }}
                                         onClick={(e) => {
-
-                                            handleAddRemoveWishlist(e, product)
+                                            handleAddRemoveWishlist(e, product);
                                             // document.documentElement.style.setProperty('--wishlist-color', 'white');
                                             // document.documentElement.style.setProperty('--wishlist-bk-color', 'black');
                                         }}
@@ -134,7 +134,7 @@ const Product = (props) => {
                                 </div> */}
                             </div>
                             <div className="product-description">
-                                <div dangerouslySetInnerHTML={{ __html: desc }} />
+                                {/* <div dangerouslySetInnerHTML={{ __html: product.product_detail }} /> */}
                                 {/* <span>Read more</span> */}
                             </div>
                         </div>

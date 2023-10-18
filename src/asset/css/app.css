@@ -30902,6 +30902,9 @@ body i[class~="slick-arrow"][class~="fa-angle-right"] {
   background: #000;
   color: #fff;
 }
+.shop-details .product-tabs #review-form .comment-reply-title:before {
+  display: none !important;
+}
 .shop-details .buttons .btn-wishlist .product-btn {
   margin-top: 20px;
   text-align: center;
