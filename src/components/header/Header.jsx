@@ -19,8 +19,9 @@ const Header = () => {
   const { wishListCount, cartItemsCount } = useShoppingCart(); // Imported Functions from Global Variables or States or Context
 
   const fetchDetails = () => {
+    const apiUrl = apiConfig.navCategoriesAPI;
     fetch(
-      "https://www.demo609.amrithaa.com/backend-cema/public/api/navCategories",
+      apiUrl,
       {
         method: "GET",
       }

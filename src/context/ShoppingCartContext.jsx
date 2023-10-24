@@ -18,14 +18,16 @@ export const ShoppingCartProvider = ({ children }) => {
         Items: [],
         totalItems: 0
     });
+    const [cartData, setCartData] = useState();
+    const [wishlistData, setWishlistData] = useState();
     const [cartItemsCount, setCartItemsCount] = useState(0);
     const [wishListCount, setWishListCount] = useState(0);
     const [wishListToggle, setWishListToggle] = useState(false);
     const [cartToggle, setCartToggle] = useState(false);
 
 
-    const showInfoToastMessage = () => {
-        toast.info("Invalid Coupon code !", {
+    const showInfoToastMessage = (msg) => {
+        toast.info(msg, {
             position: toast.POSITION.BOTTOM_LEFT,
         });
     };
@@ -59,6 +61,7 @@ export const ShoppingCartProvider = ({ children }) => {
                 if (datar.success) {
                     console.log(datar);
                     setWishListCount(datar.count);
+                    setWishlistData(datar);
                     // showInfoToastMessage();
                     return datar;
                 } else {
@@ -68,13 +71,16 @@ export const ShoppingCartProvider = ({ children }) => {
             }).catch((error) => console.error("Problem with fetch", error));
         }
 
-    }, [wishListToggle]);
+    }, []);
 
 
     const handleAddRemoveWishlist = (e, product) => {
         e.preventDefault();
         const formData = new FormData();
+        console.log(product);
         formData.append('product_id', product?.id);
+        formData.append('type', product?.type);
+
 
         const apiURl = apiConfig.addRemoveWishlistAPI;
         const token = localStorage.getItem('accessToken');
@@ -91,6 +97,7 @@ export const ShoppingCartProvider = ({ children }) => {
                 .then((response) => response.json())
                 .then((data) => {
                     console.log(data);
+                    setWishListCount(data.count);
                     setWishListToggle(prev => !prev);
                     showSuccessToastMessage(data.msg);
                     return data;
@@ -105,23 +112,23 @@ export const ShoppingCartProvider = ({ children }) => {
     }
     const increaseDecreaseItemInLocalWishlist = (product) => {
         setWishListItems(currList => {
-            const foundIndex = currList.Items.findIndex(item => item?.simple_product?.id === product?.id);
+            let foundIndex = null;
+            console.log(product);
+            foundIndex = currList.Items.findIndex(item => item?.product_id === product?.id && item?.type === product?.type);
             if (foundIndex === -1) {
-                // If the item doesn't exist in the cart, add it.
-                // const newItem = product;
                 const newItem = {
-                    simple_product: {
-                        id: product?.id,
-                        product_name: {
-                            en: product?.product_name.en
-                        },
-                        image_path: product?.image_path,
-                        product_image: [`${product.product_image[0]}`],
-                        stock: product?.stock,
-                        price: product.price
-                    }
-                };
-
+                    product_id: product?.id,
+                    product_name: {
+                        en: product?.product_name.en
+                    },
+                    image_path: product?.image_path,
+                    product_image: [`${product.product_image?.[0]}`],
+                    variant_id: product?.variant_id,
+                    stock: product?.stock,
+                    price: product?.price,
+                    type: product?.type || 'variant',
+                    link: product?.type === 'simple_product' ? `/product-details?product_id=${product.id}` : `/product-details?product_id=${product.id}&variant_id=${product?.variant_id}`
+                }
                 const updatedItems = [...currList.Items, newItem];
                 const updatedCount = currList.totalItems + 1;
                 showSuccessToastMessage("Item Added in Local WishList");
@@ -130,10 +137,10 @@ export const ShoppingCartProvider = ({ children }) => {
                     Items: updatedItems,
                     totalItems: updatedCount,
                 }
-            } else {
-                // If the item exists, update its quantity.
+            }
+            else {
                 const updatingItems = [...currList.Items];
-                const updatedItems = updatingItems.filter(item => item.simple_product.id !== product?.id);
+                const updatedItems = updatingItems.filter(item => !(item?.product_id === product?.id && item?.type === product?.type));
                 const updatedCount = currList.totalItems - 1;
                 showSuccessToastMessage("Item Removed in Local WishList");
                 return {
@@ -142,10 +149,84 @@ export const ShoppingCartProvider = ({ children }) => {
                     totalItems: updatedCount,
                 }
             }
+            // if (product?.type === "simple_product") {
+            //     foundIndex = currList.Items.findIndex(item => item?.simple_product?.id === product?.id);
+            //     if (foundIndex === -1) {
+            //         const newItem = {
+            //             simple_product: {
+            //                 id: product?.id,
+            //                 variant_id: "NA",
+            //                 product_name: {
+            //                     en: product?.product_name.en
+            //                 },
+            //                 image_path: product?.image_path,
+            //                 product_image: [`${product.product_image?.[0]}`],
+            //                 stock: product?.stock,
+            //                 price: product?.price,
+            //                 type: product?.type
+            //             }
+            //         };
+            //         const updatedItems = [...currList.Items, newItem];
+            //         const updatedCount = currList.totalItems + 1;
+            //         showSuccessToastMessage("Item Added in Local WishList");
+            //         return {
+            //             ...currList,
+            //             Items: updatedItems,
+            //             totalItems: updatedCount,
+            //         }
+            //     } else {
+            //         const updatingItems = [...currList.Items];
+            //         const updatedItems = updatingItems.filter(item => item?.simple_product?.id !== product?.id);
+            //         const updatedCount = currList.totalItems - 1;
+            //         showSuccessToastMessage("Item Removed in Local WishList");
+            //         return {
+            //             ...currList,
+            //             Items: updatedItems,
+            //             totalItems: updatedCount,
+            //         }
+            //     }
+            // } else {
+            //     foundIndex = currList.Items.findIndex(item => item?.variant?.id === product?.id);
+            //     if (foundIndex === -1) {
+            //         const newItem = {
+            //             variant: {
+            //                 id: product?.id,
+            //                 variant_id: product?.variant_id,
+            //                 product_name: {
+            //                     en: product?.product_name?.en
+            //                 },
+            //                 image_path: product?.image_path,
+            //                 product_image: [`${product.product_image?.[0]}`],
+            //                 stock: product?.stock,
+            //                 price: product?.price,
+            //                 type: "variant_product"
+            //             }
+            //         };
+            //         const updatedItems = [...currList.Items, newItem];
+            //         const updatedCount = currList.totalItems + 1;
+            //         showSuccessToastMessage("Item Added in Local WishList");
+            //         return {
+            //             ...currList,
+            //             Items: updatedItems,
+            //             totalItems: updatedCount,
+            //         }
+            //     } else {
+            //         const updatingItems = [...currList.Items];
+            //         const updatedItems = updatingItems.filter(item => item?.variant?.id !== product?.id);
+            //         const updatedCount = currList.totalItems - 1;
+            //         showSuccessToastMessage("Item Removed in Local WishList");
+            //         return {
+            //             ...currList,
+            //             Items: updatedItems,
+            //             totalItems: updatedCount,
+            //         }
+            //     }
+            // }
         });
     }
     useEffect(() => {
         setWishListCount(wishListItems.totalItems);
+        setWishListToggle(prev => !prev);
     }, [wishListItems])
 
     const addToWishlist2 = (wishlist) => {
@@ -185,8 +266,7 @@ export const ShoppingCartProvider = ({ children }) => {
             quantity: amt,
             product_id: product?.id,
             type: product?.type,
-            price: product?.actual_selling_price,
-            offerprice: product?.actual_offer_price,
+            variant_id: product?.variant_id
         };
         const bearerToken = localStorage.getItem("accessToken");
 
@@ -202,7 +282,9 @@ export const ShoppingCartProvider = ({ children }) => {
             }).then((response) => response.json())
                 .then((data) => {
                     console.log("Response:", data);
-                    setCartToggle(prev => !prev); showSuccessToastMessage(data.message);
+                    setCartItemsCount(data.count);
+                    // setCartToggle(prev => !prev); 
+                    showSuccessToastMessage(data.message);
                 })
                 .catch((error) => {
                     console.error("Error:", error);
@@ -249,20 +331,31 @@ export const ShoppingCartProvider = ({ children }) => {
 
     const increaseItemInLocalCart = (amt, product) => {
         setCartItems(currCart => {
-            const foundIndex = currCart.Items.findIndex(item => item?.simple_product?.id === product.id);
+            const foundIndex = currCart.Items.findIndex(item => item?.product_id === product.id && item?.type === product.type);
             if (foundIndex === -1) {
                 // If the item doesn't exist in the cart, add it.
                 // const newItem = { quantity: `${amt}`, product_id: `${id}`, type: type };
+                // const newItem = {
+                //     qty: amt,
+                //     simple_product: {
+                //         id: product?.id,
+                //         price: product?.price,
+                //         image_path: product?.image_path,
+                //         product_image: [`${product?.product_image[0]}`],
+                //         product_name: { en: product?.product_name?.en },
+                //     }
+                // };
                 const newItem = {
                     qty: amt,
-                    simple_product: {
-                        id: product?.id,
-                        actual_selling_price: product?.price,
-                        image_path: product?.image_path,
-                        product_image: [`${product?.product_image[0]}`],
-                        product_name: { en: product?.product_name?.en },
-                    }
-                };
+                    product_id: product.id,
+                    variant_id: product?.variant_id,
+                    price: product.price,
+                    image_path: product.image_path,
+                    product_name: { en: product.product_name.en },
+                    product_image: product.product_image[0],
+                    type: product?.type,
+                    link: product?.type === 'simple_product' ? `/product-details?product_id=${product.id}` : `/product-details?product_id=${product.id}&variant_id=${product?.variant_id}`
+                }
                 const updatedItems = [...currCart.Items, newItem];
                 const updatedCount = currCart.totalItems + 1;
                 return {
@@ -302,6 +395,7 @@ export const ShoppingCartProvider = ({ children }) => {
                 return response.json();
             }).then((datar) => {
                 console.log("Cart Data", datar);
+                setCartData(datar);
                 setCartItemsCount(datar.data.reduce((accumalator, item) => {
                     return accumalator + parseInt(item.qty);
                 }, 0));
@@ -310,19 +404,21 @@ export const ShoppingCartProvider = ({ children }) => {
 
             }).catch((error) => console.error("Problem with fetch", error));
         }
-    }, [cartToggle]);
+    }, []);
 
     useEffect(() => {
-        setCartItemsCount(cartItems.totalItems);
+        setCartItemsCount(cartItems?.totalItems);
     }, [cartItems])
 
     const removeFromLocalCart = (product) => {
         // If the item exists, update its quantity.
         setCartItems(currCart => {
-            const foundIndex = currCart.Items.findIndex(item => item?.simple_product?.id === product.id);
+            const foundIndex = currCart.Items.findIndex(item => item.product_id === product.id && item.type === product.type);
             if (foundIndex !== -1) {
                 const updatingItems = [...currCart.Items];
-                const updatedItems = updatingItems.filter(item => item.simple_product.id !== product?.id);
+                console.log(updatingItems)
+                const updatedItems = updatingItems.filter(item => !(item.product_id === product.id && item.type === product.type));
+                console.log(updatedItems)
 
                 const amt = updatingItems[foundIndex].qty;
                 const updatedCount = currCart.totalItems - amt;
@@ -344,18 +440,23 @@ export const ShoppingCartProvider = ({ children }) => {
     return (
         <ShoppingCartContext.Provider value={{
             handleAddRemoveWishlist,
+            increaseDecreaseItemInLocalWishlist,
             increaseItemInLocalCart,
             wishListCount,
             cartItemsCount,
+            setCartItemsCount,
+            setWishListCount,
             setCartToggle,
-            setWishListToggle,
+            wishListToggle,
             setWishListCount,
             AddToCart,
             showSuccessToastMessage,
             showInfoToastMessage,
             AddToCart2,
             addToWishlist2,
-            removeFromLocalCart
+            removeFromLocalCart,
+            cartData,
+            wishlistData
         }}>
             {children}
             <ToastContainer />

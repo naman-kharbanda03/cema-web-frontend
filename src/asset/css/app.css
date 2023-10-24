@@ -30712,11 +30712,14 @@ body i[class~="slick-arrow"][class~="fa-angle-right"] {
   cursor: pointer;
   position: relative;
 }
-.shop-details .variations .attributes ul.colors li span.color-2 {
-  background: #5173a6;
+.shop-details .variations .attributes ul.colors li span.Blue {
+  background: blue;
 }
-.shop-details .variations .attributes ul.colors li span.color-3 {
-  background: #20b2aa;
+.shop-details .variations .attributes ul.colors li span.Red {
+  background: red;
+}
+.shop-details .variations .attributes ul.colors li span.Green {
+  background: green;
 }
 .shop-details .variations .attributes ul.colors li span:before {
   content: "";

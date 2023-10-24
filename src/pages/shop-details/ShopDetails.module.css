@@ -1,4 +1,7 @@
-.wishlist::before{
-    content: "\e634" !important;
-    font-family: themify !important;
+.wishlist::before {
+  content: "\e634" !important;
+  font-family: themify !important;
+}
+.shop-details .variations .attributes ul.colors li span {
+  background: blue !important;
 }

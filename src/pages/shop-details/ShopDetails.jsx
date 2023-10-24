@@ -7,6 +7,7 @@ import StarRatings from "react-star-ratings";
 import apiConfig from "../../config/apiConfig";
 import styles from "./ShopDetails.module.css";
 import { toast } from "react-toastify";
+import { useLocation, useNavigate } from "react-router-dom";
 
 const ShopDetails = (product) => {
   const [data, setData] = useState();
@@ -15,21 +16,41 @@ const ShopDetails = (product) => {
   const [reviews, setReviews] = useState();
   const [review, setReview] = useState();
   const [thumb, setThumb] = useState();
-
   const [toggleForm, SetForm] = useState(false);
   const targetRef = useRef(null);
+  const navigate = useNavigate();
 
   const token = localStorage.getItem("accessToken");
   const url = new URL(window.location.href);
   const params = new URLSearchParams(url.search);
   const product_id = params.get("product_id");
+  const variant_id = params.get('variant_id');
 
-  const { AddToCart, handleAddRemoveWishlist } = useShoppingCart();
+  const location = useLocation();
+  const queryParams = new URLSearchParams(location.search);
+  const [variant, setVariant] = useState();
+  const [defaultVID, setDefaultVID] = useState();
+
+
+  const { AddToCart, handleAddRemoveWishlist, showInfoToastMessage } = useShoppingCart();
   const [quant, setQuant] = useState(1);
 
+  const [colorMap, setColorMap] = useState();
+  const [colors, setColors] = useState();
+  const [sizes, setSizes] = useState();
+  const [currentColor, setCurrentColor] = useState('');
+  const [currentSize, setCurrentSize] = useState('');
+  const [attrributes, setAttrributes] = useState();
+  const [combinations, setCombinations] = useState();
+
   const fetchDetails = () => {
-    const apiUrl = apiConfig.productDetailsAPI;
-    fetch(`${apiUrl}/${product_id}/simple_product`, {
+    let apiUrl = ``;
+    console.log(variant_id);
+    if (variant_id !== null) {
+      apiUrl = `${apiConfig.productDetailsAPI}/${product_id}/variant?variant_id=${variant_id}&currency=INR`;
+    }
+    else apiUrl = apiConfig.productDetailsAPI + '/' + product_id + '/' + 'simple_product';
+    fetch(apiUrl, {
       method: "GET",
     })
       .then((response) => {
@@ -38,21 +59,79 @@ const ShopDetails = (product) => {
       })
       .then((data) => {
         console.log("cart -->", data?.data);
-        setData(data.data);
-        setReviews(data?.data?.ratingsAndreviews);
+        if (variant_id !== undefined && data?.data?.original) {
+          setData(data.data.original.product);
+          setReviews(data?.data?.original.ratingsAndreviews);
+        }
+        else {
+          setData(data.data);
+          setReviews(data?.data?.ratingsAndreviews);
+          let thumbnail = data.data.thumbnail_path + "/" + data.data.thumbnail;
+          let hover = data.data.thumbnail_path + "/" + data.data.hover_thumbnail;
+          let A = [thumbnail, hover];
+          setThumb(A);
+          setImage(thumbnail);
+          setVariant(0);
+          setData((prev) => ({ ...prev, type: 'simple_product' }))
+        }
         console.log("testing", data.data);
-        let thumbnail = data.data.thumbnail_path + "/" + data.data.thumbnail;
-        let hover = data.data.thumbnail_path + "/" + data.data.hover_thumbnail;
-        let A = [thumbnail, hover];
-        setThumb(A);
-        setImage(thumbnail);
-        // console.log("testim", data.data.combinations);
-        // setImage(
-        //   `${data.data.images_path}/${data.data.combinations[0].images[0].image}`
-        // );
       })
       .catch((error) => console.error("Problem with fetch operations", error));
   };
+  useEffect(() => {
+    const colors = [];
+    const sizes = [];
+    const combinations = [];
+    data?.combinations?.forEach((combination, index) => {
+      let color = "";
+      let size = "";
+      if (combination.id === parseInt(variant_id)) {
+        setVariant(index);
+        setImage(data.images_path + '/' + combination.images[0].image);
+        combination.variants.forEach(variant => {
+          if (variant.attr_name === 'Color') {
+            setCurrentColor(variant.var_name);
+            console.log("currentcolor", variant.var_name)
+          }
+
+          if (variant.attr_name === 'Size') {
+            setCurrentSize(variant.var_name);
+            console.log("currentsize", variant.var_name);
+          }
+        })
+      }
+      combination.variants.forEach(variant => {
+        if (variant.attr_name === "Color") color = variant.var_name;
+        if (variant.attr_name === "Size") size = variant.var_name;
+      })
+      const obj = {
+        index: index,
+        id: combination.id,
+        Color: color,
+        Size: size
+      }
+      combinations.push(obj);
+      if (color && !colors.includes(color)) {
+        colors.push(color);
+      }
+      if (size && !sizes.includes(size)) {
+        sizes.push(size);
+      }
+    })
+    setCombinations(combinations);
+    setColors(colors);
+    setSizes(sizes);
+    console.log(combinations, colors, sizes, data);
+  }, [location.search, data])
+
+  useEffect(() => {
+    const selectedCombination = combinations?.find(combination => combination.Color === currentColor && combination.Size === currentSize) || 'Not';
+    console.log(selectedCombination);
+    if (selectedCombination !== 'Not') {
+      navigate(`/product-details?product_id=${product_id}&variant_id=${selectedCombination?.id}`)
+    }
+  }, [currentColor, currentSize])
+
   const giveReview = (e) => {
     e.preventDefault();
     if (!review?.name || !review?.email || !review?.review) {
@@ -156,7 +235,7 @@ const ShopDetails = (product) => {
                                 data-vertical='"true"'
                                 data-verticalswiping='"true"'
                               >
-                                {thumb?.map((img) => (
+                                {/* {thumb?.map((img) => (
                                   <div className="img-item slick-slide">
                                     <span className="img-thumbnail-scroll">
                                       <img
@@ -168,8 +247,8 @@ const ShopDetails = (product) => {
                                       />
                                     </span>
                                   </div>
-                                ))}
-                                {data?.combinations[0]?.images.map((images) => (
+                                ))} */}
+                                {data?.combinations?.[variant]?.images.map((images) => (
                                   <div className="img-item slick-slide">
                                     <span className="img-thumbnail-scroll">
                                       <img
@@ -222,32 +301,32 @@ const ShopDetails = (product) => {
                         <span className="price">
                           <del aria-hidden="true">
                             <span>
-                              {data?.combinations?.[0]?.symbol}
-                              {data?.combinations?.[0]?.mainprice}
+                              {data?.combinations?.[variant]?.symbol}
+                              {data?.combinations?.[variant]?.mainprice}
                             </span>
                           </del>
                           <ins>
                             <span>
-                              {data?.combinations?.[0]?.symbol}
-                              {data?.combinations?.[0]?.offerprice}
+                              {data?.combinations?.[variant]?.symbol}
+                              {data?.combinations?.[variant]?.offerprice}
                             </span>
                           </ins>
                         </span>
                         <div className="rating">
                           <StarRatings
-                            rating={review?.rating}
+                            rating={data?.rating}
                             starRatedColor="gold"
                             starHoverColor="gold"
                             numberOfStars={5}
                             starDimension="24px"
                             starSpacing="2px"
                           />
-                          <p>Rating: {reviews?.rating} out of 5</p>
+                          <p>Rating: {data?.rating} out of 5</p>
                         </div>
                         <div className="description">
-                          {data?.description.en.length > 100 ? (
+                          {data?.description?.en?.length > 100 ? (
                             <>
-                              <p>{`${data?.description.en.slice(
+                              <p>{`${data?.description?.en?.slice(
                                 0,
                                 100
                               )}...`}</p>
@@ -263,49 +342,51 @@ const ShopDetails = (product) => {
                               </span>
                             </>
                           ) : (
-                            data?.description.en
+                            data?.description?.en
                           )}
                           {/* <p>{data?.description.en}</p> */}
                         </div>
 
-                        <div className="variations">
-                          <table cellspacing="0">
-                            <tbody>
-                              <tr>
-                                <td className="label">Size</td>
-                                <td className="attributes">
-                                  <ul className="text">
-                                    <li>
-                                      <span>L</span>
-                                    </li>
-                                    <li>
-                                      <span>M</span>
-                                    </li>
-                                    <li>
-                                      <span>S</span>
-                                    </li>
-                                  </ul>
-                                </td>
-                              </tr>
-                              <tr>
-                                <td className="label">Color</td>
-                                <td className="attributes">
-                                  <ul className="colors">
-                                    <li>
-                                      <span className="color-1"></span>
-                                    </li>
-                                    <li>
-                                      <span className="color-2"></span>
-                                    </li>
-                                    <li>
-                                      <span className="color-3"></span>
-                                    </li>
-                                  </ul>
-                                </td>
-                              </tr>
-                            </tbody>
-                          </table>
-                        </div>
+                        {variant_id
+                          ?
+                          <div className="variations">
+                            <table cellspacing="0">
+                              <tbody>
+                                <tr>
+                                  <td className="label">Color</td>
+                                  <td className="attributes">
+                                    <ul className="colors">
+                                      {colors?.map(color => (
+                                        <li>
+                                          <span className={color}
+                                            onClick={() => setCurrentColor(color)}
+                                          ></span>
+                                        </li>
+                                      ))}
+                                    </ul>
+                                  </td>
+                                </tr>
+
+                                <tr>
+                                  <td className="label">Sizes</td>
+                                  <td className="attributes">
+                                    <ul className="text">
+                                      {sizes?.map(size => (
+                                        <li>
+                                          <span
+                                            onClick={() => setCurrentSize(size)}
+                                          >{size}</span>
+                                        </li>
+                                      ))}
+                                    </ul>
+                                  </td>
+                                </tr>
+
+                              </tbody>
+                            </table>
+                          </div>
+                          : ''}
+
                         <div className="buttons">
                           <div className="add-to-cart-wrap">
                             <div className="quantity">
@@ -346,20 +427,21 @@ const ShopDetails = (product) => {
                               className="btn-add-to-cart"
                               onClick={() => {
                                 const prod = {
-                                  id: data?.combinations[0].id,
-                                  price: data?.combinations?.[0]?.mainprice,
+                                  id: data?.product_id,
+                                  price: data?.combinations?.[variant]?.mainprice,
                                   image_path: data?.images_path,
                                   product_image: [
-                                    `${data?.combinations[0]?.images[0]?.image}`,
+                                    `${data?.combinations[variant]?.images[0]?.image}`,
                                   ],
                                   product_name: { en: data?.product_name?.en },
-                                  type: data?.type || "simple_product",
+                                  type: data?.type || "variant",
+                                  variant_id: data?.type !== 'simple_product' ? data?.combinations[variant].id : null
                                 };
-                                if (data?.combinations?.[0]?.stock > 0)
+                                if (data?.combinations?.[variant]?.stock > 0)
                                   AddToCart(prod, quant);
                               }}
                             >
-                              {data?.combinations?.[0]?.stock > 0
+                              {data?.combinations?.[variant]?.stock > 0
                                 ? `Add to cart`
                                 : `Out of stock`}
                             </div>
@@ -380,6 +462,8 @@ const ShopDetails = (product) => {
                                   ],
                                   stock: data.combinations[0].stock,
                                   price: data?.combinations?.[0]?.mainprice,
+                                  type: data?.type || "variant",
+                                  variant_id: data?.type !== 'simple_product' ? data?.combinations[0].id : null
                                 };
                                 handleAddRemoveWishlist(e, prod);
                               }}
@@ -441,9 +525,8 @@ const ShopDetails = (product) => {
                       <ul className="nav nav-tabs" role="tablist">
                         <li className="nav-item">
                           <a
-                            className={`nav-link ${
-                              activeTabId === 1 ? "active" : ""
-                            }`}
+                            className={`nav-link ${activeTabId === 1 ? "active" : ""
+                              }`}
                             data-toggle="tab"
                             // href="#description"
                             role="tab"
@@ -457,9 +540,8 @@ const ShopDetails = (product) => {
                         </li>
                         <li className="nav-item">
                           <a
-                            className={`nav-link ${
-                              activeTabId === 2 ? "active" : ""
-                            }`}
+                            className={`nav-link ${activeTabId === 2 ? "active" : ""
+                              }`}
                             data-toggle="tab"
                             // href="#additional-information"
                             role="tab"
@@ -470,9 +552,8 @@ const ShopDetails = (product) => {
                         </li>
                         <li className="nav-item">
                           <a
-                            className={`nav-link ${
-                              activeTabId === 3 ? "active" : ""
-                            }`}
+                            className={`nav-link ${activeTabId === 3 ? "active" : ""
+                              }`}
                             data-toggle="tab"
                             // href="#reviews"
                             role="tab"
@@ -484,9 +565,8 @@ const ShopDetails = (product) => {
                       </ul>
                       <div className="tab-content">
                         <div
-                          className={`tab-pane fade  ${
-                            activeTabId === 1 ? " show active" : ""
-                          }`}
+                          className={`tab-pane fade  ${activeTabId === 1 ? " show active" : ""
+                            }`}
                           id="description"
                           role="tabpanel"
                           ref={targetRef}
@@ -494,15 +574,14 @@ const ShopDetails = (product) => {
                           <p>{data?.description?.en}</p>
                         </div>
                         <div
-                          className={`tab-pane fade  ${
-                            activeTabId === 2 ? " show active" : ""
-                          }`}
+                          className={`tab-pane fade  ${activeTabId === 2 ? " show active" : ""
+                            }`}
                           id="additional-information"
                           role="tabpanel"
                         >
                           <table className="product-attributes">
                             <tbody>
-                              {data?.special_services.map((service) => (
+                              {data?.special_services?.map((service) => (
                                 <tr className="attribute-item">
                                   <th className="attribute-label">
                                     {service?.heading}
@@ -516,62 +595,64 @@ const ShopDetails = (product) => {
                           </table>
                         </div>
                         <div
-                          className={`tab-pane fade  ${
-                            activeTabId === 3 ? " show active" : ""
-                          }`}
+                          className={`tab-pane fade  ${activeTabId === 3 ? " show active" : ""
+                            }`}
                           id="reviews"
                           role="tabpanel"
                         >
                           <div id="reviews" className="product-reviews">
-                            <div id="comments">
-                              <h2 className="reviews-title">
-                                {reviews?.length} review for{" "}
-                                <span>{data?.product_name.en}</span>
-                              </h2>
-                              <ol className="comment-list">
-                                {reviews?.map((review) => (
-                                  <li className="review">
-                                    <div className="content-comment-container">
-                                      <div className="comment-container">
-                                        {/* <img
-                                          src="media/user.jpg"
-                                          className="avatar"
-                                          height="60"
-                                          width="60"
-                                          alt=""
-                                        /> */}
-                                        <div className="comment-text">
-                                          <div className="rating small">
-                                            <div className="rating">
-                                              <StarRatings
-                                                rating={review.rating}
-                                                starRatedColor="gold"
-                                                starHoverColor="gold"
-                                                numberOfStars={5}
-                                                starDimension="24px"
-                                                starSpacing="2px"
-                                              />
-                                              <p>
-                                                Rating: {review.rating} out of 5
-                                              </p>
+                            {reviews?.length > 0
+                              ? <div id="comments">
+                                <h2 className="reviews-title">
+                                  {reviews?.length} review for{" "}
+                                  <span>{data?.product_name?.en}</span>
+                                </h2>
+                                <ol className="comment-list">
+                                  {reviews?.map((review) => (
+                                    <li className="review">
+                                      <div className="content-comment-container">
+                                        <div className="comment-container">
+                                          {/* <img
+                                        src="media/user.jpg"
+                                        className="avatar"
+                                        height="60"
+                                        width="60"
+                                        alt=""
+                                      /> */}
+                                          <div className="comment-text">
+                                            <div className="rating small">
+                                              <div className="rating">
+                                                <StarRatings
+                                                  rating={review.rating}
+                                                  starRatedColor="gold"
+                                                  starHoverColor="gold"
+                                                  numberOfStars={5}
+                                                  starDimension="24px"
+                                                  starSpacing="2px"
+                                                />
+                                                <p>
+                                                  Rating: {review.rating} out of 5
+                                                </p>
+                                              </div>
+                                            </div>
+                                            <div className="review-author">
+                                              {review?.user}
+                                            </div>
+                                            <div className="review-time">
+                                              {review?.created_at}
                                             </div>
                                           </div>
-                                          <div className="review-author">
-                                            {review?.user}
-                                          </div>
-                                          <div className="review-time">
-                                            {review?.created_at}
-                                          </div>
+                                        </div>
+                                        <div className="description">
+                                          <p>{review?.review}</p>
                                         </div>
                                       </div>
-                                      <div className="description">
-                                        <p>{review?.review}</p>
-                                      </div>
-                                    </div>
-                                  </li>
-                                ))}
-                              </ol>
-                            </div>
+                                    </li>
+                                  ))}
+                                </ol>
+                              </div>
+                              : ''}
+
                             <div id="review-form">
                               <div id="respond" className="comment-respond">
                                 <span
@@ -1151,7 +1232,7 @@ const ShopDetails = (product) => {
           </div>
         </div>
       </div>
-    </div>
+    </div >
   );
 };
 

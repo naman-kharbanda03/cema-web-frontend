@@ -88,7 +88,8 @@ const Login = (props) => {
     formData.append("mobile", registerData.mobile);
     formData.append("password", registerData.password);
 
-    fetch("https://www.demo609.amrithaa.com/backend-cema/public/api/register", {
+    const api = apiConfig.registerAPI;
+    fetch(api, {
       method: "POST",
       headers: {
         // "Content-Type": "application/json",

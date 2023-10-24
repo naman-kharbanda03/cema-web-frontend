@@ -66,7 +66,7 @@ const BestSellerSlider = () => {
                 <div className="product-thumb-hover">
                   {console.log("test product", product)}
                   <Link
-                    to={`/product-details?product_id=${product?.product_gallery[0]?.product_id}`}
+                    to={`/product-details?product_id=${product?.product_gallery?.[0]?.product_id}`}
                   >
                     <img
                       width={600}
@@ -134,9 +134,9 @@ const BestSellerSlider = () => {
               <div className="products-content">
                 <div className="contents text-center">
                   <h3 className="product-title">
-                    <a href="#">{product.product_name.en}</a>
+                    <a href="#">{product?.product_name?.en}</a>
                   </h3>
-                  <span className="price">{product.price} Rs</span>
+                  <span className="price">KD {product?.price} </span>
                 </div>
               </div>
             </div>

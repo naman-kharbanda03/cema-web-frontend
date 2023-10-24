@@ -31,6 +31,7 @@ const ProductList = () => {
   const [productList, setProductList] = useState([]);
   const [filteredProductList, setFilteredProductList] = useState([]);
   const [brands, setBrands] = useState([]);
+  const [p, setP] = useState([]);
   const { AddToCart, handleAddRemoveWishlist } = useShoppingCart();
 
   const [categoryDetails, setCategoryDetails] = useState({
@@ -65,7 +66,6 @@ const ProductList = () => {
       brand: filter.brand ? filter.brand : '',
     };
     const queryString = new URLSearchParams(query).toString();
-    console.log(queryString);
 
     let urlAPI = "";
     const categoryDetailAPI = apiConfig.categoryDetailsAPI;
@@ -90,10 +90,22 @@ const ProductList = () => {
         console.log(datar);
         if (datar.status) return "";
         else {
+          // datar?.products?.data?.map(prod => {
+          //   if (prod.type) {
+          //     setP(prev => (
+          //       [...prev, prod]
+          //     ))
+          //   }else{
+          //     let item = {
+          //       product_name =,
+
+          //     } 
+          //   }
+          // });
+
           setProductList(datar.products.data);
           setCurrentPage(datar.products.current_page);
           setLastpage(datar.products.last_page);
-
           return datar;
         }
 

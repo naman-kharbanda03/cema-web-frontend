@@ -8,13 +8,14 @@ import "react-toastify/dist/ReactToastify.css";
 import apiConfig from "../../config/apiConfig";
 
 const Cart = () => {
-  const [orders, setOrders] = useState();
+  const [orderData, setOrderData] = useState([]);
+  const [orders, setOrders] = useState([]);
   const [total, setTotal] = useState();
   const [qtyChanged, setQtyChanged] = useState();
   const [couponCode, setCouponCode] = useState("");
   const [isCouponSuccess, setCoupanSuccess] = useState(false);
   const [couponData, setCouponData] = useState();
-  const { cartItemsCount } = useShoppingCart();
+  const { cartItemsCount, cartData } = useShoppingCart();
 
   const handleCouponCodeChange = (e) => {
     setCouponCode(e.target.value);
@@ -32,10 +33,8 @@ const Cart = () => {
     });
   };
 
-  console.log("tikku", couponCode);
 
   const setQtyChange = (qty) => setQtyChanged(qty);
-  console.log("qtyChanged", qtyChanged);
 
   const applyCoupon = () => {
     const bearerToken = localStorage.getItem("accessToken");
@@ -67,28 +66,68 @@ const Cart = () => {
 
   function getCartDetails() {
     const bearerToken = localStorage.getItem("accessToken");
-    console.log("bearerToken", orders);
     const apiUrl = apiConfig.getCartDataAPI;
 
     if (bearerToken) {
       fetch(apiUrl, {
-        method: "GET",
+        method: 'GET',
         headers: {
-          Authorization: `Bearer ${bearerToken}`,
+          'Authorization': `Bearer ${bearerToken}`,
+          // Add other headers as needed
         },
-      })
-        .then((response) => response.json())
-        .then((data) => {
-          console.log("getCartData:", data.data);
-          setTotal(data.total);
-          setOrders(data.data);
+      }).then((response) => {
+        if (!response.ok) throw new Error("Network Issue");
+        return response.json();
+      }).then((datar) => {
+        console.log("Cart Data", datar);
+        setOrderData(datar);
+        setTotal(datar?.total);
+        let order = {};
+        setOrders([]);
+        datar.data?.forEach(order => {
+          if (order.simple_product) {
+            order = {
+              product_name: { en: order.simple_product.product_name.en },
+              price: order.simple_product.actual_selling_price,
+              product_id: order.simple_product.id,
+              product_image: order.simple_product.product_image[0],
+              image_path: order.simple_product.image_path,
+              qty: order.qty,
+              stock: order.simple_product.stock,
+              cart_id: order.id,
+              link: `/product-details?product_id=${order?.simple_product?.id}`
+            };
+            setOrders(prev => ([...prev, order]));
+
+          } else {
+            order = {
+              product_name: { en: order.product.name.en },
+              price: parseInt(order.price_total) + parseInt(order.product.price),
+              product_id: order.pro_id,
+              product_image: order.variant.variantimages.main_image,
+              image_path: order.product.image_path,
+              qty: order.qty,
+              stock: order?.product?.stock,
+              variant_id: order.variant_id,
+              cart_id: order.id,
+              link: `/product-details?product_id=${order?.pro_id}&variant_id=${order?.variant_id}`
+            }
+            setOrders(prev => ([...prev, order]));
+          }
         })
-        .catch((error) => {
-          console.error("Error:", error);
-        });
+        return datar;
+
+      }).catch((error) => console.error("Problem with fetch", error));
+
     } else {
       const orders = JSON.parse(localStorage.getItem('cart'));
       setOrders(orders?.Items);
+      setTotal(() => {
+        return orders?.Items.reduce((acc, item) => {
+          return acc + (item.qty * item.price);
+        }, 0);
+
+      })
     }
   }
   useEffect(() => {
@@ -98,6 +137,42 @@ const Cart = () => {
   useEffect(() => {
     getCartDetails();
   }, [qtyChanged]);
+
+  // useEffect(() => {
+  //   let order = {};
+  //   setOrders([]);
+  //   orderData?.forEach(order => {
+  //     if (order.simple_product) {
+  //       order = {
+  //         product_name: { en: order.simple_product.product_name.en },
+  //         price: order.simple_product.actual_selling_price,
+  //         product_id: order.simple_product.id,
+  //         product_image: order.simple_product.product_image[0],
+  //         image_path: order.simple_product.image_path,
+  //         qty: order.qty,
+  //         stock: order.simple_product.stock,
+  //         cart_id: order.id,
+  //         link: `/product-details?product_id=${order?.simple_product?.id}`
+  //       };
+  //       setOrders(prev => ([...prev, order]));
+
+  //     } else {
+  //       order = {
+  //         product_name: { en: order.product.name.en },
+  //         price: parseInt(order.price_total) + parseInt(order.product.price),
+  //         product_id: order.pro_id,
+  //         product_image: order.variant.variantimages.main_image,
+  //         image_path: order.product.image_path,
+  //         qty: order.qty,
+  //         stock: order?.product?.stock,
+  //         variant_id: order.variant_id,
+  //         cart_id: order.id,
+  //         link: `/product-details?product_id=${order?.pro_id}&variant_id=${order?.variant_id}`
+  //       }
+  //       setOrders(prev => ([...prev, order]));
+  //     }
+  //   })
+  // }, [orderData])
 
   return (
     <div>

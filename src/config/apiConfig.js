@@ -1,5 +1,7 @@
-// const BASE_URL = "https://cema-backend.plasium.com";
-const BASE_URL = "https://www.demo609.amrithaa.com/backend-cema/public";
+import BaseComponent from "bootstrap/js/dist/base-component";
+
+const BASE_URL = "https://cema-backend.plasium.com";
+// const BASE_URL = "https://www.demo609.amrithaa.com/backend-cema/public";
 const secretKey = "1dc7843e-e42c-4154-a02d-d80ab6d81095";
 
 const apiConfig = {
@@ -24,6 +26,7 @@ const apiConfig = {
   addToCartAPI: `${BASE_URL}/api/addToCart`,
   addToCartArrayAPI: `${BASE_URL}/api/addToCartArray`,
   loginAPI: `${BASE_URL}/api/login`,
+  registerAPI: `${BASE_URL}/api/register`,
   removeFromCartAPI: `${BASE_URL}/api/removeFromCart`,
   updateCartAPI: `${BASE_URL}/api/updateCartQuantity`,
   addToWishlistArrayAPI: `${BASE_URL}/api/add_remove_wishlist_array`,
@@ -36,6 +39,8 @@ const apiConfig = {
   homeFirstCategory: `${BASE_URL}/api/homeFirstcategories`,
   //rating
   addProductReview: `${BASE_URL}/api/addSimpleProductReview`,
+
+  navCategoriesAPI: `${BASE_URL}/api/navCategories`,
 };
 
 export default apiConfig;
