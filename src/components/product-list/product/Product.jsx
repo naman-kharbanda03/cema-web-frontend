@@ -106,7 +106,7 @@ const Product = (props) => {
                                     <p>Rating: {product.product_rating} out of 5</p>
                                 </div>
                                 <div className="review-count">
-                                    ({product.reviews.length}<span> review</span>)
+                                    ({product?.reviews?.length}<span> review</span>)
                                 </div>
                             </div>
                             <div className="product-button">

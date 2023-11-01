@@ -36,8 +36,31 @@ const Listing = () => {
       })
       .then((data) => {
         console.log("test", data.data.data);
-        setData(data.data.data);
+        // setData(data.data.data);
         setLastpage(data.data.last_page);
+        const products = data.data.data.map(product => {
+          if (product?.type === 'simple_product') {
+            const thumbnail = product?.thumbnail_path + '/' + product?.thumbnail;
+            const hover = product?.thumbnail_path + '/' + product?.hover_thumbnail;
+            return {
+              ...product,
+              image: [thumbnail, hover],
+              address: `/product-details?product_id=${product.id}`,
+            }
+          }
+
+          else {
+            const thumbnail = product?.image_path + '/' + product?.subvariants?.[0].variantimages.main_image;
+            const hover = product?.image_path + '/' + product?.subvariants?.[0].variantimages.image1;
+            return {
+              ...product,
+              image: [thumbnail, hover],
+              address: `/product-details?product_id=${product?.id}&variant_id=${product?.subvariants?.[0].id}`,
+            }
+          }
+
+        })
+        setData(products);
       })
       .catch((error) => console.error("Problem with fetch operations", error));
 
