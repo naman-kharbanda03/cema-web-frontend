@@ -66,7 +66,6 @@ const ProductList = () => {
       brand: filter.brand ? filter.brand : '',
     };
     const queryString = new URLSearchParams(query).toString();
-
     let urlAPI = "";
     const categoryDetailAPI = apiConfig.categoryDetailsAPI;
     if (categoryID === null) {
@@ -87,22 +86,9 @@ const ProductList = () => {
         return response.json();
       })
       .then((datar) => {
-        console.log(datar);
+        // console.log(datar);
         if (datar.status) return "";
         else {
-          // datar?.products?.data?.map(prod => {
-          //   if (prod.type) {
-          //     setP(prev => (
-          //       [...prev, prod]
-          //     ))
-          //   }else{
-          //     let item = {
-          //       product_name =,
-
-          //     } 
-          //   }
-          // });
-
           setProductList(datar.products.data);
           setCurrentPage(datar.products.current_page);
           setLastpage(datar.products.last_page);
@@ -154,7 +140,33 @@ const ProductList = () => {
 
 
   useEffect(() => {
-    setFilteredProductList(productList);
+    const products = productList.map(product => {
+      if (product?.type) {
+        const thumbnail = product?.thumbnail_path + '/' + product?.thumbnail;
+        const hover = product?.thumbnail_path + '/' + product?.hover_thumbnail;
+        const stock = product?.stock;
+        const address = `/product-details?product_id=${product.id}`;
+        return {
+          ...product,
+          stock: stock,
+          address: address,
+          image: [thumbnail, hover]
+        }
+      } else {
+        const thumbnail = product?.image_path + '/' + product?.subvariants?.[0].variantimages.main_image;
+        const hover = product?.image_path + '/' + product?.subvariants?.[0].variantimages.image1;
+        const stock = product?.subvariants?.[0].stock;
+        const address = `/product-details?product_id=${product?.id}&variant_id=${product?.subvariants?.[0].id}`;
+        return {
+          ...product,
+          stock: stock,
+          address: address,
+          image: [thumbnail, hover]
+        }
+      }
+    })
+    console.log(products);
+    setFilteredProductList(products);
     setProductsLoaded(true);
   }, [productList])
 

@@ -11,7 +11,7 @@ import { useContext } from "react";
 import { UserData } from "../../context/UserContext";
 import { Navigate, useSearchParams } from "react-router-dom";
 
-const MyAccount = (props) => { 
+const MyAccount = (props) => {
   const [searchParams, setSearchParams] = useSearchParams();
   const [orderDetails, setOrderDetails] = useState([{}]);
   const [activeTab, setActiveTab] = useState(searchParams.get("activeTab") || "dashboard");
@@ -20,7 +20,8 @@ const MyAccount = (props) => {
 
   const logoutHandler = () => {
     SETLOGGEDIN(false);
-    localStorage.clear();
+    localStorage.clear()
+    // window.location.href = '/login';
   };
 
   const handleTabChange = (tab) => {
@@ -78,9 +79,8 @@ const MyAccount = (props) => {
                         <ul className="nav nav-tabs">
                           <li className="nav-item">
                             <a
-                              className={`nav-link ${
-                                activeTab === "dashboard" ? "active" : ""
-                              }`}
+                              className={`nav-link ${activeTab === "dashboard" ? "active" : ""
+                                }`}
                               data-toggle="tab"
                               href="#dashboard"
                               role="tab"
@@ -91,9 +91,8 @@ const MyAccount = (props) => {
                           </li>
                           <li className="nav-item">
                             <a
-                              className={`nav-link ${
-                                activeTab === "orders" ? "active" : ""
-                              }`}
+                              className={`nav-link ${activeTab === "orders" ? "active" : ""
+                                }`}
                               data-toggle="tab"
                               href="#orders"
                               role="tab"
@@ -107,9 +106,8 @@ const MyAccount = (props) => {
                           </li>
                           <li className="nav-item">
                             <a
-                              className={`nav-link ${
-                                activeTab === "addresses" ? "active" : ""
-                              }`}
+                              className={`nav-link ${activeTab === "addresses" ? "active" : ""
+                                }`}
                               data-toggle="tab"
                               href="#addresses"
                               role="tab"
@@ -123,9 +121,8 @@ const MyAccount = (props) => {
                           </li>
                           <li className="nav-item">
                             <a
-                              className={`nav-link ${
-                                activeTab === "account-details" ? "active" : ""
-                              }`}
+                              className={`nav-link ${activeTab === "account-details" ? "active" : ""
+                                }`}
                               data-toggle="tab"
                               href="#account-details"
                               role="tab"
@@ -136,9 +133,8 @@ const MyAccount = (props) => {
                           </li>
                           <li className="nav-item">
                             <a
-                              className={`nav-link ${
-                                activeTab === "change-password" ? "active" : ""
-                              }`}
+                              className={`nav-link ${activeTab === "change-password" ? "active" : ""
+                                }`}
                               data-toggle="tab"
                               href="#change-password"
                               role="tab"
@@ -160,27 +156,24 @@ const MyAccount = (props) => {
                       </nav>
                       <div className="my-account-content tab-content">
                         <div
-                          className={`tab-pane fade ${
-                            activeTab === "dashboard" ? "show active" : ""
-                          }`}
+                          className={`tab-pane fade ${activeTab === "dashboard" ? "show active" : ""
+                            }`}
                           id="dashboard"
                           role="tabpanel"
                         >
                           <Dashboard />
                         </div>
                         <div
-                          className={`tab-pane fade ${
-                            activeTab === "orders" ? "show active" : ""
-                          }`}
+                          className={`tab-pane fade ${activeTab === "orders" ? "show active" : ""
+                            }`}
                           id="orders"
                           role="tabpanel"
                         >
                           <OrdersTable orders={orderDetails} orderId={searchParams.get("orderId") || false} />
                         </div>
                         <div
-                          className={`tab-pane fade ${
-                            activeTab === "addresses" ? "show active" : ""
-                          }`}
+                          className={`tab-pane fade ${activeTab === "addresses" ? "show active" : ""
+                            }`}
                           id="addresses"
                           role="tabpanel"
                           onClick={handleAddress}
@@ -188,18 +181,16 @@ const MyAccount = (props) => {
                           <Addresses />
                         </div>
                         <div
-                          className={`tab-pane fade ${
-                            activeTab === "account-details" ? "show active" : ""
-                          }`}
+                          className={`tab-pane fade ${activeTab === "account-details" ? "show active" : ""
+                            }`}
                           id="account-details"
                           role="tabpanel"
                         >
                           <AccountDetails />
                         </div>
                         <div
-                          className={`tab-pane fade ${
-                            activeTab === "change-password" ? "show active" : ""
-                          }`}
+                          className={`tab-pane fade ${activeTab === "change-password" ? "show active" : ""
+                            }`}
                           id="change-password"
                           role="tabpanel"
                         >

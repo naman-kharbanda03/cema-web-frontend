@@ -19,24 +19,24 @@ const Product = (props) => {
     const [stock, setStock] = useState();
 
 
-    useEffect(() => {
-        if (product?.type) {
-            setProductAddress(`/product-details?product_id=${product.id}`);
-            const thumbnail = product?.thumbnail_path + '/' + product?.thumbnail;
-            const hover = product?.thumbnail_path + '/' + product?.hover_thumbnail;
-            setImage([thumbnail, hover]);
-            setStock(product?.stock);
+    // useEffect(() => {
+    //     if (product?.type) {
+    //         setProductAddress(`/product-details?product_id=${product.id}`);
+    //         const thumbnail = product?.thumbnail_path + '/' + product?.thumbnail;
+    //         const hover = product?.thumbnail_path + '/' + product?.hover_thumbnail;
+    //         setImage([thumbnail, hover]);
+    //         setStock(product?.stock);
 
-        }
-        else {
-            setProductAddress(`/product-details?product_id=${product?.id}&variant_id=${product?.subvariants?.[0].id}`);
-            const thumbnail = product?.image_path + '/' + product?.subvariants?.[0].variantimages.main_image;
-            const hover = product?.image_path + '/' + product?.subvariants?.[0].variantimages.image1;
-            setImage([thumbnail, hover]);
-            setStock(product?.subvariants?.[0].stock);
+    //     }
+    //     else {
+    //         setProductAddress(`/product-details?product_id=${product?.id}&variant_id=${product?.subvariants?.[0].id}`);
+    //         const thumbnail = product?.image_path + '/' + product?.subvariants?.[0].variantimages.main_image;
+    //         const hover = product?.image_path + '/' + product?.subvariants?.[0].variantimages.image1;
+    //         setImage([thumbnail, hover]);
+    //         setStock(product?.subvariants?.[0].stock);
 
-        }
-    }, []);
+    //     }
+    // }, []);
 
 
 
@@ -52,22 +52,24 @@ const Product = (props) => {
                                 <div className="hot">Hot</div>
                             </div>
                             <div className="product-thumb-hover">
-                                <Link to={productAddress}>
+                                <a href={product.address} target="_blank" rel="noopener noreferrer">
+
+
                                     <img
                                         width="600"
                                         height="600"
-                                        src={image?.[0]}
+                                        src={product.image?.[0]}
                                         className="post-image"
                                         alt=""
                                     />
                                     <img
                                         width="600"
                                         height="600"
-                                        src={image?.[1]}
+                                        src={product.image?.[1]}
                                         className="hover-image back"
                                         alt=""
                                     />
-                                </Link>
+                                </a>
                             </div>
                             {/* <span
                                 className="product-quickview"
@@ -84,12 +86,12 @@ const Product = (props) => {
                     </div>
                     <div className="col-md-8">
                         <div className="products-content">
-                            <Link to={productAddress}>
+                            <a href={product.address} target="_blank" rel="noopener noreferrer">
 
                                 <h3 className="product-title">
                                     <a href="shop-details.html">{product?.product_name?.en}</a>
                                 </h3>
-                            </Link>
+                            </a>
                             <span className="price">KD {product.offer_price}</span>
                             <div className="rating">
                                 <div className="rating">
@@ -143,7 +145,7 @@ const Product = (props) => {
                                         }
                                         className="product-btn button"
                                     >
-                                        {stock > 0 ? 'Add to cart' : 'Out of Stock'}
+                                        {product.stock > 0 ? 'Add to cart' : 'Out of Stock'}
                                     </a>
                                 </div>
                                 <div

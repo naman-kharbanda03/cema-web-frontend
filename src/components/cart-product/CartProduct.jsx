@@ -26,7 +26,7 @@ const CartProduct = (props) => {
   const removeProduct = () => {
     decreaseQtyUtils();
     orderQtyChanged && orderQtyChanged(orderQnty);
-    orderQnty !== 0 && setOrderQnty(0);
+    // orderQnty !== 0 && setOrderQnty(0);
   };
 
   const increaseQtyUtils = (qty) => {

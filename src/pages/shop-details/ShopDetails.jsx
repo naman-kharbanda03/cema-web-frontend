@@ -70,7 +70,7 @@ const ShopDetails = (product) => {
           let hover = data.data.thumbnail_path + "/" + data.data.hover_thumbnail;
           let A = [thumbnail, hover];
           setThumb(A);
-          setImage(thumbnail);
+          setImage(hover);
           setVariant(0);
           setData((prev) => ({ ...prev, type: 'simple_product' }))
         }
@@ -125,7 +125,8 @@ const ShopDetails = (product) => {
   }, [location.search, data])
 
   useEffect(() => {
-    const selectedCombination = combinations?.find(combination => combination.Color === currentColor && combination.Size === currentSize) || 'Not';
+    console.log(currentSize, currentColor);
+    const selectedCombination = combinations?.find(combination => (combination.Color === currentColor)) || 'Not';
     console.log(selectedCombination);
     if (selectedCombination !== 'Not') {
       navigate(`/product-details?product_id=${product_id}&variant_id=${selectedCombination?.id}`)

@@ -14,12 +14,10 @@ const Login = (props) => {
   const [error, setError] = useState("");
   const [response, setResponse] = useState("");
   const [isAuthenticated, setIsAuthentcated] = useState(false);
-  const { setCartToggle, setWishListToggle, AddToCart2, addToWishlist2 } =
-    useShoppingCart();
+  const { setCartToggle, setWishListToggle, AddToCart2, addToWishlist2, showInfoToastMessage } = useShoppingCart();
   const navigate = useNavigate();
 
   const { SETLOGGEDIN } = useContext(UserData);
-
   const [registerData, setRegisterData] = useState({
     name: "",
     email: "",
@@ -59,14 +57,17 @@ const Login = (props) => {
       .then((data) => {
         // this.setState({ responseMessage: data.message }); // Handle the response data
         if (data.access_token) {
+
           localStorage.setItem("tokenType", data.token_type); // Store the token in localStorage
           localStorage.setItem("accessToken", data.access_token);
           localStorage.setItem("expiresIn", data.expires_in);
           localStorage.setItem("refreshToken", data.refresh_token);
+
           addLocalCartToDB();
           SETLOGGEDIN(true);
-          return navigate("/");
-        } else if (data.status === "fail") alert(data.msg);
+          // window.location.href = '/'
+
+        } else if (data.status === "fail") showInfoToastMessage(data.msg);
       })
       .catch((error) => {
         console.error("Error:", error);

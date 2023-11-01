@@ -79,8 +79,11 @@ export const ShoppingCartProvider = ({ children }) => {
         const formData = new FormData();
         console.log(product);
         formData.append('product_id', product?.id);
-        formData.append('type', product?.type);
 
+        if (product?.type === 'simple_product')
+            formData.append('type', 'simple');
+        else
+            formData.append('type', 'variant');
 
         const apiURl = apiConfig.addRemoveWishlistAPI;
         const token = localStorage.getItem('accessToken');
@@ -233,11 +236,22 @@ export const ShoppingCartProvider = ({ children }) => {
         const bearerToken = localStorage.getItem('accessToken');
         // const product_ids = [...wishlist.Items];
         // const wishListItems = wishlist.Items;
-        const product_ids = wishlist.Items.map(item => item.simple_product.id);
+        const products = wishlist.Items.map(item => {
+            if (item.type === 'simple_product')
+                return {
+                    type: 'simple',
+                    product_id: `${item.product_id}`
+                }
+            else return {
+                type: 'variant',
+                product_id: `${item.product_id}`,
+            }
+        });
+        // const product_ids = wishlist.Items.map(item => item.simple_product.id);
         if (bearerToken && wishlist.totalItems > 0) {
             const apiUrl = apiConfig.addToWishlistArrayAPI;
             var raw = JSON.stringify({
-                "product_ids": product_ids
+                "products": products
             });
             var request = {
                 method: 'POST',
@@ -282,9 +296,12 @@ export const ShoppingCartProvider = ({ children }) => {
             }).then((response) => response.json())
                 .then((data) => {
                     console.log("Response:", data);
-                    setCartItemsCount(data.count);
-                    // setCartToggle(prev => !prev); 
-                    showSuccessToastMessage(data.message);
+                    if (data.success === true) {
+                        setCartItemsCount(data.count);
+                        showSuccessToastMessage(data.message);
+                    } else
+                        showSuccessToastMessage(data.message);
+
                 })
                 .catch((error) => {
                     console.error("Error:", error);
@@ -298,11 +315,21 @@ export const ShoppingCartProvider = ({ children }) => {
         // const products = [...cart.Items];
         const bearerToken = localStorage.getItem('accessToken');
 
-        const products = cart.Items.map(item => ({
-            quantity: `${item.qty}`,
-            type: "simple_product",
-            product_id: `${item.simple_product.id}`
-        }));
+        const products = cart.Items.map(item => {
+            if (item.type === 'simple_product')
+                return {
+                    quantity: `${item.qty}`,
+                    type: 'simple_product',
+                    product_id: `${item.product_id}`
+                }
+            else return {
+                quantity: `${item.qty}`,
+                type: 'variant',
+                product_id: `${item.product_id}`,
+                variant_id: `${item.variant_id}`
+            }
+        });
+        console.log(products);
         if (bearerToken && cart.totalItems > 0) {
             const apiUrl = apiConfig.addToCartArrayAPI;
             var raw = JSON.stringify({

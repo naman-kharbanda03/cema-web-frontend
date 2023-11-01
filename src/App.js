@@ -70,7 +70,14 @@ function App() {
               }
             />
             <Route path="/products" element={<ProductList />} />
-            <Route path="/shop-checkout" element={<ShopCheckout />} />
+            <Route
+              path="/shop-checkout"
+              element={
+                <Protected>
+                  <ShopCheckout />
+                </Protected>
+              }
+            />
             <Route path="/wishlist" element={<ShopWishlist />} />
             <Route path="/product-details" element={<ShopDetails />} />
             <Route path="/edit-address" element={<CreateEditAddress />} />

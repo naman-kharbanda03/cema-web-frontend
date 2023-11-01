@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import PageTitle from "../../components/page-tittle/PageTitle";
 import { Link, useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
+import { useShoppingCart } from "../../context/ShoppingCartContext";
 
 const ShopCheckout = () => {
   const [orders, setOrders] = useState();
@@ -16,7 +17,7 @@ const ShopCheckout = () => {
   const [selectedCity, setSelectedCity] = useState();
   const [datta, setDatta] = useState();
   // billing fields
-
+  const { showSuccessToastMessage } = useShoppingCart();
   const [name, setName] = useState();
   const [address, setAddress] = useState();
   const [email, setEmail] = useState();
@@ -171,7 +172,12 @@ const ShopCheckout = () => {
       body: JSON.stringify(formdata),
     })
       .then((response) => response.json())
-      .then((result) => console.log(result))
+      .then((result) => {
+        console.log(result)
+        toast.success(result?.message, {
+          position: toast.POSITION.BOTTOM_LEFT,
+        });
+      })
       .catch((error) => console.log("error", error));
   };
 
@@ -200,7 +206,12 @@ const ShopCheckout = () => {
       body: JSON.stringify(formdata),
     })
       .then((response) => response.json())
-      .then((result) => console.log(result))
+      .then((result) => {
+        console.log(result);
+        toast.success(result?.message, {
+          position: toast.POSITION.BOTTOM_LEFT,
+        });
+      })
       .catch((error) => console.log("error", error));
   };
   const navigate = useNavigate()
@@ -223,6 +234,7 @@ const ShopCheckout = () => {
           position: toast.POSITION.BOTTOM_LEFT,
         });
         setTimeout(() => {
+          // window.location.href = `/account?activeTab=orders&orderId=${"EODD" + result?.order_id}`;
           navigate(`/account?activeTab=orders&orderId=${"EODD" + result?.order_id}`)
         }, 1000)
       })

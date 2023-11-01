@@ -1,7 +1,7 @@
 import BaseComponent from "bootstrap/js/dist/base-component";
 
-const BASE_URL = "https://cema-backend.plasium.com";
-// const BASE_URL = "https://www.demo609.amrithaa.com/backend-cema/public";
+// const BASE_URL = "https://cema-backend.plasium.com";
+const BASE_URL = "https://www.demo609.amrithaa.com/backend-cema/public";
 const secretKey = "1dc7843e-e42c-4154-a02d-d80ab6d81095";
 
 const apiConfig = {

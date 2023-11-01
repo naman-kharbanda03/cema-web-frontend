@@ -10,22 +10,23 @@ const ProductGrid = (props) => {
     const [stock, setStock] = useState();
 
 
-    useEffect(() => {
-        if (product?.type) {
-            setProductAddress(`/product-details?product_id=${product.id}`);
-            const thumbnail = product?.thumbnail_path + '/' + product?.thumbnail;
-            const hover = product?.thumbnail_path + '/' + product?.hover_thumbnail;
-            setImage([thumbnail, hover]);
-            setStock(product?.stock);
-        }
-        else {
-            setProductAddress(`/product-details?product_id=${product?.id}&variant_id=${product?.subvariants?.[0].id}`);
-            const thumbnail = product?.image_path + '/' + product?.subvariants?.[0].variantimages.main_image;
-            const hover = product?.image_path + '/' + product?.subvariants?.[0].variantimages.image1;
-            setImage([thumbnail, hover]);
-            setStock(product?.subvariants?.[0].stock);
-        }
-    }, []);
+    // useEffect(() => {
+    //     setImage([]);
+    //     if (product?.type) {
+    //         setProductAddress(`/product-details?product_id=${product.id}`);
+    //         const thumbnail = product?.thumbnail_path + '/' + product?.thumbnail;
+    //         const hover = product?.thumbnail_path + '/' + product?.hover_thumbnail;
+    //         setImage([thumbnail, hover]);
+    //         setStock(product?.stock);
+    //     }
+    //     else {
+    //         setProductAddress(`/product-details?product_id=${product?.id}&variant_id=${product?.subvariants?.[0].id}`);
+    //         const thumbnail = product?.image_path + '/' + product?.subvariants?.[0].variantimages.main_image;
+    //         const hover = product?.image_path + '/' + product?.subvariants?.[0].variantimages.image1;
+    //         setImage([thumbnail, hover]);
+    //         setStock(product?.subvariants?.[0].stock);
+    //     }
+    // }, []);
     return (
         <>
             <div
@@ -35,19 +36,16 @@ const ProductGrid = (props) => {
                 <div className="items">
                     <div className="products-entry clearfix product-wapper">
                         <div className="products-thumb" >
-                            <div className="product-lable">
+                            {/* <div className="product-lable">
                                 <div className="onsale">-23%</div>
-                                {/*/to ask what to show */}
                                 <div className="hot">Hot</div>
-                            </div>
+                            </div> */}
                             <div className="product-thumb-hover">
-                                <Link
-                                    to={productAddress}
-                                >
+                                <a href={product.address} target="_blank" rel="noopener noreferrer">
                                     <img
                                         width={600}
                                         style={{ width: '300px', height: '328px', objectFit: 'contain' }}
-                                        src={image?.[0]}
+                                        src={product.image?.[0]}
                                         // src={product.image_path?.replace('gallery', `${product?.thumbnail}`)}
                                         className="post-image "
                                         alt="image not available"
@@ -56,18 +54,18 @@ const ProductGrid = (props) => {
                                         width="600"
                                         height="600"
                                         style={{ width: '300px', height: '328px', objectFit: 'contain' }}
-                                        src={image?.[1]}
+                                        src={product.image?.[1]}
                                         // src={product.image_path?.replace('gallery', `${product?.hover_thumbnail}`)}
                                         // src={product.image_path + '/' + product.hover_thumbnail}
                                         className="hover-image back"
                                         alt=""
                                     />
-                                </Link>
+                                </a>
                             </div>
                             <div className="product-button">
                                 <div
                                     className="btn-add-to-cart"
-                                    data-title={stock > 0 ? 'Add to cart' : 'Out of stock'}
+                                    data-title={product.stock > 0 ? 'Add to cart' : 'Out of stock'}
                                     aria-disabled
                                 >
                                     <a
@@ -100,7 +98,7 @@ const ProductGrid = (props) => {
                                         }
                                         className="product-btn button"
                                     >
-                                        {stock > 0 ? 'Add to cart' : 'Out of stock'}
+                                        {product.stock > 0 ? 'Add to cart' : 'Out of stock'}
                                     </a>
                                 </div>
                                 <div
@@ -139,9 +137,9 @@ const ProductGrid = (props) => {
                         <div className="products-content">
                             <div className="contents text-center">
                                 <h3 className="product-title">
-                                    <Link to={`/product-details?product_id=${product.id}`}>
+                                    <a href={product.address} target="_blank" rel="noopener noreferrer">
                                         {product?.product_name?.en}
-                                    </Link>
+                                    </a>
                                 </h3>
                                 <span className="price">
                                     KD {product.offer_price}
