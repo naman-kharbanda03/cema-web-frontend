@@ -131,7 +131,7 @@ const CartProduct = (props) => {
       </td>
       <td className="product-quantity">
         <div className="quantity">
-          <button type="button" className="minus" onClick={() => decreaseQty()}>
+          <button type="button" className="minus" onClick={() => decreaseQty()} disabled={orderQnty <= 0 ? true : false}>
             -
           </button>
           <input

@@ -448,7 +448,9 @@ const ShopDetails = (product) => {
                             </div>
                           </div>
                           <div className="btn-quick-buy" data-title="Wishlist">
-                            <button className="product-btn">Buy It Now</button>
+                            <a href="/shop-checkout" target="_blank" rel="noopener noreferrer">
+                              <button className="product-btn" >Buy It Now</button>
+                            </a>
                           </div>
                           <div className="btn-wishlist" data-title="Wishlist">
                             <button
