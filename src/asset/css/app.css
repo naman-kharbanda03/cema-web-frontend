@@ -4296,7 +4296,11 @@ body i[class~="slick-arrow"][class~="fa-angle-right"] {
   padding-top: 0;
 }
 .site-navigation ul > li.level-0.mega-menu.mega-menu-fullwidth > .sub-menu {
-  width: 562.5pt;
+  /* width: 562pt; */
+  width: 562pt;
+}
+.site-navigation ul > li.level-0.mega-menu.level-menu-fullwidth > .sub-menu {
+  width: 200pt;
 }
 [class~="site-header"] [class~="header-mobile"] [class~="navbar-toggle"] {
   border-right-style: none;
@@ -35855,6 +35859,7 @@ body i[class~="slick-arrow"][class~="fa-angle-right"] {
 #site-footer [class~="block"] [class~="block-title"],
 #site-footer .footer .block.m-b-20 {
   margin-bottom: 15pt;
+  font-size: 16pt;
 }
 #site-footer .social-link li {
   margin-left: 7.5pt;

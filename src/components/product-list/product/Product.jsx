@@ -13,7 +13,7 @@ const Product = (props) => {
     // console.log(product.thumbpath + '/' + product.images[0].image);
     const { increaseItem, getQuantity } = useShoppingCart();
     const token = localStorage.getItem('accessToken');
-    const { handleAddRemoveWishlist, AddToCart } = useShoppingCart();
+    const { handleAddRemoveWishlist, AddToCart, showInfoToastMessage } = useShoppingCart();
     const [productAddress, setProductAddress] = useState();
     const [image, setImage] = useState();
     const [stock, setStock] = useState();
@@ -122,6 +122,7 @@ const Product = (props) => {
                                             if (product?.type === 'simple_product') {
                                                 if (product.stock > 0)
                                                     AddToCart(product, 1);
+                                                else showInfoToastMessage('Out Of Stock')
                                             }
                                             else {
                                                 if (product?.subvariants?.[0]?.stock > 0) {
@@ -140,6 +141,7 @@ const Product = (props) => {
                                                     }
                                                     AddToCart(prod, 1);
                                                 }
+                                                else showInfoToastMessage('Out Of Stock')
                                             }
                                         }
                                         }

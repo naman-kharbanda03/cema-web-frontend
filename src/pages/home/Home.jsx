@@ -55,20 +55,18 @@ const Home = () => {
                           </div>
                         </div>
                         <div className="products-loadmore">
-                          <div className="btn button-outline loadmore">
-                            <div className="lds-ellipsis">
-                              <div />
-                              <div />
-                              <div />
-                              <div />
+                          <Link to={"/listings?products=new_arrival"} >
+                            <div className="btn button-outline loadmore">
+                              <div className="lds-ellipsis">
+                                <div />
+                                <div />
+                                <div />
+                                <div />
+                              </div>
+                              <span >View more</span>
+                              <i className="icon-arrow-down" aria-hidden="true" />
                             </div>
-
-                            <Link to={"/listings?products=new_arrival"}>
-                              <span>View more</span>
-                            </Link>
-
-                            <i className="icon-arrow-down" aria-hidden="true" />
-                          </div>
+                          </Link>
                         </div>
                       </div>
                     </div>

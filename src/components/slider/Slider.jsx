@@ -57,8 +57,9 @@ const Sliders = () => {
               </div>
               <div className="content-image">
                 <img
-                  width={959}
+                  width={1000}
                   height={963}
+                  // style={{ width: '' }}
                   src={slider.image}
                   alt="Image Slider"
                 />

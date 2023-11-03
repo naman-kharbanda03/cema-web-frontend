@@ -102,15 +102,17 @@ const Login = (props) => {
       .then((response) => response.json())
       .then((data) => {
         console.log(data);
-        if (data.access_token) {
-          localStorage.setItem("tokenType", data.token_type); // Store the token in localStorage
-          localStorage.setItem("accessToken", data.access_token);
-          localStorage.setItem("expiresIn", data.expires_in);
-          localStorage.setItem("refreshToken", data.refresh_token);
-          props.auth(true);
+        if (data.accessToken) {
+          // localStorage.setItem("tokenType", data.token_type); // Store the token in localStorage
+          localStorage.setItem("accessToken", data.accessToken);
+          // localStorage.setItem("expiresIn", data.expires_in);
+          // localStorage.setItem("refreshToken", data.refresh_token);
+          // props.auth(true);
 
-          return navigate("/");
-        } else if (data.status === "fail") alert(data.msg);
+          addLocalCartToDB();
+          SETLOGGEDIN(true);
+
+        } else if (data.status === "fail") showInfoToastMessage(data.msg);
       })
       .catch((error) => {
         console.error("Error:", error);

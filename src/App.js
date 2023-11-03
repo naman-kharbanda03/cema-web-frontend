@@ -20,6 +20,8 @@ import CreateEditAddress from "./pages/createEditAddress/CreateEditAddress";
 import { UserContextWrapper } from "./context/UserContext";
 import HiddenPostLogin from "./routeHandlers/HiddenPostLogin/HiddenPostLogin";
 import Protected from "./routeHandlers/AvailabePostLogin/Projected";
+import CookieBanner from "./components/CookieBanner/cookie";
+import CookieConsent from "react-cookie-consent";
 
 function App() {
   // const [isLoggedIn, setIsLoggedIn] = useState(false);
@@ -36,6 +38,7 @@ function App() {
           <Routes>
             {/* Home */}
             <Route path="/" element={<Home />} />
+
             {/* login */}
             <Route
               path="/login"
@@ -56,10 +59,13 @@ function App() {
             />
             {/* cart */}
             <Route path="/cart" element={<Cart />} />
+
             {/* contact */}
             <Route path="/contact" element={<Contact />} />
+
             {/* listings */}
             <Route path="/listings" element={<Listing />} />
+
             {/* account */}
             <Route
               path="/account"
@@ -82,6 +88,16 @@ function App() {
             <Route path="/product-details" element={<ShopDetails />} />
             <Route path="/edit-address" element={<CreateEditAddress />} />
           </Routes>
+          <CookieConsent
+            location="bottom"
+            buttonText="I understand"
+            cookieName="myCookieConsent"
+            style={{ background: "#333" }}
+            buttonStyle={{ background: "#007BFF" }}
+          >
+            This website uses cookies to ensure you get the best experience on
+            our website.
+          </CookieConsent>
           <Footer />
           <BackToTop />
         </ShoppingCartProvider>

@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import { useShoppingCart } from "../../../context/ShoppingCartContext";
 const ProductGrid = (props) => {
-    const { AddToCart, handleAddRemoveWishlist } = useShoppingCart();
+    const { AddToCart, handleAddRemoveWishlist, showInfoToastMessage } = useShoppingCart();
     const product = props.current;
 
     const [productAddress, setProductAddress] = useState();
@@ -75,6 +75,7 @@ const ProductGrid = (props) => {
                                             if (product?.type === 'simple_product') {
                                                 if (product.stock > 0)
                                                     AddToCart(product, 1);
+                                                else showInfoToastMessage('Out Of Stock')
                                             }
                                             else {
                                                 if (product?.subvariants?.[0]?.stock > 0) {
@@ -92,7 +93,7 @@ const ProductGrid = (props) => {
                                                         link: `/product-details?product_id=${product.id}&variant_id=${product.subvariants?.[0]?.id}`,
                                                     }
                                                     AddToCart(prod, 1);
-                                                }
+                                                } else showInfoToastMessage('Out Of Stock')
                                             }
                                         }
                                         }
@@ -142,7 +143,7 @@ const ProductGrid = (props) => {
                                     </a>
                                 </h3>
                                 <span className="price">
-                                    KD {product.offer_price}
+                                    {product.stock > 0 ? `KD ${product.offer_price}` : `Out Of Stock`}
                                 </span>
                             </div>
                         </div>

@@ -6,6 +6,7 @@ import { Link, useNavigate } from "react-router-dom";
 import apiConfig from "../../config/apiConfig";
 import { useShoppingCart } from "../../context/ShoppingCartContext";
 import { UserData } from "../../context/UserContext";
+import styles from './Header.module.css'
 
 const Header = () => {
   const navigate = useNavigate();
@@ -38,6 +39,7 @@ const Header = () => {
 
   useEffect(() => {
     fetchDetails();
+    console.log(styles)
   }, []);
 
   useEffect(() => {
@@ -168,9 +170,9 @@ const Header = () => {
                 <div className="cema-topcart dropdown">
                   <div className="dropdown mini-cart top-cart">
                     <div className="remove-cart-shadow" />
-                    <a
+                    <Link
                       className="dropdown-toggle cart-icon"
-                      href="#"
+                      to="/cart"
                       role="button"
                       data-toggle="dropdown"
                       aria-haspopup="true"
@@ -178,9 +180,9 @@ const Header = () => {
                     >
                       <div className="icons-cart">
                         <i className="icon-large-paper-bag" />
-                        <span className="cart-count">2</span>
+                        <span className="cart-count">{cartItemsCount}</span>
                       </div>
-                    </a>
+                    </Link>
                     <div className="dropdown-menu cart-popup">
                       <div className="cart-empty-wrap">
                         <ul className="cart-list">
@@ -335,6 +337,83 @@ const Header = () => {
                             <span className="menu-item-text">Best Sellers</span>
                           </Link>
                         </li>
+                        <li className="level-0 menu-item menu-item-has-children mega-menu level-menu-fullwidth">
+                          <a href="javascript:;">
+                            <Link to="/products">
+                              <span className="menu-item-text">More</span>
+                            </Link>
+                          </a>
+                          <div className={`sub-menu`}>
+                            <div className="row">
+                              {menuItems?.map((items, key) => {
+                                if (items.link_by === 'url')
+                                  return (
+                                    <div className="col-md-4">
+                                      <div className="menu-section">
+                                        <Link
+                                          to={items.url}
+                                        >
+                                          <h2 className="sub-menu-title">
+                                            {items?.title?.en}
+                                          </h2>
+                                        </Link>
+                                        {/* <ul className="menu-list">
+                                      {category?.subcategory.map(
+                                        (subCategory) => (
+                                          <Link
+                                            to={{
+                                              pathname: "/products",
+                                              search: `?category=${subCategory.title.en}&id=${subCategory.id}`,
+                                            }}
+                                          >
+                                            <li>
+                                              <a href="javascript:;">
+                                                <span className="menu-item-text">
+                                                  {subCategory?.title?.en}
+                                                </span>
+                                              </a>
+                                            </li>
+                                          </Link>
+                                        )
+                                      )}
+                                    </ul> */}
+                                      </div>
+                                    </div>
+                                  );
+                                return (
+                                  <div className="col-md-4">
+                                    <div className="menu-section">
+                                      <Link
+                                        to=''
+                                      >
+                                        <h2 className="sub-menu-title">
+                                          {items?.title?.en}
+                                        </h2>
+                                      </Link>
+                                      <ul className="menu-list">
+                                        {items?.linked_parent?.map(
+                                          (cat) => (
+                                            <Link
+                                              to={fetchCategoryById(cat).link}
+                                            >
+                                              <li>
+                                                <a href="javascript:;">
+                                                  <span className="menu-item-text">
+                                                    {fetchCategoryById(cat).name}
+                                                  </span>
+                                                </a>
+                                              </li>
+                                            </Link>
+                                          )
+                                        )}
+                                      </ul>
+                                    </div>
+                                  </div>
+                                );
+                              })}
+                            </div>
+                          </div>
+                        </li>
                         <li className="level-0 menu-item menu-item-has-children mega-menu mega-menu-fullwidth">
                           <a href="javascript:;">
                             <Link to="/products">
@@ -383,72 +462,75 @@ const Header = () => {
                           </div>
                         </li>
 
-                        {menuItems.map((items, key) => {
-                          if (items.link_by === "url")
-                            return (
-                              <li className="level-0 menu-item" key={key}>
-                                <Link to={items.url}>
-                                  <span className="menu-item-text">
-                                    {items.title.en}
-                                  </span>
-                                </Link>
-                              </li>
-                            );
-                          return (
-                            <li className="level-0 menu-item menu-item-has-children mega-menu mega-menu-fullwidth">
-                              <a href="javascript:;">
-                                <Link to="">
-                                  <span className="menu-item-text">
-                                    {items.title.en}
-                                  </span>
-                                </Link>
-                              </a>
-                              <div className="sub-menu">
-                                <div className="row">
-                                  {items.linked_parent?.map((cat) => (
-                                    <div className="col-md-4">
-                                      <div className="menu-section">
-                                        {/* <Link
-                                          to={{
-                                            pathname: "/products",
-                                            search: `?category=${category.title?.en}&id=${category.id}`,
-                                          }}
-                                        > */}
-                                        <Link
-                                          className="sub-menu-title"
-                                          to={fetchCategoryById(cat).link}
-                                        >
-                                          {fetchCategoryById(cat).name}
-                                        </Link>
-                                        {/* </Link> */}
-                                        {/* <ul className="menu-list">
-                                          {category?.subcategory.map(
-                                            (subCategory) => (
-                                              <Link
-                                                to={{
-                                                  pathname: "/products",
-                                                  search: `?category=${subCategory.title.en}&id=${subCategory.id}`,
-                                                }}
-                                              >
-                                                <li>
-                                                  <a href="javascript:;">
-                                                    <span className="menu-item-text">
-                                                      {subCategory?.title?.en}
-                                                    </span>
-                                                  </a>
-                                                </li>
-                                              </Link>
-                                            )
-                                          )}
-                                        </ul> */}
-                                      </div>
-                                    </div>
-                                  ))}
-                                </div>
-                              </div>
-                            </li>
-                          );
-                        })}
+
+                        {
+                          // menuItems.map((items, key) => {
+                          //   if (items.link_by === "url")
+                          //     return (
+                          //       <li className="level-0 menu-item" key={key}>
+                          //         <Link to={items.url}>
+                          //           <span className="menu-item-text">
+                          //             {items.title.en}
+                          //           </span>
+                          //         </Link>
+                          //       </li>
+                          //     );
+                          //   return (
+                          //     <li className="level-0 menu-item menu-item-has-children mega-menu mega-menu-fullwidth">
+                          //       <a href="javascript:;">
+                          //         <Link to="">
+                          //           <span className="menu-item-text">
+                          //             {items.title.en}
+                          //           </span>
+                          //         </Link>
+                          //       </a>
+                          //       <div className="sub-menu">
+                          //         <div className="row">
+                          //           {items.linked_parent?.map((cat) => (
+                          //             <div className="col-md-4">
+                          //               <div className="menu-section">
+                          //                 {/* <Link
+                          //                   to={{
+                          //                     pathname: "/products",
+                          //                     search: `?category=${category.title?.en}&id=${category.id}`,
+                          //                   }}
+                          //                 > */}
+                          //                 <Link
+                          //                   className="sub-menu-title"
+                          //                   to={fetchCategoryById(cat).link}
+                          //                 >
+                          //                   {fetchCategoryById(cat).name}
+                          //                 </Link>
+                          //                 {/* </Link> */}
+                          //                 {/* <ul className="menu-list">
+                          //                   {category?.subcategory.map(
+                          //                     (subCategory) => (
+                          //                       <Link
+                          //                         to={{
+                          //                           pathname: "/products",
+                          //                           search: `?category=${subCategory.title.en}&id=${subCategory.id}`,
+                          //                         }}
+                          //                       >
+                          //                         <li>
+                          //                           <a href="javascript:;">
+                          //                             <span className="menu-item-text">
+                          //                               {subCategory?.title?.en}
+                          //                             </span>
+                          //                           </a>
+                          //                         </li>
+                          //                       </Link>
+                          //                     )
+                          //                   )}
+                          //                 </ul> */}
+                          //               </div>
+                          //             </div>
+                          //           ))}
+                          //         </div>
+                          //       </div>
+                          //     </li>
+                          //   );
+                          // })
+                        }
 
                         <li className="level-0 menu-item">
                           <Link to="/contact">

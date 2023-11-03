@@ -9,7 +9,7 @@ const CartProduct = (props) => {
   const order = orderData;
   const initialQty = order?.qty ? parseInt(order.qty) : 0;
   const [orderQnty, setOrderQnty] = useState(initialQty);
-  const { setCartToggle, removeFromLocalCart, increaseItemInLocalCart, setCartItemsCount } = useShoppingCart();
+  const { setCartToggle, removeFromLocalCart, increaseItemInLocalCart, setCartItemsCount, showInfoToastMessage } = useShoppingCart();
 
   const increaseQty = () => {
     setOrderQnty(orderQnty + 1);
@@ -131,7 +131,10 @@ const CartProduct = (props) => {
       </td>
       <td className="product-quantity">
         <div className="quantity">
-          <button type="button" className="minus" onClick={() => decreaseQty()} disabled={orderQnty <= 0 ? true : false}>
+          <button type="button" className="minus" onClick={() => {
+            if (orderQnty === 1) showInfoToastMessage('Quantity atleast be one')
+            else decreaseQty();
+          }} >
             -
           </button>
           <input

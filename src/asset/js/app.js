@@ -1,3 +1,16 @@
+import jQuery from "jquery";
+import "./jquery.min.js";
+import "./tmpl";
+import "./slick.min.js";
+import "./select2.min.js";
+import "./popper.min.js";
+import "./jquery.slider.js";
+import "./jquery.mmenu.all.min.js";
+import "./jquery.dependClass-0.1";
+import "./jquery.countdown.min.js";
+import "./draggable-0.1";
+import "./jquery.min.js";
+
 var $ = jQuery;
 
 // ______________ Page Loader
