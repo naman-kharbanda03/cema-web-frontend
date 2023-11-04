@@ -35,8 +35,8 @@ import "./asset/fonts/icomoon.ttf";
 // import "./asset/js/draggable-0.1";
 // import "./asset/js/jquery.min.js";
 
-// import "./asset/js/app";
-// import "./asset/js/app";
+import "./asset/js/app";
+// import "./asset/js/app1";
 
 import App from "./App";
 import reportWebVitals from "./reportWebVitals";

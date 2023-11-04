@@ -41,6 +41,9 @@ const apiConfig = {
   addProductReview: `${BASE_URL}/api/addSimpleProductReview`,
 
   navCategoriesAPI: `${BASE_URL}/api/navCategories`,
+  createBillingAddress: `${BASE_URL}/api/create-billing-address`,
+  getBillingAdddress: `${BASE_URL}/api/billing-address`,
+  checkoutAPI: `${BASE_URL}/api/checkout`,
 };
 
 export default apiConfig;

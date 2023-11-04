@@ -69,10 +69,21 @@ const ShopDetails = (product) => {
           let thumbnail = data.data.thumbnail_path + "/" + data.data.thumbnail;
           let hover = data.data.thumbnail_path + "/" + data.data.hover_thumbnail;
           let A = [thumbnail, hover];
+          let B = [{ 'image': data.data.thumbnail }, { 'image': data.data.hover_thumbnail }]
           setThumb(A);
           setImage(hover);
           setVariant(0);
-          setData((prev) => ({ ...prev, type: 'simple_product' }))
+          // setData(() => {
+          //   const combination = { ...data.data.combinations?.[0] };
+          //   const images = [...combination.images, ...B];
+          //   combination.images = images;
+          //   console.log(combination);
+          //   return {
+          //     ...data.data,
+          //     type: 'simple_product',
+          //     combination: combination,
+          //   }
+          // })
         }
         console.log("testing", data.data);
       })
@@ -404,7 +415,7 @@ const ShopDetails = (product) => {
                                 type="number"
                                 className="qty"
                                 step="1"
-                                min="0"
+                                min={1}
                                 max=""
                                 name="quantity"
                                 title="Qty"
@@ -418,7 +429,9 @@ const ShopDetails = (product) => {
                                 type="button"
                                 className="minus"
                                 onClick={() => {
-                                  setQuant((count) => count - 1);
+                                  if (quant > 1)
+                                    setQuant((count) => count - 1);
+                                  else showInfoToastMessage('Atleast 1 product')
                                 }}
                               >
                                 -
