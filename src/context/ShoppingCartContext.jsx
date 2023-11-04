@@ -283,7 +283,7 @@ export const ShoppingCartProvider = ({ children }) => {
             variant_id: product?.variant_id
         };
         const bearerToken = localStorage.getItem("accessToken");
-
+        console.log(product);
         if (bearerToken) {
             const apiUrl = apiConfig.addToCartAPI;
             fetch(apiUrl, {

@@ -151,7 +151,11 @@ const CartProduct = (props) => {
             inputMode="numeric"
             autoComplete="off"
           />
-          <button type="button" className="plus" onClick={() => increaseQty()}>
+          <button type="button" className="plus" onClick={() => {
+            if (orderQnty < order.stock) increaseQty();
+            else showInfoToastMessage('No stock');
+          }
+          }>
             +
           </button>
         </div>

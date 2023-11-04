@@ -63,7 +63,7 @@ const ShopDetails = (product) => {
           setData(data.data.original.product);
           setReviews(data?.data?.original.ratingsAndreviews);
         }
-        else {
+        else if (data.data.combinations.length === 1) {
           setData(data.data);
           setReviews(data?.data?.ratingsAndreviews);
           let thumbnail = data.data.thumbnail_path + "/" + data.data.thumbnail;
@@ -73,17 +73,17 @@ const ShopDetails = (product) => {
           setThumb(A);
           setImage(hover);
           setVariant(0);
-          // setData(() => {
-          //   const combination = { ...data.data.combinations?.[0] };
-          //   const images = [...combination.images, ...B];
-          //   combination.images = images;
-          //   console.log(combination);
-          //   return {
-          //     ...data.data,
-          //     type: 'simple_product',
-          //     combination: combination,
-          //   }
-          // })
+          setData((prev) => {
+            // const combination = { ...data.data.combinations?.[0] };
+            // const images = [...combination.images, ...B];
+            // combination.images = images;
+            // console.log(combination);
+            return {
+              ...prev,
+              type: 'simple_product',
+              // combination: combination,
+            }
+          })
         }
         console.log("testing", data.data);
       })
@@ -406,7 +406,9 @@ const ShopDetails = (product) => {
                                 type="button"
                                 className="plus"
                                 onClick={() => {
-                                  setQuant((count) => count + 1);
+                                  if (quant < data.combinations?.[variant]?.stock)
+                                    setQuant((count) => count + 1);
+                                  else showInfoToastMessage('No stock');
                                 }}
                               >
                                 +
@@ -451,6 +453,7 @@ const ShopDetails = (product) => {
                                   type: data?.type || "variant",
                                   variant_id: data?.type !== 'simple_product' ? data?.combinations[variant].id : null
                                 };
+                                console.log(prod);
                                 if (data?.combinations?.[variant]?.stock > 0)
                                   AddToCart(prod, quant);
                               }}
