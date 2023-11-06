@@ -4,9 +4,9 @@ import { toast } from "react-toastify";
 
 const ForgotPassword = () => {
     const [passwords, setPassword] = useState({
-        old_password : "",
-        password : "",
-        password_confirmation : ""
+        old_password: "",
+        password: "",
+        password_confirmation: ""
     })
     const token = localStorage.getItem('accessToken');
     const onChangeHandler = (e) => {
@@ -15,13 +15,13 @@ const ForgotPassword = () => {
             [e.target.name]: e.target.value,
         }));
     }
-    const changeUserPassword = (e) =>{
+    const changeUserPassword = (e) => {
         e.preventDefault();
-        if(passwords?.password != passwords?.password_confirmation){
+        if (passwords?.password != passwords?.password_confirmation) {
             toast.warning("New Passwords are not matching, please check.", {
                 position: toast.POSITION.BOTTOM_LEFT,
-              });
-              return
+            });
+            return
         }
         const formData = new FormData();
         formData.append('old_password', passwords.old_password);
@@ -30,25 +30,30 @@ const ForgotPassword = () => {
         fetch(apiConfig?.changePassword, {
             method: "POST",
             headers: {
-              'Authorization': `Bearer ${token}`,
+                'Authorization': `Bearer ${token}`,
             },
             body: formData,
-          }).then(response => { return response.json()})
+        }).then(response => { return response.json() })
             .then(data => {
-              console.log(data);
-              if(!data?.success){
-                Object.keys(data["data"]).map(key =>{
-                    toast.warning(data?.data[key][0], {
+                console.log(data);
+                if (!data?.success) {
+                    Object.keys(data["data"]).map(key => {
+                        toast.warning(data?.data[key][0], {
+                            position: toast.POSITION.BOTTOM_LEFT,
+                        });
+                    })
+                } else {
+                    toast.success(data?.message, {
                         position: toast.POSITION.BOTTOM_LEFT,
-                      });
-                })
-              }else{
-                toast.success(data?.message, {
-                    position: toast.POSITION.BOTTOM_LEFT,
-                  });
-              }
+                    });
+                    setPassword({
+                        old_password: "",
+                        password: "",
+                        password_confirmation: ""
+                    });
+                }
             })
-            .catch(error => console.error({error}, "Fetch operation Error"));
+            .catch(error => console.error({ error }, "Fetch operation Error"));
     }
     return (
         <>

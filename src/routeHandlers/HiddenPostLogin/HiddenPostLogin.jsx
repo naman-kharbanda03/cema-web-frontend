@@ -5,7 +5,7 @@ import { Navigate } from "react-router-dom";
 const HiddenPostLogin = ({ children }) => {
   const { LOGGEDIN, redirect } = useContext(UserData);
   console.log("test", LOGGEDIN, redirect);
-  if (LOGGEDIN) {
+  if (localStorage.getItem('accessToken')) {
     return <Navigate to={redirect} />;
   }
   return children;

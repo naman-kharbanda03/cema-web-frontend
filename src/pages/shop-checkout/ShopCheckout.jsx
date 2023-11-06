@@ -182,33 +182,39 @@ const ShopCheckout = () => {
 
   const placeOrder = () => {
     const bearerToken = localStorage.getItem("accessToken");
-    const formdata = {
-      grand_total: datta?.grand_total,
-    };
-    fetch(apiConfig.checkoutAPI, {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-        Authorization: `Bearer ${bearerToken}`,
-      },
-      body: JSON.stringify(formdata),
-    })
-      .then((response) => response.json())
-      .then((result) => {
-        if (result.success === 'true') {
-          toast.success(result.message, {
-            position: toast.POSITION.BOTTOM_LEFT,
-          });
-          setTimeout(() => {
-            // window.location.href = `/account?activeTab=orders&orderId=${"EODD" + result?.order_id}`;
-            navigate(`/account?activeTab=orders&orderId=${"EODD" + result?.order_id}`)
-          }, 1000)
-        } else {
-          showInfoToastMessage(result.message)
-        }
 
+    if (orders.length === 0) {
+      showInfoToastMessage('Please add products')
+    } else {
+      const formdata = {
+        grand_total: datta?.grand_total,
+      };
+      fetch(apiConfig.checkoutAPI, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${bearerToken}`,
+        },
+        body: JSON.stringify(formdata),
       })
-      .catch((error) => console.log("error", error));
+        .then((response) => response.json())
+        .then((result) => {
+          if (result.success === true) {
+            toast.success(result.message, {
+              position: toast.POSITION.BOTTOM_LEFT,
+            });
+            setTimeout(() => {
+              window.location.href = `/account?activeTab=orders&orderId=${"EODD" + result?.order_id}`;
+              // navigate(`/account?activeTab=orders&orderId=${"EODD" + result?.order_id}`)
+            }, 1000)
+          } else {
+            showInfoToastMessage(result.message)
+          }
+
+        })
+        .catch((error) => console.log("error", error));
+    }
+
   };
 
   function getCartDetails() {
@@ -448,7 +454,7 @@ const ShopCheckout = () => {
                                   />
                                 </span>
                               </p>
-                              <p className="form-row address-field form-row-wide">
+                              {/* <p className="form-row address-field form-row-wide">
                                 <label>
                                   Apartment, suite, unit, etc.&nbsp;
                                   <span className="optional">(optional)</span>
@@ -463,7 +469,7 @@ const ShopCheckout = () => {
                                     onChange={handleChange}
                                   />
                                 </span>
-                              </p>
+                              </p> */}
                               <p className="form-row form-row-wide validate-required">
                                 <label>
                                   Country / Region{" "}

@@ -59,10 +59,10 @@ const Header = () => {
   const fetchCategoryById = (id) => {
     switch (id) {
       case "1":
-        return { name: "Jeans", link: "/products?category=Jeans" };
+        return { name: "Jeans", link: "/products?category=Jeans&id=1" };
 
       case "2":
-        return { name: "Skirts", link: "/products?category=Skirt" };
+        return { name: "Skirts", link: "/products?category=Skirts&id=2" };
 
       case "3":
         return {
@@ -338,11 +338,12 @@ const Header = () => {
                           </Link>
                         </li>
                         <li className="level-0 menu-item menu-item-has-children mega-menu level-menu-fullwidth">
-                          <a href="javascript:;">
-                            <Link to="/products">
+                          <Link to="">
+                            <div>
                               <span className="menu-item-text">More</span>
-                            </Link>
-                          </a>
+
+                            </div>
+                          </Link>
                           <div className={`sub-menu`}>
                             <div className="row">
                               {menuItems?.map((items, key) => {
@@ -383,25 +384,21 @@ const Header = () => {
                                 return (
                                   <div className="col-md-4">
                                     <div className="menu-section">
-                                      <Link
-                                        to=''
-                                      >
-                                        <h2 className="sub-menu-title">
-                                          {items?.title?.en}
-                                        </h2>
-                                      </Link>
+
+                                      <h2 className="sub-menu-title">
+                                        {items?.title?.en}
+                                      </h2>
                                       <ul className="menu-list">
                                         {items?.linked_parent?.map(
                                           (cat) => (
                                             <Link
                                               to={fetchCategoryById(cat).link}
+                                            // to={`/products?category=`}
                                             >
                                               <li>
-                                                <a href="javascript:;">
-                                                  <span className="menu-item-text">
-                                                    {fetchCategoryById(cat).name}
-                                                  </span>
-                                                </a>
+                                                <span className="menu-item-text">
+                                                  {fetchCategoryById(cat).name}
+                                                </span>
                                               </li>
                                             </Link>
                                           )
@@ -415,10 +412,8 @@ const Header = () => {
                           </div>
                         </li>
                         <li className="level-0 menu-item menu-item-has-children mega-menu mega-menu-fullwidth">
-                          <a href="javascript:;">
-                            <Link to="/products">
-                              <span className="menu-item-text">Products</span>
-                            </Link>
+                          <a href="/products">
+                            <span className="menu-item-text">Products</span>
                           </a>
                           <div className="sub-menu">
                             <div className="row">
@@ -428,7 +423,7 @@ const Header = () => {
                                     <Link
                                       to={{
                                         pathname: "/products",
-                                        search: `?category=${category.title?.en}&id=${category.id}`,
+                                        // search: `?category=${category.title?.en}&id=${category.id}`,
                                       }}
                                     >
                                       <h2 className="sub-menu-title">
@@ -441,15 +436,13 @@ const Header = () => {
                                           <Link
                                             to={{
                                               pathname: "/products",
-                                              search: `?category=${subCategory.title.en}&id=${subCategory.id}`,
+                                              // search: `?category=${subCategory.title.en}&id=${subCategory.id}`,
                                             }}
                                           >
                                             <li>
-                                              <a href="javascript:;">
-                                                <span className="menu-item-text">
-                                                  {subCategory?.title?.en}
-                                                </span>
-                                              </a>
+                                              <span className="menu-item-text">
+                                                {subCategory?.title?.en}
+                                              </span>
                                             </li>
                                           </Link>
                                         )

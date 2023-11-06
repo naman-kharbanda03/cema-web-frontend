@@ -54,6 +54,14 @@ const ProductList = () => {
       [e.target.name]: e.target.value
     }))
   }
+  const clearFilter = () => {
+    setFilter({
+      minPrice: 0,
+      maxPrice: 1000000,
+      brand: ''
+    });
+    setFilterToggle(prev => !prev);
+  }
 
   useEffect(() => {
     const queryParams = new URLSearchParams(location.search);
@@ -94,7 +102,6 @@ const ProductList = () => {
           setLastpage(datar.products.last_page);
           return datar;
         }
-
       })
       .catch((error) => console.error("Problem with fetch operations", error));
 
@@ -189,6 +196,8 @@ const ProductList = () => {
                 <div class="row">
                   <div class="col-xl-3 col-lg-3 col-md-12 col-12 sidebar left-sidebar md-b-50">
 
+
+
                     {/* Categories */}
                     <div class="block block-product-cats">
                       <div class="block-title">
@@ -199,11 +208,27 @@ const ProductList = () => {
                           <ul onClick={() => setCurrentPage(1)}>
                             {
                               categoryList.map(category => (
-                                <Category current={category} />
+                                <Category current={category} clear={clearFilter} />
                               ))
                             }
                           </ul>
                         </div>
+                      </div>
+                    </div>
+
+
+
+                    <div className="block block-product-filter">
+                      {/* <div className="block-title">
+                        <h2>Price</h2>
+                      </div> */}
+                      <div className="block-content">
+                        <button
+                          style={{ width: '30%' }}
+                          onClick={() => clearFilter()}
+                        >
+                          Reset Filter
+                        </button>
                       </div>
                     </div>
 
@@ -221,6 +246,7 @@ const ProductList = () => {
                                 name="minPrice"
                                 style={{ width: '20%', textAlign: 'center' }}
                                 onChange={(e) => handleFilter(e)}
+                                value={filter.minPrice === 0 ? '' : filter.minPrice}
                                 placeholder='Min'
                               />
                               <br />
@@ -229,6 +255,7 @@ const ProductList = () => {
                                 name="maxPrice"
                                 style={{ marginLeft: '3%', width: '20%', textAlign: 'center' }}
                                 onChange={(e) => handleFilter(e)}
+                                value={filter.maxPrice === 1000000 ? '' : filter.maxPrice}
                                 placeholder='Max'
                               />
                               <button
@@ -317,41 +344,52 @@ const ProductList = () => {
                       </div>
                     </div>
 
+                    {filteredProductList?.length === 0
+                      ?
+                      <>
+                        <div className="no-products" style={{ display: 'flex', margin: "auto", justifyContent: 'center' }}>
+                          No Products Available
 
-
-
-                    <div className="tab-content">
-
-                      {/* List Version  */}
-                      <div
-                        className={`tab-pane fade ${view === 'list' ? 'show active' : ''}`}
-                        id="layout-list"
-                        role="tabpanel"
-                      >
-                        <div className="products-list list">
-                          {filteredProductList.map(product => (
-                            <Product current={product} />
-                          ))}
                         </div>
-                      </div>
+                      </>
+                      :
+                      <>
+                        <div className="tab-content">
+                          {/* List Version  */}
+                          <div
+                            className={`tab-pane fade ${view === 'list' ? 'show active' : ''}`}
+                            id="layout-list"
+                            role="tabpanel"
+                          >
+                            <div className="products-list list">
+                              {filteredProductList.map(product => (
+                                <Product current={product} />
+                              ))}
+                            </div>
+                          </div>
 
-                      {/* Grid Version  */}
-                      <div
-                        className={`tab-pane fade ${view === 'grid' ? 'show active' : ''}`}
-                        id="layout-grid"
-                        role="tabpanel"
-                      >
-                        <div className="products-list grid">
-                          <div className="row">
-                            {filteredProductList?.map((product) => (
-                              <>
-                                <ProductGrid current={product} />
-                              </>
-                            ))}
+                          {/* Grid Version  */}
+                          <div
+                            className={`tab-pane fade ${view === 'grid' ? 'show active' : ''}`}
+                            id="layout-grid"
+                            role="tabpanel"
+                          >
+                            <div className="products-list grid">
+                              <div className="row">
+                                {filteredProductList?.map((product) => (
+                                  <>
+                                    <ProductGrid current={product} />
+                                  </>
+                                ))}
+                              </div>
+                            </div>
                           </div>
                         </div>
-                      </div>
-                    </div>
+                      </>
+                    }
+
+
+
 
                     {/* Pagination  */}
                     <nav className="pagination">

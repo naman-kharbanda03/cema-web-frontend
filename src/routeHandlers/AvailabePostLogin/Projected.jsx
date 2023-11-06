@@ -9,7 +9,7 @@ const Protected = ({ children }) => {
   // setRedirect(location.pathname)
   localStorage.setItem('path', location.pathname);
 
-  if (!LOGGEDIN) {
+  if (!localStorage.getItem('accessToken')) {
     return setTimeout(() => {
       window.location.href = '/login'
     }, 1000);
