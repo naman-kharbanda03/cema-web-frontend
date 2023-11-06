@@ -1,15 +1,21 @@
 import React, { useContext } from "react";
 import { UserData } from "../../context/UserContext";
-import { Navigate } from "react-router-dom";
+import { Navigate, useLocation } from "react-router-dom";
 
 const Protected = ({ children }) => {
-  const { LOGGEDIN } = useContext(UserData);
+  const { LOGGEDIN, redirect, setRedirect } = useContext(UserData);
+  const location = useLocation();
+  console.log(location)
+  // setRedirect(location.pathname)
+  localStorage.setItem('path', location.pathname);
+
   if (!LOGGEDIN) {
-    return setTimeout(() => { window.location.href = '/login' }, 1000);
+    return setTimeout(() => {
+      window.location.href = '/login'
+    }, 1000);
   }
   else {
     return children;
   }
 };
-
 export default Protected;

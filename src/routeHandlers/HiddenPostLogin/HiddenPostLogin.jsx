@@ -3,9 +3,11 @@ import { UserData } from "../../context/UserContext";
 import { Navigate } from "react-router-dom";
 
 const HiddenPostLogin = ({ children }) => {
-  const { LOGGEDIN } = useContext(UserData);
-  console.log("test", LOGGEDIN);
-  if (LOGGEDIN) return <Navigate to={"/"} />;
+  const { LOGGEDIN, redirect } = useContext(UserData);
+  console.log("test", LOGGEDIN, redirect);
+  if (LOGGEDIN) {
+    return <Navigate to={redirect} />;
+  }
   return children;
 };
 

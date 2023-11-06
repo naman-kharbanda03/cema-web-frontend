@@ -20,7 +20,7 @@ const MyAccount = (props) => {
 
   const logoutHandler = () => {
     SETLOGGEDIN(false);
-    localStorage.clear()
+    localStorage.clear();
     // window.location.href = '/login';
   };
 

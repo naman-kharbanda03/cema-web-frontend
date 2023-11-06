@@ -22,11 +22,17 @@ import HiddenPostLogin from "./routeHandlers/HiddenPostLogin/HiddenPostLogin";
 import Protected from "./routeHandlers/AvailabePostLogin/Projected";
 import CookieBanner from "./components/CookieBanner/cookie";
 import CookieConsent from "react-cookie-consent";
+import PreLoader from "./components/pre-loader/PreLoader";
 
 function App() {
   // const [isLoggedIn, setIsLoggedIn] = useState(false);
   // useEffect(() => console.log(isLoggedIn), [isLoggedIn]);
-
+  const [loading, setLoading] = useState(false);
+  useEffect(() => {
+    setTimeout(() => {
+      setLoading(true);
+    }, 1000);
+  });
   return (
     <div
       id="page"
@@ -88,6 +94,7 @@ function App() {
             <Route path="/product-details" element={<ShopDetails />} />
             <Route path="/edit-address" element={<CreateEditAddress />} />
           </Routes>
+          {loading === true ? "" : <PreLoader />}
           <CookieConsent
             location="bottom"
             buttonText="I understand"
@@ -99,7 +106,8 @@ function App() {
             our website.
           </CookieConsent>
           <Footer />
-          <BackToTop />
+          {/* <PreLoader /> */}
+          {/* <BackToTop /> */}
         </ShoppingCartProvider>
       </UserContextWrapper>
     </div>

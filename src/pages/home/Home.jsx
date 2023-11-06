@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 
 import Sliders from "../../components/slider/Slider";
 import Banner from "../../components/banner/Banner";
@@ -8,6 +8,7 @@ import Banner2 from "../../components/banner/Banner2";
 import BestSellerSlider from "../../components/slider/BestSellerSlider";
 import { Link } from "react-router-dom";
 import apiConfig from "../../config/apiConfig";
+import PreLoader from "../../components/pre-loader/PreLoader";
 
 const Home = () => {
   useEffect(() => {
@@ -25,6 +26,7 @@ const Home = () => {
       })
       .catch((error) => console.error("Problem with fetch operations", error));
   }, []);
+
 
   return (
     <>
@@ -116,6 +118,7 @@ const Home = () => {
                   </div>
                 </div>
               </section>
+              {/* <PreLoader /> */}
             </div>
           </div>
         </div >

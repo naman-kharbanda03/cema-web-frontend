@@ -18,7 +18,7 @@ const ShopCheckout = () => {
   const [selectedCity, setSelectedCity] = useState();
   const [datta, setDatta] = useState();
   // billing fields
-  const { showSuccessToastMessage } = useShoppingCart();
+  const { showSuccessToastMessage, showInfoToastMessage } = useShoppingCart();
   const [name, setName] = useState();
   const [address, setAddress] = useState();
   const [email, setEmail] = useState();
@@ -195,13 +195,18 @@ const ShopCheckout = () => {
     })
       .then((response) => response.json())
       .then((result) => {
-        toast.success(result.message, {
-          position: toast.POSITION.BOTTOM_LEFT,
-        });
-        setTimeout(() => {
-          // window.location.href = `/account?activeTab=orders&orderId=${"EODD" + result?.order_id}`;
-          navigate(`/account?activeTab=orders&orderId=${"EODD" + result?.order_id}`)
-        }, 1000)
+        if (result.success === 'true') {
+          toast.success(result.message, {
+            position: toast.POSITION.BOTTOM_LEFT,
+          });
+          setTimeout(() => {
+            // window.location.href = `/account?activeTab=orders&orderId=${"EODD" + result?.order_id}`;
+            navigate(`/account?activeTab=orders&orderId=${"EODD" + result?.order_id}`)
+          }, 1000)
+        } else {
+          showInfoToastMessage(result.message)
+        }
+
       })
       .catch((error) => console.log("error", error));
   };
@@ -219,11 +224,37 @@ const ShopCheckout = () => {
     })
       .then((response) => response.json())
       .then((data) => {
-        console.log("getCartData:", data.total);
-
-        setTotal(data.total);
-        setDatta(data);
-        setOrders(data.data);
+        if (data) {
+          console.log("getCartData:", data.total);
+          setTotal(data.total);
+          setDatta(data);
+          setOrders([]);
+          data.data.forEach(product => {
+            var prod = {};
+            if (product.simple_product) {
+              prod = {
+                price: product.price_total,
+                qty: product.qty,
+                name: product.simple_product.product_name.en,
+                image_path: product.simple_product.image_path,
+                image: product.simple_product.product_image?.[0],
+                link: `/product-details?product_id=${product.simple_product?.id}`,
+              }
+            } else if (product.product) {
+              prod = {
+                price: product.price_total,
+                qty: product.qty,
+                name: product.product.product_name.en,
+                image_path: product.product.image_path,
+                image: product.variant.variantimages.main_image,
+                link: `/product-details?product_id=${product.product?.id}&variant_id=${product.variant.id}`,
+              }
+            }
+            // console.log(prod);
+            setOrders(prev => ([...prev, prod]));
+          });
+          // setOrders(data.data);
+        }
       })
       .catch((error) => {
         console.error("Error:", error);
@@ -835,20 +866,21 @@ const ShopCheckout = () => {
                                 <div className="cart-item">
                                   <div className="info-product">
                                     <div className="product-thumbnail">
-                                      <img
-                                        width="600"
-                                        height="600"
-                                        src={`${order?.simple_product?.image_path}/${order?.simple_product?.product_image?.[0]}`}
-                                        alt=""
-                                      />
+                                      <Link to={order.link}>
+                                        <img
+                                          width="600"
+                                          height="600"
+                                          src={`${order?.image_path}/${order?.image}`}
+                                          alt=""
+                                        />
+                                      </Link>
                                     </div>
                                     <div className="product-name">
                                       <Link
-                                        to={`/product-details?product_id=${order?.id}`}
+                                        to={order.link}
                                       >
                                         {
-                                          order?.simple_product?.product_name
-                                            ?.en
+                                          order?.name
                                         }
                                       </Link>
                                       <strong className="product-quantity">
@@ -859,11 +891,10 @@ const ShopCheckout = () => {
                                   </div>
                                   <div className="product-total">
                                     <span>
-                                      {" "}
-                                      KD
+                                      KD{" "}
+
                                       {
-                                        order?.simple_product
-                                          ?.actual_selling_price
+                                        order?.price
                                       }
                                     </span>
                                   </div>
@@ -873,13 +904,13 @@ const ShopCheckout = () => {
                             <div className="cart-subtotal">
                               <h2>Subtotal</h2>
                               <div className="subtotal-price">
-                                <span>{total}</span>
+                                <span>KD {total}</span>
                               </div>
                             </div>
                             <div className="cart-subtotal">
                               <h2>Discount</h2>
                               <div className="subtotal-price">
-                                <span>{datta?.discount_amount}</span>
+                                <span>KD {datta?.discount_amount}</span>
                               </div>
                             </div>
                             {/* <div className="cart-subtotal">
@@ -892,7 +923,7 @@ const ShopCheckout = () => {
                               <h2>Total</h2>
                               <div className="total-price">
                                 <strong>
-                                  <span>KD{datta?.grand_total}</span>
+                                  <span>KD {datta?.grand_total}</span>
                                 </strong>
                               </div>
                             </div>
