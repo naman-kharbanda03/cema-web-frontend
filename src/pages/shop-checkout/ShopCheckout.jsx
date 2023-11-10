@@ -8,27 +8,14 @@ import apiConfig from "../../config/apiConfig";
 const ShopCheckout = () => {
   const [orders, setOrders] = useState();
   const [total, setTotal] = useState();
-  const [billingData, setBillingData] = useState();
   const [shipToDifferentAddress, setShipToDifferentAddress] = useState(false);
-  const [selectedStateOption, setSelectedStateOption] = useState();
   const [stateOptions, setStateOptions] = useState();
   const [countriesOptions, setCountriesOptions] = useState();
-  const [selectedConutryCode, setSelectedCountryCode] = useState();
-  const [citiesOptions, setCitiesOptions] = useState();
-  const [selectedCity, setSelectedCity] = useState();
+  const [citiesOptions, setCitiesOptions] = useState({});
   const [datta, setDatta] = useState();
   // billing fields
   const { showSuccessToastMessage, showInfoToastMessage } = useShoppingCart();
-  const [name, setName] = useState();
-  const [address, setAddress] = useState();
-  const [email, setEmail] = useState();
-  const [phone, setPhone] = useState();
-  const [type, setType] = useState();
-  const [pincode, setPincode] = useState();
-  const [countryId, setCountryId] = useState();
-  const [stateId, setStateId] = useState();
-  const [cityId, setCityId] = useState();
-  const [defaultAddress, setDefaultAddress] = useState();
+
 
   const [state, setState] = useState({});
 
@@ -37,68 +24,25 @@ const ShopCheckout = () => {
       ...prev,
       [e.target.name]: e.target.value
     }))
-    console.log(e.target.name, e.target.value);
     if (e.target.name === 'state') getCities(e.target.value);
   }
   useEffect(() => console.log(state), [state]);
 
-  const [sname, ssetName] = useState();
-  const [saddress, ssetAddress] = useState();
-  const [semail, ssetEmail] = useState();
-  const [sphone, ssetPhone] = useState();
-  const [stype, ssetType] = useState();
-  const [spincode, ssetPincode] = useState();
-  const [scountryId, ssetCountryId] = useState();
-  const [sstateId, ssetStateId] = useState();
-  const [scityId, ssetCityId] = useState();
-  const [sdefaultAddress, ssetDefaultAddress] = useState();
+  const [shipState, setShipState] = useState({});
+
+  const handlesChange = (e) => {
+    setShipState(prev => ({
+      ...prev,
+      [e.target.name]: e.target.value
+    }))
+    if (e.target.name === 'state') getCities(e.target.value);
+  }
+
+  useEffect(() => {
+    console.log('shipState', shipState, citiesOptions);
+  }, [shipState, citiesOptions])
 
 
-
-  const handlesNameChange = (e) => {
-    const newValue = e.target.value;
-    console.log("checkName", newValue);
-    ssetName(newValue);
-  };
-  const handlesAddressChange = (e) => {
-    const newValue = e.target.value;
-    ssetAddress(newValue);
-  };
-  const handlesEmailChange = (e) => {
-    const newValue = e.target.value;
-    ssetEmail(newValue);
-  };
-  const handlesPhoneChange = (e) => {
-    const newValue = e.target.value;
-    ssetPhone(newValue);
-  };
-  const handlesTypeChange = (e) => {
-    const newValue = e.target.value;
-    ssetType(newValue);
-  };
-  const handlesPincodeChange = (e) => {
-    const newValue = e.target.value;
-    ssetPincode(newValue);
-  };
-  //
-
-  const handlesStateSelectChange = (e) => {
-    const newValue = e.target.value;
-    setSelectedStateOption(newValue);
-    ssetStateId(newValue);
-  };
-
-  const handlesCountrySelectChange = (e) => {
-    const newValue = e.target.value;
-    setSelectedCountryCode(newValue);
-    ssetCountryId(newValue);
-  };
-
-  const handlesCitySelectChange = (e) => {
-    const newValue = e.target.value;
-    setSelectedCity(newValue);
-    ssetCityId(newValue);
-  };
 
   const handleCheckboxChange = (e) => {
     const newValue = e.target.checked; // Get the new value of the checkbox
@@ -148,20 +92,20 @@ const ShopCheckout = () => {
   const addOrUpdateAddress = () => {
     const bearerToken = localStorage.getItem("accessToken");
     const formdata = {
-      name: sname,
-      address: saddress,
-      email: semail,
-      phone: sphone,
-      type: "office",
-      pincode: spincode,
-      country_id: scountryId || billingData?.country["id"],
-      state_id: sstateId || billingData?.state["id"],
-      city_id: scityId || billingData?.city["id"],
+      name: shipState?.name,
+      address: shipState?.address,
+      email: shipState?.email,
+      phone: shipState?.phone,
+      type: "Other",
+      pincode: shipState?.postcode,
+      country_id: shipState?.country,
+      state_id: shipState?.state,
+      city_id: shipState?.city,
       defaddress: "1",
     };
 
     console.log("phirAur", formdata);
-    fetch("https://www.demo609.amrithaa.com/backend-cema/public/api/create-address", {
+    fetch(apiConfig.createAddressAPI, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
@@ -171,10 +115,15 @@ const ShopCheckout = () => {
     })
       .then((response) => response.json())
       .then((result) => {
-        console.log(result);
-        toast.success(result?.message, {
-          position: toast.POSITION.BOTTOM_LEFT,
-        });
+        if (result.status === 'success') {
+          console.log(result);
+          toast.success(result?.message, {
+            position: toast.POSITION.BOTTOM_LEFT,
+          });
+        } else if (result.status === false) {
+          showInfoToastMessage('Fill all details');
+        }
+
       })
       .catch((error) => console.log("error", error));
   };
@@ -281,16 +230,48 @@ const ShopCheckout = () => {
       .then((response) => response.json())
       .then((data) => {
         console.log("BillingDetails:", data);
-        setBillingData(data?.address);
+        getCities(data?.address.state.id, 'billing');
         setState({
           name: data?.address.name,
           address1: data.address?.address,
           address2: data?.address?.address2 || '',
           phone: data.address?.mobile,
-          country: data.address?.id,
-          state: data.address?.id,
-          city: data.address?.id,
+          country: data.address?.country?.id,
+          state: data.address?.state.id,
+          city: data.address?.city.id,
           postcode: data.address?.pincode,
+          email: data.address?.email
+        });
+        // setAddressData(data?.address);
+      })
+      .catch((error) => {
+        console.error("Error:", error);
+      });
+  }
+  function getShippingDetails() {
+    const bearerToken = localStorage.getItem("accessToken");
+    console.log("bearerToken", orders);
+
+    const api = apiConfig.getAddressAPI;
+    fetch(api, {
+      method: "GET",
+      headers: {
+        Authorization: `Bearer ${bearerToken}`,
+      },
+    })
+      .then((response) => response.json())
+      .then((data) => {
+        console.log("ShippingDetails:", data);
+        getCities(data?.address.state.id, 'shipping');
+        setShipState({
+          name: data?.address.name,
+          address: data.address?.address,
+          address2: data?.address?.address2 || '',
+          phone: data.address?.phone,
+          country: data.address?.country?.id,
+          state: data.address?.state.id,
+          city: data.address?.city.id,
+          postcode: data.address?.pin_code,
           email: data.address?.email
         });
         // setAddressData(data?.address);
@@ -306,13 +287,13 @@ const ShopCheckout = () => {
     };
 
     fetch(
-      "https://www.demo609.amrithaa.com/backend-cema/public/api/states/101?secret=1dc7843e-e42c-4154-a02d-d80ab6d81095",
+      apiConfig.getCountryStateAPI,
       requestOptions
     )
       .then((response) => response.json())
       .then((result) => {
         setStateOptions(result?.states);
-        console.log("states", stateOptions);
+        // console.log("states", stateOptions);
       })
       .catch((error) => console.log("error", error));
   }
@@ -324,7 +305,7 @@ const ShopCheckout = () => {
     };
 
     fetch(
-      "https://www.demo609.amrithaa.com/backend-cema/public/api/countries?secret=1dc7843e-e42c-4154-a02d-d80ab6d81095",
+      apiConfig.getCountriesAPI,
       requestOptions
     )
       .then((response) => response.json())
@@ -334,20 +315,20 @@ const ShopCheckout = () => {
       })
       .catch((error) => console.log("error", error));
   }
-  function getCities(id) {
+  function getCities(id, type) {
     var requestOptions = {
       method: "GET",
       redirect: "follow",
     };
 
     fetch(
-      `https://www.demo609.amrithaa.com/backend-cema/public/api/city/${id}?secret=1dc7843e-e42c-4154-a02d-d80ab6d81095`,
+      `${apiConfig.getCitiesAPI}/${id}?secret=1dc7843e-e42c-4154-a02d-d80ab6d81095`,
       requestOptions
     )
       .then((response) => response.json())
       .then((result) => {
-        console.log("city", result.cities);
-        setCitiesOptions(result?.cities);
+        // console.log("city", result.cities);
+        setCitiesOptions(prev => ({ ...prev, [type]: result?.cities }));
       })
       .catch((error) => console.log("error", error));
   }
@@ -355,6 +336,7 @@ const ShopCheckout = () => {
   useEffect(() => {
     getCartDetails();
     getBillingDetails();
+    getShippingDetails();
     getCountries();
     getCountryStates();
     // getCities();
@@ -484,6 +466,7 @@ const ShopCheckout = () => {
                                     value={state?.country} // Set the selected option based on state
                                     onChange={handleChange}
                                   >
+                                    <option value="" key={0}> Select Country</option>
                                     {countriesOptions?.map((option) => (
                                       <option key={option.id} value={option.id}>
                                         {option.name}
@@ -506,6 +489,7 @@ const ShopCheckout = () => {
                                     value={state.state} // Set the selected option based on state
                                     onChange={handleChange} // Add an onChange event handler
                                   >
+                                    <option value="" key={0}> Select State</option>
                                     {stateOptions?.map((option) => (
                                       <option key={option.id} value={option.id}>
                                         {option.name}
@@ -528,7 +512,8 @@ const ShopCheckout = () => {
                                     value={state.city} // Set the selected option based on state
                                     onChange={handleChange}
                                   >
-                                    {citiesOptions?.map((option) => (
+                                    <option value={''} key={0}>Select City</option>
+                                    {citiesOptions?.billing?.map((option) => (
                                       <option key={option.id} value={option.id}>
                                         {option.name}
                                       </option>
@@ -567,7 +552,7 @@ const ShopCheckout = () => {
                             }}
                             onClick={addOrUpdateBillingAddress}
                           >
-                            {billingData ? "Update Address" : "Add Address"}
+                            {state ? "Update Address" : "Add Address"}
                           </div>
                         </div>
 
@@ -604,9 +589,9 @@ const ShopCheckout = () => {
                                       <input
                                         type="text"
                                         className="input-text"
-                                        name="billing_first_name"
-                                        value={sname}
-                                        onChange={handlesNameChange}
+                                        name="name"
+                                        value={shipState?.name}
+                                        onChange={handlesChange}
                                       />
                                     </span>
                                   </p>
@@ -654,9 +639,9 @@ const ShopCheckout = () => {
                                       <input
                                         type="tel"
                                         className="input-text"
-                                        name="billing_phone"
-                                        value={sphone}
-                                        onChange={handlesPhoneChange}
+                                        name="phone"
+                                        value={shipState?.phone}
+                                        onChange={handlesChange}
                                       />
                                     </span>
                                   </p>
@@ -674,10 +659,10 @@ const ShopCheckout = () => {
                                       <input
                                         type="email"
                                         className="input-text"
-                                        name="billing_email"
-                                        value={semail}
+                                        name="email"
+                                        value={shipState?.email}
                                         autocomplete="off"
-                                        onChange={handlesEmailChange}
+                                        onChange={handlesChange}
                                       />
                                     </span>
                                   </p>
@@ -696,14 +681,14 @@ const ShopCheckout = () => {
                                       <input
                                         type="text"
                                         className="input-text"
-                                        name="billing_address_1"
+                                        name="address"
                                         placeholder="House number and street name"
-                                        value={saddress}
-                                        onChange={handlesAddressChange}
+                                        value={shipState?.address}
+                                        onChange={handlesChange}
                                       />
                                     </span>
                                   </p>
-                                  <p className="form-row address-field form-row-wide">
+                                  {/* <p className="form-row address-field form-row-wide">
                                     <label>
                                       Apartment, suite, unit, etc.&nbsp;
                                       <span className="optional">
@@ -719,7 +704,7 @@ const ShopCheckout = () => {
                                         value=""
                                       />
                                     </span>
-                                  </p>
+                                  </p> */}
 
                                   <p className="form-row form-row-wide validate-required">
                                     <label>
@@ -733,11 +718,12 @@ const ShopCheckout = () => {
                                     </label>
                                     <span className="input-wrapper">
                                       <select
-                                        name="billing_country"
+                                        name="country"
                                         className="country-select custom-select"
-                                        value={selectedConutryCode} // Set the selected option based on state
-                                        onChange={handlesCountrySelectChange}
+                                        value={shipState?.country} // Set the selected option based on state
+                                        onChange={handlesChange}
                                       >
+                                        <option value="" key={0}>Select Country</option>
                                         {countriesOptions?.map((option) => (
                                           <option
                                             key={option.id}
@@ -761,11 +747,12 @@ const ShopCheckout = () => {
                                     </label>
                                     <span className="input-wrapper">
                                       <select
-                                        name="billing_state"
+                                        name="state"
                                         className="state-select custom-select"
-                                        value={selectedStateOption} // Set the selected option based on state
-                                        onChange={handlesStateSelectChange} // Add an onChange event handler
+                                        value={shipState?.state} // Set the selected option based on state
+                                        onChange={handlesChange} // Add an onChange event handler
                                       >
+                                        <option value="" key={0}>Select State</option>
                                         {stateOptions?.map((option) => (
                                           <option
                                             key={option.id}
@@ -789,12 +776,13 @@ const ShopCheckout = () => {
                                     </label>
                                     <span className="input-wrapper">
                                       <select
-                                        name="billing_city"
+                                        name="city"
                                         className="country-select custom-select"
-                                        value={selectedCity} // Set the selected option based on state
-                                        onChange={handlesCitySelectChange}
+                                        value={shipState?.city} // Set the selected option based on state
+                                        onChange={handlesChange}
                                       >
-                                        {citiesOptions?.map((option) => (
+                                        <option value="" key={0}>Select City</option>
+                                        {citiesOptions?.shipping?.map((option) => (
                                           <option
                                             key={option.id}
                                             value={option.id}
@@ -820,9 +808,9 @@ const ShopCheckout = () => {
                                       <input
                                         type="text"
                                         className="input-text"
-                                        name="billing_postcode"
-                                        value={spincode}
-                                        onChange={handlesPincodeChange}
+                                        name="postcode"
+                                        value={shipState?.postcode}
+                                        onChange={handlesChange}
                                       />
                                     </span>
                                   </p>
@@ -839,7 +827,7 @@ const ShopCheckout = () => {
                                   }}
                                   onClick={addOrUpdateAddress}
                                 >
-                                  Add Address
+                                  {shipState ? 'Update Address' : 'Add Address'}
                                 </div>
                               </>
                             )}

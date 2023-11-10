@@ -59,7 +59,7 @@ export const ShoppingCartProvider = ({ children }) => {
                 return response.json();
             }).then((datar) => {
                 if (datar.success) {
-                    console.log(datar);
+                    // console.log(datar);
                     setWishListCount(datar.count);
                     setWishlistData(datar);
                     // showInfoToastMessage();
@@ -421,7 +421,7 @@ export const ShoppingCartProvider = ({ children }) => {
                 if (!response.ok) throw new Error("Network Issue");
                 return response.json();
             }).then((datar) => {
-                console.log("Cart Data", datar);
+                // console.log("Cart Data", datar);
                 setCartData(datar);
                 setCartItemsCount(datar.data.reduce((accumalator, item) => {
                     return accumalator + parseInt(item.qty);

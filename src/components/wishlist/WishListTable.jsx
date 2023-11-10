@@ -172,13 +172,11 @@ const WishListTable = () => {
                                 Your Wishlist is currently empty.
                             </p>
                         </div>
-                        <Link to={'/products'}>
-                            <div className="return-to-shop">
-                                <a className="button" >
-                                    Return to shop
-                                </a>
-                            </div>
-                        </Link>
+                        <div className="return-to-shop">
+                            <a className="button" href="/products" >
+                                Return to shop
+                            </a>
+                        </div>
                     </div>}
 
             </div>

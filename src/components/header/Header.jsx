@@ -39,7 +39,7 @@ const Header = () => {
 
   useEffect(() => {
     fetchDetails();
-    console.log(styles)
+    // console.log(styles)
   }, []);
 
   useEffect(() => {
@@ -47,7 +47,7 @@ const Header = () => {
       fetch(apiConfig.topMenu)
         .then((res) => res.json())
         .then((data) => {
-          console.log(data);
+          // console.log(data);
           setMenuItems(data);
         })
         .catch((e) => {
@@ -339,10 +339,7 @@ const Header = () => {
                         </li>
                         <li className="level-0 menu-item menu-item-has-children mega-menu level-menu-fullwidth">
                           <Link to="">
-                            <div>
-                              <span className="menu-item-text">More</span>
-
-                            </div>
+                            <span className="menu-item-text">More</span>
                           </Link>
                           <div className={`sub-menu`}>
                             <div className="row">

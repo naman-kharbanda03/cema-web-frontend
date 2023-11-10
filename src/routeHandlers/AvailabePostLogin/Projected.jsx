@@ -5,7 +5,7 @@ import { Navigate, useLocation } from "react-router-dom";
 const Protected = ({ children }) => {
   const { LOGGEDIN, redirect, setRedirect } = useContext(UserData);
   const location = useLocation();
-  console.log(location)
+  // console.log(location)
   // setRedirect(location.pathname)
   localStorage.setItem('path', location.pathname);
 
