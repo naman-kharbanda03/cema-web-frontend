@@ -17,6 +17,7 @@ const Header = () => {
   const { LOGGEDIN } = useContext(UserData); // Variable Description
   const [menuItems, setMenuItems] = useState([]);
   const [categories, setCategories] = useState();
+  const [categoryList, setCategoryList] = useState([]);
   const { wishListCount, cartItemsCount } = useShoppingCart(); // Imported Functions from Global Variables or States or Context
 
   const fetchDetails = () => {
@@ -40,40 +41,38 @@ const Header = () => {
   useEffect(() => {
     fetchDetails();
     // console.log(styles)
+    fetch(apiConfig.categoryListAPI, {
+      method: 'GET'
+    })
+      .then(res => res.json())
+      .then(data => {
+        console.log(data);
+        setCategoryList(data.categories.data);
+      })
   }, []);
 
   useEffect(() => {
-    (function () {
-      fetch(apiConfig.topMenu)
-        .then((res) => res.json())
-        .then((data) => {
-          // console.log(data);
-          setMenuItems(data);
-        })
-        .catch((e) => {
-          console.log(e);
-        });
-    })();
+    (
+      function () {
+        fetch(apiConfig.topMenu)
+          .then((res) => res.json())
+          .then((data) => {
+            // console.log(data);
+            setMenuItems(data);
+          })
+          .catch((e) => {
+            console.log(e);
+          });
+      }
+    )();
+
   }, []);
 
   const fetchCategoryById = (id) => {
-    switch (id) {
-      case "1":
-        return { name: "Jeans", link: "/products?category=Jeans&id=1" };
-
-      case "2":
-        return { name: "Skirts", link: "/products?category=Skirts&id=2" };
-
-      case "3":
-        return {
-          name: "Tops & T-shirts",
-          link: "/products?category=Tops%20&%20T-shirts",
-        };
-
-      default:
-        return { name: "T-shirts", link: "/products?category=T-shirts" };
-        break;
-    }
+    console.log(categoryList, id);
+    const category = categoryList.filter(category => category.id === id);
+    console.log(category);
+    return category[0]?.title?.en;
   };
 
   return (
@@ -319,28 +318,28 @@ const Header = () => {
                       <ul id="menu-main-menu" className="menu">
                         <li
                           className="level-0 menu-item"
-                          onClick={() =>
-                            handleNavigate("New Arrivals", "new_arrival")
-                          }
+                        // onClick={() =>
+                        //   handleNavigate("New Arrivals", "new_arrival")
+                        // }
                         >
-                          <Link to="">
+                          <a href={`/listings?products=new_arrival`}>
                             <span className="menu-item-text">New Arrivals</span>
-                          </Link>
+                          </a>
                         </li>
                         <li
                           className="level-0 menu-item"
-                          onClick={() =>
-                            handleNavigate("Best Sellers", "best_sellers")
-                          }
+                        // onClick={() =>
+                        //   handleNavigate("Best Sellers", "best_sellers")
+                        // }
                         >
-                          <Link to="">
+                          <a href={`/listings?products=best_sellers`}>
                             <span className="menu-item-text">Best Sellers</span>
-                          </Link>
+                          </a>
                         </li>
                         <li className="level-0 menu-item menu-item-has-children mega-menu level-menu-fullwidth">
-                          <Link to="">
+                          <a href={`/`}>
                             <span className="menu-item-text">More</span>
-                          </Link>
+                          </a>
                           <div className={`sub-menu`}>
                             <div className="row">
                               {menuItems?.map((items, key) => {
@@ -388,16 +387,15 @@ const Header = () => {
                                       <ul className="menu-list">
                                         {items?.linked_parent?.map(
                                           (cat) => (
-                                            <Link
-                                              to={fetchCategoryById(cat).link}
-                                            // to={`/products?category=`}
+                                            <a
+                                              href={`/products?id=${cat}`}
                                             >
                                               <li>
                                                 <span className="menu-item-text">
-                                                  {fetchCategoryById(cat).name}
+                                                  {fetchCategoryById(parseInt(cat))}
                                                 </span>
                                               </li>
-                                            </Link>
+                                            </a>
                                           )
                                         )}
                                       </ul>
@@ -417,16 +415,13 @@ const Header = () => {
                               {categories?.map((category) => (
                                 <div className="col-md-4">
                                   <div className="menu-section">
-                                    <Link
-                                      to={{
-                                        pathname: "/products",
-                                        // search: `?category=${category.title?.en}&id=${category.id}`,
-                                      }}
+                                    <a
+                                      href={`/products?category=${category.title?.en}&id=${category.id}`}
                                     >
                                       <h2 className="sub-menu-title">
                                         {category?.title?.en}
                                       </h2>
-                                    </Link>
+                                    </a>
                                     <ul className="menu-list">
                                       {category?.subcategory.map(
                                         (subCategory) => (

@@ -280,7 +280,7 @@ const Cart = () => {
                               <div className="cart-subtotal">
                                 <div className="title">Subtotal</div>
                                 <div>
-                                  <span>KD {couponData?.subtotal || total}</span>
+                                  <span>KD {Math.round((couponData?.subtotal || total) * 100) / 100}</span>
                                 </div>
                               </div>
 
@@ -288,7 +288,7 @@ const Cart = () => {
                                 <div className="cart-subtotal">
                                   <div className="title">Discount</div>
                                   <div>
-                                    <span>-KD{couponData?.coupan_discount}</span>
+                                    <span>-KD{Math.round(couponData?.coupan_discount * 100) / 100}</span>
                                   </div>
                                 </div>
                               )}
@@ -327,7 +327,7 @@ const Cart = () => {
                               <div className="order-total">
                                 <div className="title">Total</div>
                                 <div>
-                                  <span>KD {total}</span>
+                                  <span>KD {Math.round(total * 100) / 100}</span>
                                 </div>
                               </div>
                             </div>
@@ -352,15 +352,15 @@ const Cart = () => {
                           Your cart is currently empty.
                         </p>
                       </div>
-                      <Link to={'/products'}>
-                        <div className="return-to-shop">
-                          <a className="button" >
-                            Return to shop
-                          </a>
-                        </div>
-                      </Link>
+                      <div className="return-to-shop">
+                        <a className="button" href='/products' >
+                          Return to shop
+                        </a>
+                      </div>
                     </div>
                   )}
+                  <br />
+                  <br />
                 </div>
               </div>
             </div>

@@ -381,29 +381,38 @@ export const ShoppingCartProvider = ({ children }) => {
                     product_name: { en: product.product_name.en },
                     product_image: product.product_image[0],
                     type: product?.type,
+                    stock: product?.stock,
                     link: product?.type === 'simple_product' ? `/product-details?product_id=${product.id}` : `/product-details?product_id=${product.id}&variant_id=${product?.variant_id}`
                 }
                 const updatedItems = [...currCart.Items, newItem];
-                const updatedCount = currCart.totalItems + 1;
+                const updatedCount = currCart.totalItems + amt;
+                showSuccessToastMessage('Item Added In Local Cart');
                 return {
                     ...currCart,
                     Items: updatedItems,
                     totalItems: updatedCount,
                 }
+
             } else {
                 // If the item exists, update its quantity.
 
                 const updatingItems = [...currCart.Items];
-                updatingItems[foundIndex].qty += amt;
-                const updatedCount = currCart.totalItems + amt;
-                return {
-                    ...currCart,
-                    Items: updatingItems,
-                    totalItems: updatedCount,
+                if (updatingItems[foundIndex].qty + amt <= updatingItems[foundIndex].stock) {
+                    updatingItems[foundIndex].qty += amt;
+                    const updatedCount = currCart.totalItems + amt;
+                    showSuccessToastMessage('Item Added In Local Cart');
+                    return {
+                        ...currCart,
+                        Items: updatingItems,
+                        totalItems: updatedCount,
+                    }
+                } else {
+                    showInfoToastMessage(`Max qty reached `);
+                    return { ...currCart }
                 }
+
             }
         });
-        showSuccessToastMessage("Item Added in Local Cart");
     };
 
     useEffect(() => {

@@ -116,6 +116,21 @@ const Home = () => {
                       </div>
                     </div>
                   </div>
+                  <br />
+                  <div className="products-loadmore">
+                    <Link to={"/listings?products=best_sellers"} >
+                      <div className="btn button-outline loadmore">
+                        <div className="lds-ellipsis">
+                          <div />
+                          <div />
+                          <div />
+                          <div />
+                        </div>
+                        <span >View more</span>
+                        <i className="icon-arrow-down" aria-hidden="true" />
+                      </div>
+                    </Link>
+                  </div>
                 </div>
               </section>
               {/* <PreLoader /> */}

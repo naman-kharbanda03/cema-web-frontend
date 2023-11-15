@@ -8,12 +8,12 @@ const BestSellerSlider = () => {
   const { handleAddRemoveWishlist, AddToCart } = useShoppingCart();
   const settings = {
     pauseOnHover: false,
-    slidesToShow: 5,
+    slidesToShow: 3,
     slidesToScroll: 1,
-    autoplay: false,
+    autoplay: true,
     focusOnSelect: true,
     dots: false,
-    arrows: true,
+    arrows: false,
     cssEase: "linear",
     autoplaySpeed: 5000,
     responsive: [

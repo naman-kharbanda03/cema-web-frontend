@@ -33,6 +33,7 @@ const ProductList = () => {
   const [brands, setBrands] = useState([]);
   const [p, setP] = useState([]);
   const { AddToCart, handleAddRemoveWishlist } = useShoppingCart();
+  const [categoryName, setCategoryName] = useState();
 
   const [categoryDetails, setCategoryDetails] = useState({
     category: {},
@@ -97,6 +98,7 @@ const ProductList = () => {
         // console.log(datar);
         if (datar.status) return "";
         else {
+          setCategoryName(datar.category?.name?.en);
           setProductList(datar.products.data);
           setCurrentPage(datar.products.current_page);
           setLastpage(datar.products.last_page);
@@ -188,7 +190,7 @@ const ProductList = () => {
       <div id="main-content" className="main-content">
         <div id="primary" className="content-area">
 
-          <PageTitle current={category === null ? "Products" : category} />
+          <PageTitle current={categoryName ? categoryName : 'Products'} />
 
           <div id="content" className="site-content" role="main">
             <div className="section-padding">

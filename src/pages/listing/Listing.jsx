@@ -42,8 +42,11 @@ const Listing = () => {
           if (product?.type === 'simple_product') {
             const thumbnail = product?.thumbnail_path + '/' + product?.thumbnail;
             const hover = product?.thumbnail_path + '/' + product?.hover_thumbnail;
+            const stock = product?.stock;
+
             return {
               ...product,
+              stock: stock,
               image: [thumbnail, hover],
               address: `/product-details?product_id=${product.id}`,
             }
@@ -52,8 +55,11 @@ const Listing = () => {
           else {
             const thumbnail = product?.image_path + '/' + product?.subvariants?.[0].variantimages.main_image;
             const hover = product?.image_path + '/' + product?.subvariants?.[0].variantimages.image1;
+            const stock = product?.subvariants?.[0].stock;
+
             return {
               ...product,
+              stock: stock,
               image: [thumbnail, hover],
               address: `/product-details?product_id=${product?.id}&variant_id=${product?.subvariants?.[0].id}`,
             }
@@ -378,14 +384,16 @@ const Listing = () => {
                           ) : (
                             ""
                           )}
-                          <li>
-                            <span
-                              aria-current="page"
-                              class="page-numbers current"
-                            >
-                              {currentPage}
-                            </span>
-                          </li>
+                          {currentPage !== lastPage ?
+                            <li>
+                              <span
+                                aria-current="page"
+                                class="page-numbers current"
+                              >
+                                {currentPage}
+                              </span>
+                            </li> : ''
+                          }
                           {currentPage + 1 <= lastPage ? (
                             <li
                               onClick={() => setCurrentPage((page) => page + 1)}

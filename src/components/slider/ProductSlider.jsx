@@ -43,7 +43,7 @@ const ProductSlider = () => {
     infinite: false,
     arrows: true,
     cssEase: "linear",
-    className: "center" ,
+    className: "center",
     autoplaySpeed: 1000,
     responsive: [
       {
@@ -70,17 +70,14 @@ const ProductSlider = () => {
           <>
             <div className="item item-product-cat slick-slide">
               <div className="item-product-cat-content">
-                <Link
-                  to={{
-                    pathname: "/products",
-                    search: `?category=${cat.title?.en}&id=${cat.id}`,
-                  }}
+                <a href={`/products?category=?category=${cat.title?.en}&id=${cat.id}`}
+
                 >
                   <div className="item-image">
                     <img
                       width={258}
                       height={258}
-                      style={{ height: "330px", objectFit: "contain" }}
+                      style={{ height: "330px", width: '250px', objectFit: "contain" }}
                       src={
                         cat?.image
                           ? `https://www.demo609.amrithaa.com/backend-cema/public/media/category/${cat?.image}`
@@ -90,17 +87,13 @@ const ProductSlider = () => {
                     />
                     {console.log(cat?.image)}
                   </div>
-                </Link>
+                </a>
                 <div className="product-cat-content-info">
                   <h2 className="item-title">
-                    <Link
-                      to={{
-                        pathname: "/products",
-                        search: `?category=${cat.title?.en}&id=${cat.id}`,
-                      }}
+                    <a href={`/products?category=?category=${cat.title?.en}&id=${cat.id}`}
                     >
                       {cat?.title?.en}
-                    </Link>
+                    </a>
                   </h2>
                 </div>
               </div>
