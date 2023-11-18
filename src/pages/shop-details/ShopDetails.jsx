@@ -42,6 +42,7 @@ const ShopDetails = (product) => {
   const [currentSize, setCurrentSize] = useState('');
   const [attrributes, setAttrributes] = useState();
   const [combinations, setCombinations] = useState();
+  const [sizesObj, setSizesObj] = useState({});
 
   const fetchDetails = () => {
     let apiUrl = ``;
@@ -92,28 +93,43 @@ const ShopDetails = (product) => {
   useEffect(() => {
     const colors = [];
     const sizes = [];
+    var sizesObj = {};
     const combinations = [];
+    const attributes = {};
+    const attributesArray = []
+    data?.attributes?.forEach(attri => {
+      attributes[attri.attrribute] = [];
+      // var obj = {
+      //   name: attri.attrribute,
+      //   values: []
+      // }
+      // attributesArray.push(obj);
+    })
+    console.log('start');
     data?.combinations?.forEach((combination, index) => {
       let color = "";
       let size = "";
       if (combination.id === parseInt(variant_id)) {
         setVariant(index);
         setImage(data.images_path + '/' + combination.images[0].image);
-        combination.variants.forEach(variant => {
-          if (variant.attr_name === 'Color') {
-            setCurrentColor(variant.var_name);
-            console.log("currentcolor", variant.var_name)
-          }
+        // combination.variants.forEach(variant => {
+        //   if (variant.attr_name === 'Color') {
+        //     setCurrentColor(variant.var_name);
+        //     console.log("currentcolor", variant.var_name)
+        //   }
 
-          if (variant.attr_name === 'Size') {
-            setCurrentSize(variant.var_name);
-            console.log("currentsize", variant.var_name);
-          }
-        })
+        //   if (variant.attr_name === 'Size') {
+        //     setCurrentSize(variant.var_name);
+        //     console.log("currentsize", variant.var_name);
+        //   }
+        // })
       }
+
       combination.variants.forEach(variant => {
         if (variant.attr_name === "Color") color = variant.var_name;
         if (variant.attr_name === "Size") size = variant.var_name;
+        if (!attributes[variant.attr_name].includes(variant.var_name))
+          attributes[variant.attr_name]?.push(variant.var_name);
       })
       const obj = {
         index: index,
@@ -128,16 +144,23 @@ const ShopDetails = (product) => {
       if (size && !sizes.includes(size)) {
         sizes.push(size);
       }
+      if (!sizesObj[color]) {
+        sizesObj[color] = [size];
+      }
+      else {
+        sizesObj[color].push(size);
+      }
     })
     setCombinations(combinations);
     setColors(colors);
     setSizes(sizes);
-    console.log(combinations, colors, sizes, data);
+    setSizesObj(sizesObj);
+    console.log(combinations, colors, sizes, sizesObj, attributes);
   }, [location.search, data])
 
   useEffect(() => {
     console.log(currentSize, currentColor);
-    const selectedCombination = combinations?.find(combination => (combination.Color === currentColor)) || 'Not';
+    const selectedCombination = combinations?.find(combination => (combination?.Color === currentColor && combination?.Size === currentSize)) || 'Not';
     console.log(selectedCombination);
     if (selectedCombination !== 'Not') {
       navigate(`/product-details?product_id=${product_id}&variant_id=${selectedCombination?.id}`)
@@ -370,30 +393,39 @@ const ShopDetails = (product) => {
                                     <ul className="colors">
                                       {colors?.map(color => (
                                         <li>
-                                          <span className={color}
-                                            onClick={() => setCurrentColor(color)}
+                                          <span className={''} style={{ background: `${color}` }}
+                                            onClick={() => {
+                                              setCurrentColor(color);
+                                              setCurrentSize(sizesObj?.[color]?.[0])
+                                            }}
                                           ></span>
                                         </li>
                                       ))}
                                     </ul>
                                   </td>
                                 </tr>
-
-                                <tr>
-                                  <td className="label">Sizes</td>
-                                  <td className="attributes">
-                                    <ul className="text">
-                                      {sizes?.map(size => (
+                                {sizes?.length ?
+                                  <tr>
+                                    <td className="label">Sizes</td>
+                                    <td className="attributes">
+                                      <ul className="text">
+                                        {/* {sizes?.map(size => (
                                         <li>
                                           <span
                                             onClick={() => setCurrentSize(size)}
                                           >{size}</span>
                                         </li>
-                                      ))}
-                                    </ul>
-                                  </td>
-                                </tr>
-
+                                      ))} */}
+                                        {sizesObj?.[currentColor]?.map(size => (
+                                          <li>
+                                            <span
+                                              onClick={() => setCurrentSize(size)}
+                                            >{size}</span>
+                                          </li>
+                                        ))}
+                                      </ul>
+                                    </td>
+                                  </tr> : <></>}
                               </tbody>
                             </table>
                           </div>
@@ -406,9 +438,9 @@ const ShopDetails = (product) => {
                                 type="button"
                                 className="plus"
                                 onClick={() => {
-                                  if (quant < data.combinations?.[variant]?.stock)
+                                  if (quant < data.combinations?.[variant]?.maxorderlimit)
                                     setQuant((count) => count + 1);
-                                  else showInfoToastMessage('No stock');
+                                  else showInfoToastMessage('Max order limit');
                                 }}
                               >
                                 +
@@ -451,7 +483,8 @@ const ShopDetails = (product) => {
                                   ],
                                   product_name: { en: data?.product_name?.en },
                                   type: data?.type || "variant",
-                                  variant_id: data?.type !== 'simple_product' ? data?.combinations[variant].id : null
+                                  variant_id: data?.type !== 'simple_product' ? data?.combinations[variant].id : null,
+                                  max_order_limit: data?.combinations[variant]?.maxorderlimit,
                                 };
                                 console.log(prod);
                                 if (data?.combinations?.[variant]?.stock > 0)

@@ -382,6 +382,7 @@ export const ShoppingCartProvider = ({ children }) => {
                     product_image: product.product_image[0],
                     type: product?.type,
                     stock: product?.stock,
+                    max_order_limit: product?.max_order_limit,
                     link: product?.type === 'simple_product' ? `/product-details?product_id=${product.id}` : `/product-details?product_id=${product.id}&variant_id=${product?.variant_id}`
                 }
                 const updatedItems = [...currCart.Items, newItem];
@@ -397,7 +398,7 @@ export const ShoppingCartProvider = ({ children }) => {
                 // If the item exists, update its quantity.
 
                 const updatingItems = [...currCart.Items];
-                if (updatingItems[foundIndex].qty + amt <= updatingItems[foundIndex].stock) {
+                if (updatingItems[foundIndex].qty + amt <= updatingItems[foundIndex].max_order_limit) {
                     updatingItems[foundIndex].qty += amt;
                     const updatedCount = currCart.totalItems + amt;
                     showSuccessToastMessage('Item Added In Local Cart');

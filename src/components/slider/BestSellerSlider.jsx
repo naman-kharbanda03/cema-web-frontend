@@ -64,7 +64,7 @@ const BestSellerSlider = () => {
             <div className="products-entry clearfix product-wapper">
               <div className="products-thumb">
                 <div className="product-thumb-hover">
-                  {console.log("test product", product)}
+
                   <Link
                     to={`/product-details?product_id=${product?.product_gallery?.[0]?.product_id}`}
                   >

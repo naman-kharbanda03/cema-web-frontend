@@ -95,7 +95,8 @@ const Cart = () => {
               qty: order.qty,
               stock: order.simple_product.stock,
               cart_id: order.id,
-              link: `/product-details?product_id=${order?.simple_product?.id}`
+              link: `/product-details?product_id=${order?.simple_product?.id}`,
+              max_order_limit: order.simple_product.max_order_qty,
             };
             setOrders(prev => ([...prev, order]));
 
@@ -110,7 +111,8 @@ const Cart = () => {
               stock: order?.product?.stock,
               variant_id: order.variant_id,
               cart_id: order.id,
-              link: `/product-details?product_id=${order?.pro_id}&variant_id=${order?.variant_id}`
+              link: `/product-details?product_id=${order?.pro_id}&variant_id=${order?.variant_id}`,
+              max_order_limit: order?.variant?.max_order_qty,
             }
             setOrders(prev => ([...prev, order]));
           }

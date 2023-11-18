@@ -135,6 +135,7 @@ const Product = (props) => {
                                                             `${product.subvariants?.[0]?.variantimages?.image1}`,
                                                         ],
                                                         stock: product?.subvariants?.[0]?.stock,
+                                                        max_order_limit: product?.subvariants?.[0]?.max_order_qty,
                                                         price: product?.subvariants?.[0]?.price,
                                                         type: "variant",
                                                         link: `/product-details?product_id=${product.id}&variant_id=${product.subvariants?.[0]?.id}`,

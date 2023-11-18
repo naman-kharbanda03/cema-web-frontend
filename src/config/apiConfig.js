@@ -49,6 +49,7 @@ const apiConfig = {
   getCountryStateAPI: `${BASE_URL}/api/states/101?secret=1dc7843e-e42c-4154-a02d-d80ab6d81095`,
   getCountriesAPI: `${BASE_URL}/api/countries?secret=1dc7843e-e42c-4154-a02d-d80ab6d81095`,
   getCitiesAPI: `${BASE_URL}/api/city`,
+  getSocialLinks: `${BASE_URL}/api/footerSocialLinks`,
 };
 
 export default apiConfig;

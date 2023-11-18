@@ -5,3 +5,10 @@
 .shop-details .variations .attributes ul.colors li span {
   background: blue !important;
 }
+
+.shop-details .variations .attributes ul.colors li span.Black {
+  background: black;
+}
+.shop-details .variations .attributes ul.colors li span.White {
+  background: wheat !important;
+}

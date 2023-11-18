@@ -69,9 +69,9 @@ const Header = () => {
   }, []);
 
   const fetchCategoryById = (id) => {
-    console.log(categoryList, id);
+    // console.log(categoryList, id);
     const category = categoryList.filter(category => category.id === id);
-    console.log(category);
+    // console.log(category);
     return category[0]?.title?.en;
   };
 
@@ -144,6 +144,8 @@ const Header = () => {
         <div className="section-padding">
           <div className="section-container large">
             <div className="row">
+
+              {/* Left Icon */}
               <div className="col-xl-4 col-lg-4 col-md-4 col-sm-3 col-3 header-left">
                 <div className="navbar-header">
                   <button
@@ -153,18 +155,22 @@ const Header = () => {
                   />
                 </div>
               </div>
+
+              {/* Title */}
               <div className="col-xl-4 col-lg-4 col-md-4 col-sm-6 col-6 header-center">
                 <div className="site-logo">
-                  <Link to="/">
+                  <a href="/">
                     <img
                       width={400}
                       height={79}
                       src={logo}
                       alt="cema – Furniture HTML Theme"
                     />
-                  </Link>
+                  </a>
                 </div>
               </div>
+
+              {/* Right Cart Icon */}
               <div className="col-xl-4 col-lg-4 col-md-4 col-sm-3 col-3 header-right">
                 <div className="cema-topcart dropdown">
                   <div className="dropdown mini-cart top-cart">
@@ -182,7 +188,7 @@ const Header = () => {
                         <span className="cart-count">{cartItemsCount}</span>
                       </div>
                     </Link>
-                    <div className="dropdown-menu cart-popup">
+                    <div className="dropdown-menu cart-popup mmenu">
                       <div className="cart-empty-wrap">
                         <ul className="cart-list">
                           <li className="empty">
@@ -423,7 +429,7 @@ const Header = () => {
                                       </h2>
                                     </a>
                                     <ul className="menu-list">
-                                      {category?.subcategory.map(
+                                      {category?.subcategory?.map(
                                         (subCategory) => (
                                           <Link
                                             to={{

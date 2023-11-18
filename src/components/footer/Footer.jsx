@@ -1,8 +1,19 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import payment_image from "../../asset/images/payments.png";
 import logo from "../../asset/images/logo.png";
+import apiConfig from "../../config/apiConfig";
 
 const Footer = () => {
+  const [links, setLinks] = useState([]);
+  useEffect(() => {
+    fetch(apiConfig.getSocialLinks, {
+      method: 'GET'
+    }).then(response => response.json())
+      .then(data => {
+        setLinks(data);
+      })
+  }, []);
+  useEffect(() => console.log(links), [links])
   return (
     <footer
       id="site-footer"
@@ -72,22 +83,22 @@ const Footer = () => {
                     <div className="block block-social">
                       <ul className="social-link">
                         <li>
-                          <a href="#">
+                          <a href={links?.data?.[1]?.url}>
                             <i className="fa fa-twitter" />
                           </a>
                         </li>
                         <li>
-                          <a href="#">
+                          <a href={'https://instagram.com'}>
                             <i className="fa fa-instagram" />
                           </a>
                         </li>
                         <li>
-                          <a href="#">
+                          <a href={links?.data?.[0]?.url}>
                             <i className="fa fa-facebook-f" />
                           </a>
                         </li>
                         <li>
-                          <a href="#">
+                          <a href={links?.data?.[2].url}>
                             <i className="fa fa-youtube-play" />
                           </a>
                         </li>

@@ -40,7 +40,9 @@ const WishListTable = () => {
                                 product_image: prod.simple_product.product_image[0],
                                 product_name: { en: prod.simple_product.product_name.en },
                                 stock: prod.simple_product.stock,
-                                link: `/product-details?product_id=${prod?.simple_pro_id}`
+                                link: `/product-details?product_id=${prod?.simple_pro_id}`,
+                                max_order_limit: prod.simple_product.max_order_qty,
+                                price: prod.simple_product.offer_price
                             }
                             setOrderData(prev => ([...prev, product]));
                         } else {
@@ -52,7 +54,10 @@ const WishListTable = () => {
                                 product_image: prod.variant?.variantimages.image1,
                                 product_name: { en: prod.variant?.products.name.en },
                                 stock: prod.variant?.stock,
-                                link: `/product-details?product_id=${prod?.pro_id}&variant_id=${prod.variant?.id}`
+                                link: `/product-details?product_id=${prod?.pro_id}&variant_id=${prod.variant?.id}`,
+                                max_order_limit: prod.variant.max_order_qty,
+                                price: prod.variant.price,
+
                             }
                             setOrderData(prev => ([...prev, product]));
                         }
@@ -121,20 +126,25 @@ const WishListTable = () => {
                                                     className="btn-add-to-cart"
                                                     data-title="Add to cart"
                                                 >
-                                                    {order?.simple_product?.stock > 0
+                                                    {order?.stock > 0
                                                         ? <a
                                                             rel="nofollow"
                                                             href="#"
                                                             className="product-btn button"
                                                             onClick={() => {
                                                                 const prod = {
-                                                                    id: order?.id,
+                                                                    id: order?.product_id,
                                                                     price: order?.price,
                                                                     image_path: order?.image_path,
                                                                     product_image: [`${order?.product_image}`],
                                                                     product_name: { en: order?.product_name?.en },
                                                                     type: order?.type || "simple_product",
+                                                                    stock: order?.stock,
+                                                                    variant_id: order?.type !== 'simple_product' ? order?.variant_id : null,
+                                                                    max_order_limit: order?.max_order_limit,
+                                                                    link: order?.link,
                                                                 }
+                                                                console.log(prod);
                                                                 AddToCart(prod, 1);
                                                             }}
                                                         >
