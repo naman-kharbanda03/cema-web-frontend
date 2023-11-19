@@ -80,10 +80,15 @@ export const ShoppingCartProvider = ({ children }) => {
         console.log(product);
         formData.append('product_id', product?.id);
 
-        if (product?.type === 'simple_product')
+        if (product?.type === 'simple_product') {
             formData.append('type', 'simple');
-        else
+            formData.append('product_id', product?.id);
+        }
+
+        else {
             formData.append('type', 'variant');
+            formData.append('product_id', product?.variant_id);
+        }
 
         const apiURl = apiConfig.addRemoveWishlistAPI;
         const token = localStorage.getItem('accessToken');
@@ -244,7 +249,7 @@ export const ShoppingCartProvider = ({ children }) => {
                 }
             else return {
                 type: 'variant',
-                product_id: `${item.product_id}`,
+                product_id: `${item.variant_id}`,
             }
         });
         // const product_ids = wishlist.Items.map(item => item.simple_product.id);
@@ -283,7 +288,7 @@ export const ShoppingCartProvider = ({ children }) => {
             variant_id: product?.variant_id
         };
         const bearerToken = localStorage.getItem("accessToken");
-        console.log(product);
+        console.log(formData);
         if (bearerToken) {
             const apiUrl = apiConfig.addToCartAPI;
             fetch(apiUrl, {

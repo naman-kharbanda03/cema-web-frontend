@@ -47,14 +47,14 @@ const WishListTable = () => {
                             setOrderData(prev => ([...prev, product]));
                         } else {
                             let product = {
-                                product_id: prod?.pro_id,
+                                product_id: prod?.variant.pro_id,
                                 variant_id: prod.variant?.id,
                                 type: 'variant',
                                 image_path: prod.variant?.products.image_path,
                                 product_image: prod.variant?.variantimages.image1,
                                 product_name: { en: prod.variant?.products.name.en },
                                 stock: prod.variant?.stock,
-                                link: `/product-details?product_id=${prod?.pro_id}&variant_id=${prod.variant?.id}`,
+                                link: `/product-details?product_id=${prod?.variant?.pro_id}&variant_id=${prod.variant?.id}`,
                                 max_order_limit: prod.variant.max_order_qty,
                                 price: prod.variant.price,
 
@@ -87,6 +87,7 @@ const WishListTable = () => {
                                         <td className="wishlist-item-remove" onClick={(e) => {
                                             const prod = {
                                                 id: order?.product_id,
+                                                variant_id: order?.type !== 'simple_product' ? order?.variant_id : null,
                                                 type: order?.type
                                             }
                                             handleAddRemoveWishlist(e, prod);
@@ -144,7 +145,7 @@ const WishListTable = () => {
                                                                     max_order_limit: order?.max_order_limit,
                                                                     link: order?.link,
                                                                 }
-                                                                console.log(prod);
+                                                                console.log(order);
                                                                 AddToCart(prod, 1);
                                                             }}
                                                         >
@@ -160,6 +161,7 @@ const WishListTable = () => {
                                                         onClick={(e) => {
                                                             const prod = {
                                                                 id: order?.product_id,
+                                                                variant_id: order?.type !== 'simple_product' ? order?.variant_id : null,
                                                                 type: order?.type
                                                             }
                                                             handleAddRemoveWishlist(e, prod)
