@@ -595,7 +595,7 @@ const ShopDetails = (product) => {
                             className={`nav-link ${activeTabId === 2 ? "active" : ""
                               }`}
                             data-toggle="tab"
-                            // href="#additional-information"
+                            style={data?.additional_infomation ? {} : { display: 'none' }}
                             role="tab"
                             onClick={() => setActiveTabId(2)}
                           >
@@ -633,14 +633,14 @@ const ShopDetails = (product) => {
                         >
                           <table className="product-attributes">
                             <tbody>
-                              {data?.special_services?.map((service) => (
+                              {data?.additional_infomation?.map((service) => (
                                 <tr className="attribute-item">
                                   <th className="attribute-label">
-                                    {service?.heading}
+                                    {`${service}`}
                                   </th>
-                                  <td className="attribute-value">
+                                  {/* <td className="attribute-value">
                                     {service?.description}
-                                  </td>
+                                  </td> */}
                                 </tr>
                               ))}
                             </tbody>
