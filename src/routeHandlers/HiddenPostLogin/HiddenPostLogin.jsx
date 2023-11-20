@@ -6,7 +6,8 @@ const HiddenPostLogin = ({ children }) => {
   const { LOGGEDIN, redirect } = useContext(UserData);
   console.log("test", LOGGEDIN, redirect);
   if (localStorage.getItem('accessToken')) {
-    return <Navigate to={redirect} />;
+    return window.location.href = redirect
+    // <Navigate to={redirect} />;
   }
   return children;
 };
