@@ -8,9 +8,9 @@ const BestSellerSlider = () => {
   const { handleAddRemoveWishlist, AddToCart } = useShoppingCart();
   const settings = {
     pauseOnHover: false,
-    slidesToShow: 3,
+    slidesToShow: 4,
     slidesToScroll: 1,
-    autoplay: true,
+    autoplay: false,
     focusOnSelect: true,
     dots: false,
     arrows: false,
@@ -47,7 +47,55 @@ const BestSellerSlider = () => {
       })
       .then((data) => {
         console.log("test", data.data.data);
-        setData(data.data.data);
+        // const products = data.data.data.filter(pro=>{
+
+        // })
+        const products = data.data.data.map(product => {
+          if (product?.type === 'simple_product') {
+            const thumbnail = product?.thumbnail_path + '/' + product?.thumbnail;
+            const hover = product?.thumbnail_path + '/' + product?.hover_thumbnail;
+
+            return {
+              // ...product,
+              id: product?.id,
+              variant_id: null,
+              image_path: product?.image_path,
+              product_image: product?.product_image?.[0],
+              name: product?.product_name.en,
+              price: product?.price,
+              image: [thumbnail, hover],
+              address: `/product-details?product_id=${product.id}`,
+              stock: product?.stock,
+              maxOrderLimit: product?.min_order_qty,
+              type: 'simple_product'
+            }
+          }
+
+          else if (product?.subvariants) {
+            const thumbnail = product?.image_path + '/' + product?.subvariants?.[0].variantimages.main_image;
+            const hover = product?.image_path + '/' + product?.subvariants?.[0].variantimages.image1;
+            const stock = product?.subvariants[0]?.stock;
+
+            return {
+              // ...product,
+              id: product?.id,
+              variant_id: product?.subvariants[0]?.id,
+              image_path: product?.image_path,
+              product_image: product?.subvariants[0]?.variantimages.main_image,
+              name: product?.name.en,
+              price: product?.subvariants[0]?.price,
+              image: [thumbnail, hover],
+              address: `/product-details?product_id=${product.id}&variant_id=${product?.subvariants?.[0].id}`,
+              stock: stock,
+              maxOrderLimit: product?.subvariants[0]?.min_order_qty,
+              type: 'variant',
+            }
+          }
+
+        });
+        const productsNotOutOfStock = products.filter(pro => pro.stock > 0);
+        console.log(productsNotOutOfStock);
+        setData(productsNotOutOfStock);
       })
       .catch((error) => console.error("Problem with fetch operations", error));
   };
@@ -57,93 +105,99 @@ const BestSellerSlider = () => {
   }, []);
 
   return (
-    <div className="slick-sliders products-list sestsellers grid">
-      <Slider {...settings}>
-        {data.map((product) => (
-          <div className="item item-product slick-slide">
-            <div className="products-entry clearfix product-wapper">
-              <div className="products-thumb">
-                <div className="product-thumb-hover">
+    <>
+      <div className="slick-sliders products-list bestsellers grid">
+        <Slider {...settings}>
+          {
+            data.slice(0, 4).map((product) => (
+              <div className="item item-product slick-slide">
+                <div className="products-entry clearfix product-wapper">
+                  <div className="products-thumb">
+                    <div className="product-thumb-hover">
+                      <a
+                        href={product?.address}
+                      >
+                        <img
+                          width={600}
+                          height={600}
+                          src={product?.image[0]}
+                          style={{ width: '300px', height: '328px', objectFit: 'contain' }}
+                          className="post-image"
+                          alt
+                        />
+                        <img
+                          width={600}
+                          height={600}
+                          style={{ width: '300px', height: '328px', objectFit: 'contain' }}
+                          src={product?.image[1]}
+                          className="hover-image back"
+                          alt
+                        />
+                      </a>
+                    </div>
+                    <div className="product-button">
+                      <div className="btn-add-to-cart" data-title="Add to cart">
+                        <button
+                          rel="nofollow"
+                          href="#"
+                          className="product-btn button"
+                          onClick={() => {
+                            const prod = {
+                              id: product.id,
+                              variant_id: product?.variant_id,
+                              product_name: { en: product?.name },
+                              image_path: product?.image_path,
+                              product_image: [`${product.product_image}`],
+                              stock: product.stock,
+                              max_order_limit: product?.maxOrderLimit,
+                              type: product?.type,
+                              price: product?.price
+                            };
+                            AddToCart(prod, 1);
+                          }}
+                        >
+                          Add to cart
+                        </button>
+                      </div>
+                      <div className="btn-wishlist" data-title="Wishlist">
+                        <button
+                          className="product-btn"
+                          onClick={(e) => {
+                            const prod = {
+                              id: product.id,
+                              variant_id: product?.variant_id,
+                              product_name: { en: product?.name },
+                              image_path: product.image_path,
+                              product_image: [`${product.product_image}`],
+                              stock: product.stock,
+                              max_order_limit: product?.maxOrderLimit,
+                              type: product?.type,
+                              price: product?.price
+                            };
+                            handleAddRemoveWishlist(e, prod);
+                          }}
+                        >
+                          Add to wishlist
+                        </button>
+                      </div>
+                    </div>
+                  </div>
+                  <div className="products-content">
+                    <div className="contents text-center">
+                      <h3 className="product-title">
+                        <a href={product?.address}>{product?.name}</a>
+                      </h3>
+                      <span className="price">KD {product?.price} </span>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            ))
+          }
+        </Slider>
+      </div>
+    </>
 
-                  <Link
-                    to={`/product-details?product_id=${product?.product_gallery?.[0]?.product_id}`}
-                  >
-                    <img
-                      width={600}
-                      height={600}
-                      src={product.image_path?.replace(
-                        "gallery",
-                        `${product?.thumbnail}`
-                      )}
-                      style={{ height: "328px", objectFit: "contain" }}
-                      className="post-image"
-                      alt
-                    />
-                    <img
-                      width={600}
-                      height={600}
-                      style={{ height: "328px", objectFit: "contain" }}
-                      src={product.image_path?.replace(
-                        "gallery",
-                        `${product?.hover_thumbnail}`
-                      )}
-                      className="hover-image back"
-                      alt
-                    />
-                  </Link>
-                </div>
-                <div className="product-button">
-                  <div className="btn-add-to-cart" data-title="Add to cart">
-                    <a
-                      rel="nofollow"
-                      href="#"
-                      className="product-btn button"
-                      onClick={() => {
-                        const prod = {
-                          id: product.id,
-                          product_name: { en: product.product_name?.en },
-                          image_path: product?.images_path,
-                          product_image: [`${product.product_image[0]}`],
-                          stock: product.stock,
-                        };
-                        AddToCart(prod, 1);
-                      }}
-                    >
-                      Add to cart
-                    </a>
-                  </div>
-                  <div className="btn-wishlist" data-title="Wishlist">
-                    <button
-                      className="product-btn"
-                      onClick={(e) => {
-                        const prod = {
-                          id: product.id,
-                          product_name: { en: product.product_name?.en },
-                          image_path: product.images_path,
-                          product_image: [`${product.product_image[0]}`],
-                          stock: product.stock,
-                        };
-                        handleAddRemoveWishlist(e, prod);
-                      }}
-                    >
-                      Add to wishlist
-                    </button>
-                  </div>
-                </div>
-              </div>
-              <div className="products-content">
-                <div className="contents text-center">
-                  <h3 className="product-title">
-                    <a href="#">{product?.product_name?.en}</a>
-                  </h3>
-                  <span className="price">KD {product?.price} </span>
-                </div>
-              </div>
-            </div>
-          </div>
-        ))}
-      </Slider>
-    </div>
   );
 };
 

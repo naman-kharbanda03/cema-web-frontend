@@ -1,13 +1,15 @@
-import React, { useEffect, useRef, useState } from "react";
+import React, { useContext, useEffect, useRef, useState } from "react";
 import greyImage from "../../asset/images/product/1-2.jpg";
 import PageTitle from "../../components/page-tittle/PageTitle";
 import { useShoppingCart } from "../../context/ShoppingCartContext";
 import { act } from "react-dom/test-utils";
 import StarRatings from "react-star-ratings";
 import apiConfig from "../../config/apiConfig";
-import styles from "./ShopDetails.module.css";
+import "./ShopDetails.css";
 import { toast } from "react-toastify";
 import { useLocation, useNavigate } from "react-router-dom";
+import { UserData } from "../../context/UserContext";
+
 
 const ShopDetails = (product) => {
   const [data, setData] = useState();
@@ -32,7 +34,9 @@ const ShopDetails = (product) => {
   const [defaultVID, setDefaultVID] = useState();
 
 
-  const { AddToCart, handleAddRemoveWishlist, showInfoToastMessage } = useShoppingCart();
+  const { AddToCart, handleAddRemoveWishlist, showInfoToastMessage, wishListItems } = useShoppingCart();
+  const { LOGGEDIN, redirect, setRedirect } = useContext(UserData);
+
   const [quant, setQuant] = useState(1);
 
   const [colorMap, setColorMap] = useState();
@@ -43,6 +47,7 @@ const ShopDetails = (product) => {
   const [attrributes, setAttrributes] = useState();
   const [combinations, setCombinations] = useState();
   const [sizesObj, setSizesObj] = useState({});
+  const [isInWishlist, setIsInWishlist] = useState(0)
 
   const fetchDetails = () => {
     let apiUrl = ``;
@@ -62,7 +67,14 @@ const ShopDetails = (product) => {
         console.log("cart -->", data?.data);
         if (variant_id !== undefined && data?.data?.original) {
           setData(data.data.original.product);
-          setReviews(data?.data?.original.ratingsAndreviews);
+          setReviews(data?.data?.original.product.ratingsAndreviews);
+          const isInWishlist = localStorage.getItem('accessToken')
+            ? data.data.is_in_wishlist
+            : wishListItems.Items?.findIndex(item => (item?.product_id === data.data.original.product.product_id)) === -1
+              ? 0
+              : 1;
+          // console.log(isInWishlist);
+          setIsInWishlist(isInWishlist);
         }
         else if (data.data.combinations.length === 1) {
           setData(data.data);
@@ -70,10 +82,17 @@ const ShopDetails = (product) => {
           let thumbnail = data.data.thumbnail_path + "/" + data.data.thumbnail;
           let hover = data.data.thumbnail_path + "/" + data.data.hover_thumbnail;
           let A = [thumbnail, hover];
-          let B = [{ 'image': data.data.thumbnail }, { 'image': data.data.hover_thumbnail }]
+          // let B = [{ 'image': data.data.thumbnail }, { 'image': data.data.hover_thumbnail }]
+          const isInWishlist = localStorage.getItem('accessToken')
+            ? data.data.is_in_wishlist
+            : wishListItems.Items?.findIndex(item => (item?.product_id === data.data.combinations[0]?.id)) === -1
+              ? 0
+              : 1;
+          // console.log(isInWishlist, 'wishlist');
           setThumb(A);
           setImage(hover);
           setVariant(0);
+          setIsInWishlist(isInWishlist);
           setData((prev) => {
             // const combination = { ...data.data.combinations?.[0] };
             // const images = [...combination.images, ...B];
@@ -176,9 +195,18 @@ const ShopDetails = (product) => {
       return;
     }
     const formData = new FormData();
-    Object.keys(review).map((key) => {
-      formData.append(key, review[key]);
-    });
+    // Object.keys(review).map((key) => {
+    //   formData.append(key, review[key]);
+    // });
+    console.log(review);
+    formData.append('quality', review.quality || '0');
+    formData.append('Price', '5');
+    formData.append('Value', '3');
+    formData.append('product_id', data.product_id);
+    formData.append('review', review.review);
+    formData.append('type', data?.type === 'simple_product' ? 'simple' : 'variant');
+
+    console.log(review.quality || '0', data.product_id, review.review, data?.type || 'variant')
     fetch(apiConfig.addProductReview, {
       method: "POST",
       headers: {
@@ -270,7 +298,7 @@ const ShopDetails = (product) => {
                                 data-vertical='"true"'
                                 data-verticalswiping='"true"'
                               >
-                                {/* {thumb?.map((img) => (
+                                {thumb?.map((img) => (
                                   <div className="img-item slick-slide">
                                     <span className="img-thumbnail-scroll">
                                       <img
@@ -282,7 +310,7 @@ const ShopDetails = (product) => {
                                       />
                                     </span>
                                   </div>
-                                ))} */}
+                                ))}
                                 {data?.combinations?.[variant]?.images.map((images) => (
                                   <div className="img-item slick-slide">
                                     <span className="img-thumbnail-scroll">
@@ -388,7 +416,7 @@ const ShopDetails = (product) => {
                             <table cellspacing="0">
                               <tbody>
                                 <tr>
-                                  <td className="label">Color</td>
+                                  <td className="label" style={{ marginBottom: '10px' }}>Color</td>
                                   <td className="attributes">
                                     <ul className="colors">
                                       {colors?.map(color => (
@@ -503,19 +531,20 @@ const ShopDetails = (product) => {
                           </div>
                           <div className="btn-wishlist" data-title="Wishlist">
                             <button
-                              className={`product-btn ${styles.wishlist}`}
+                              className={`product-btn ${isInWishlist === 1 ? 'wishlis' : 'wishlist'}`}
                               onClick={(e) => {
+                                setIsInWishlist(prev => prev === 1 ? 0 : 1);
                                 const prod = {
                                   id: data.product_id,
                                   product_name: { en: data?.product_name?.en },
                                   image_path: data?.images_path,
                                   product_image: [
-                                    `${data?.combinations[0].images[0].image}`,
+                                    `${data?.combinations?.[0].images?.[0].image}`,
                                   ],
-                                  stock: data.combinations[0].stock,
+                                  stock: data.combinations?.[0].stock,
                                   price: data?.combinations?.[0]?.mainprice,
                                   type: data?.type || "variant",
-                                  variant_id: data?.type !== 'simple_product' ? data?.combinations[0].id : null
+                                  variant_id: data?.type !== 'simple_product' ? data?.combinations?.[0].id : null
                                 };
                                 handleAddRemoveWishlist(e, prod);
                               }}
@@ -538,12 +567,15 @@ const ShopDetails = (product) => {
                               {data?.category_id}
                             </a>
                           </span>
-                          <span className="tagged-as">
-                            Tags:{" "}
-                            <a href="shop-grid-left.html" rel="tag">
-                              {data?.tags}
-                            </a>
-                          </span>
+                          {data?.tags ?
+                            <span className="tagged-as">
+                              Tags:{" "}
+                              <a href="shop-grid-left.html" rel="tag">
+                                {data?.tags}
+                              </a>
+                            </span> : ''
+                          }
+
                         </div>
                         <div className="social-share">
                           <a
@@ -611,7 +643,7 @@ const ShopDetails = (product) => {
                             role="tab"
                             onClick={() => setActiveTabId(3)}
                           >
-                            Reviews ({data?.reviews})
+                            Reviews ({reviews?.length || 0})
                           </a>
                         </li>
                       </ul>
@@ -703,18 +735,24 @@ const ShopDetails = (product) => {
                                   ))}
                                 </ol>
                               </div>
-                              : ''}
+                              : <div style={{ textAlign: 'center' }}>
+                                <span> No reviews</span>
+                              </div>
+                            }
 
                             <div id="review-form">
                               <div id="respond" className="comment-respond">
-                                <span
-                                  id="reply-title"
-                                  className="comment-reply-title"
-                                  onClick={() => SetForm(!toggleForm)}
-                                  style={{ cursor: "pointer" }}
-                                >
-                                  Add a review
-                                </span>
+                                {LOGGEDIN ?
+                                  <span
+                                    id="reply-title"
+                                    className="comment-reply-title"
+                                    onClick={() => SetForm(!toggleForm)}
+                                    style={{ cursor: "pointer" }}
+                                  >
+                                    Add a review
+                                  </span> : ''
+                                }
+
                                 {toggleForm && (
                                   <form
                                     action=""

@@ -13,6 +13,7 @@ const ShopCheckout = () => {
   const [countriesOptions, setCountriesOptions] = useState();
   const [citiesOptions, setCitiesOptions] = useState({});
   const [datta, setDatta] = useState();
+  const [buttonClicked, setButtonClicked] = useState(false);
   // billing fields
   const { showSuccessToastMessage, showInfoToastMessage } = useShoppingCart();
 
@@ -47,6 +48,7 @@ const ShopCheckout = () => {
   const handleCheckboxChange = (e) => {
     const newValue = e.target.checked; // Get the new value of the checkbox
     setShipToDifferentAddress(newValue); // Update the state
+    setShipState(state);
   };
 
   const addOrUpdateBillingAddress = () => {
@@ -131,7 +133,9 @@ const ShopCheckout = () => {
   };
   const navigate = useNavigate()
 
-  const placeOrder = () => {
+  const placeOrder = (e) => {
+    e.preventDefault();
+    setButtonClicked(true);
     const bearerToken = localStorage.getItem("accessToken");
 
     if (orders.length === 0) {
@@ -571,7 +575,7 @@ const ShopCheckout = () => {
                         <br />
                         <div className="customer-details">
                           <div className="billing-fields">
-                            {/* <p className="form-row form-row-wide ship-to-different-address">
+                            <p className="form-row form-row-wide ship-to-different-address">
                               <label className="checkbox">
                                 <input
                                   className="input-checkbox"
@@ -581,33 +585,35 @@ const ShopCheckout = () => {
                                   checked={shipToDifferentAddress} // Set the checkbox's checked state from the state
                                   onChange={handleCheckboxChange} // Add an onChange event handler
                                 />
-                                <span>Ship to a different address?</span>
+                                <span>Same as Billing Address</span>
                               </label>
-                            </p> */}
-                            <>
-                              <h3>Shipping details</h3>
-                              <div className="billing-fields-wrapper">
-                                <p className="form-row form-row-first validate-required">
-                                  <label>
-                                    Full Name{" "}
-                                    <span
-                                      className="required"
-                                      title="required"
-                                    >
-                                      *
+                            </p>
+
+                            {!shipToDifferentAddress && (
+                              <>
+                                <h3>Shipping details</h3>
+                                <div className="billing-fields-wrapper">
+                                  <p className="form-row form-row-first validate-required">
+                                    <label>
+                                      Full Name{" "}
+                                      <span
+                                        className="required"
+                                        title="required"
+                                      >
+                                        *
+                                      </span>
+                                    </label>
+                                    <span className="input-wrapper">
+                                      <input
+                                        type="text"
+                                        className="input-text"
+                                        name="name"
+                                        value={shipState?.name}
+                                        onChange={handlesChange}
+                                      />
                                     </span>
-                                  </label>
-                                  <span className="input-wrapper">
-                                    <input
-                                      type="text"
-                                      className="input-text"
-                                      name="name"
-                                      value={shipState?.name}
-                                      onChange={handlesChange}
-                                    />
-                                  </span>
-                                </p>
-                                {/* <p className="form-row form-row-last validate-required">
+                                  </p>
+                                  {/* <p className="form-row form-row-last validate-required">
                                 <label>
                                   Last name{" "}
                                   <span className="required" title="required">
@@ -623,7 +629,7 @@ const ShopCheckout = () => {
                                   />
                                 </span>
                               </p> */}
-                                {/* <p className="form-row form-row-wide">
+                                  {/* <p className="form-row form-row-wide">
                                 <label>
                                   Company name{" "}
                                   <span className="optional">(optional)</span>
@@ -637,70 +643,70 @@ const ShopCheckout = () => {
                                   />
                                 </span>
                               </p> */}
-                                <p className="form-row form-row-wide validate-required validate-phone">
-                                  <label>
-                                    Phone{" "}
-                                    <span
-                                      className="required"
-                                      title="required"
-                                    >
-                                      *
+                                  <p className="form-row form-row-wide validate-required validate-phone">
+                                    <label>
+                                      Phone{" "}
+                                      <span
+                                        className="required"
+                                        title="required"
+                                      >
+                                        *
+                                      </span>
+                                    </label>
+                                    <span className="input-wrapper">
+                                      <input
+                                        type="tel"
+                                        className="input-text"
+                                        name="phone"
+                                        value={shipState?.phone}
+                                        onChange={handlesChange}
+                                      />
                                     </span>
-                                  </label>
-                                  <span className="input-wrapper">
-                                    <input
-                                      type="tel"
-                                      className="input-text"
-                                      name="phone"
-                                      value={shipState?.phone}
-                                      onChange={handlesChange}
-                                    />
-                                  </span>
-                                </p>
-                                <p className="form-row form-row-wide validate-required validate-email">
-                                  <label>
-                                    Email address{" "}
-                                    <span
-                                      className="required"
-                                      title="required"
-                                    >
-                                      *
+                                  </p>
+                                  <p className="form-row form-row-wide validate-required validate-email">
+                                    <label>
+                                      Email address{" "}
+                                      <span
+                                        className="required"
+                                        title="required"
+                                      >
+                                        *
+                                      </span>
+                                    </label>
+                                    <span className="input-wrapper">
+                                      <input
+                                        type="email"
+                                        className="input-text"
+                                        name="email"
+                                        value={shipState?.email}
+                                        autocomplete="off"
+                                        onChange={handlesChange}
+                                      />
                                     </span>
-                                  </label>
-                                  <span className="input-wrapper">
-                                    <input
-                                      type="email"
-                                      className="input-text"
-                                      name="email"
-                                      value={shipState?.email}
-                                      autocomplete="off"
-                                      onChange={handlesChange}
-                                    />
-                                  </span>
-                                </p>
+                                  </p>
 
-                                <p className="form-row address-field validate-required form-row-wide">
-                                  <label>
-                                    Street address{" "}
-                                    <span
-                                      className="required"
-                                      title="required"
-                                    >
-                                      *
+                                  <p className="form-row address-field validate-required form-row-wide">
+                                    <label>
+                                      Street address{" "}
+                                      <span
+                                        className="required"
+                                        title="required"
+                                      >
+                                        *
+                                      </span>
+                                    </label>
+                                    <span className="input-wrapper">
+                                      <input
+                                        type="text"
+                                        className="input-text"
+                                        name="address"
+                                        placeholder="House number and street name"
+                                        value={shipState?.address}
+                                        onChange={handlesChange}
+                                      />
                                     </span>
-                                  </label>
-                                  <span className="input-wrapper">
-                                    <input
-                                      type="text"
-                                      className="input-text"
-                                      name="address"
-                                      placeholder="House number and street name"
-                                      value={shipState?.address}
-                                      onChange={handlesChange}
-                                    />
-                                  </span>
-                                </p>
-                                {/* <p className="form-row address-field form-row-wide">
+                                  </p>
+                                  {/* <p className="form-row address-field form-row-wide">
                                     <label>
                                       Apartment, suite, unit, etc.&nbsp;
                                       <span className="optional">
@@ -718,130 +724,132 @@ const ShopCheckout = () => {
                                     </span>
                                   </p> */}
 
-                                <p className="form-row form-row-wide validate-required">
-                                  <label>
-                                    Country / Region{" "}
-                                    <span
-                                      className="required"
-                                      title="required"
-                                    >
-                                      *
+                                  <p className="form-row form-row-wide validate-required">
+                                    <label>
+                                      Country / Region{" "}
+                                      <span
+                                        className="required"
+                                        title="required"
+                                      >
+                                        *
+                                      </span>
+                                    </label>
+                                    <span className="input-wrapper">
+                                      <select
+                                        name="country"
+                                        className="country-select custom-select"
+                                        value={shipState?.country} // Set the selected option based on state
+                                        onChange={handlesChange}
+                                      >
+                                        <option value="" key={0}>Select Country</option>
+                                        {countriesOptions?.map((option) => (
+                                          <option
+                                            key={option.id}
+                                            value={option.id}
+                                          >
+                                            {option.name}
+                                          </option>
+                                        ))}
+                                      </select>
                                     </span>
-                                  </label>
-                                  <span className="input-wrapper">
-                                    <select
-                                      name="country"
-                                      className="country-select custom-select"
-                                      value={shipState?.country} // Set the selected option based on state
-                                      onChange={handlesChange}
-                                    >
-                                      <option value="" key={0}>Select Country</option>
-                                      {countriesOptions?.map((option) => (
-                                        <option
-                                          key={option.id}
-                                          value={option.id}
-                                        >
-                                          {option.name}
-                                        </option>
-                                      ))}
-                                    </select>
-                                  </span>
-                                </p>
-                                <p className="form-row address-field validate-required validate-state form-row-wide">
-                                  <label>
-                                    State / County{" "}
-                                    <span
-                                      className="required"
-                                      title="required"
-                                    >
-                                      *
+                                  </p>
+                                  <p className="form-row address-field validate-required validate-state form-row-wide">
+                                    <label>
+                                      State / County{" "}
+                                      <span
+                                        className="required"
+                                        title="required"
+                                      >
+                                        *
+                                      </span>
+                                    </label>
+                                    <span className="input-wrapper">
+                                      <select
+                                        name="state"
+                                        className="state-select custom-select"
+                                        value={shipState?.state} // Set the selected option based on state
+                                        onChange={handlesChange} // Add an onChange event handler
+                                      >
+                                        <option value="" key={0}>Select State</option>
+                                        {stateOptions?.map((option) => (
+                                          <option
+                                            key={option.id}
+                                            value={option.id}
+                                          >
+                                            {option.name}
+                                          </option>
+                                        ))}
+                                      </select>
                                     </span>
-                                  </label>
-                                  <span className="input-wrapper">
-                                    <select
-                                      name="state"
-                                      className="state-select custom-select"
-                                      value={shipState?.state} // Set the selected option based on state
-                                      onChange={handlesChange} // Add an onChange event handler
-                                    >
-                                      <option value="" key={0}>Select State</option>
-                                      {stateOptions?.map((option) => (
-                                        <option
-                                          key={option.id}
-                                          value={option.id}
-                                        >
-                                          {option.name}
-                                        </option>
-                                      ))}
-                                    </select>
-                                  </span>
-                                </p>
-                                <p className="form-row address-field validate-required form-row-wide">
-                                  <label for="billing_city" className="">
-                                    Town / City{" "}
-                                    <span
-                                      className="required"
-                                      title="required"
-                                    >
-                                      *
+                                  </p>
+                                  <p className="form-row address-field validate-required form-row-wide">
+                                    <label for="billing_city" className="">
+                                      Town / City{" "}
+                                      <span
+                                        className="required"
+                                        title="required"
+                                      >
+                                        *
+                                      </span>
+                                    </label>
+                                    <span className="input-wrapper">
+                                      <select
+                                        name="city"
+                                        className="country-select custom-select"
+                                        value={shipState?.city} // Set the selected option based on state
+                                        onChange={handlesChange}
+                                      >
+                                        <option value="" key={0}>Select City</option>
+                                        {citiesOptions?.shipping?.map((option) => (
+                                          <option
+                                            key={option.id}
+                                            value={option.id}
+                                          >
+                                            {option.name}
+                                          </option>
+                                        ))}
+                                      </select>
                                     </span>
-                                  </label>
-                                  <span className="input-wrapper">
-                                    <select
-                                      name="city"
-                                      className="country-select custom-select"
-                                      value={shipState?.city} // Set the selected option based on state
-                                      onChange={handlesChange}
-                                    >
-                                      <option value="" key={0}>Select City</option>
-                                      {citiesOptions?.shipping?.map((option) => (
-                                        <option
-                                          key={option.id}
-                                          value={option.id}
-                                        >
-                                          {option.name}
-                                        </option>
-                                      ))}
-                                    </select>
-                                  </span>
-                                </p>
+                                  </p>
 
-                                <p className="form-row address-field validate-required validate-postcode form-row-wide">
-                                  <label>
-                                    Postcode / ZIP{" "}
-                                    <span
-                                      className="required"
-                                      title="required"
-                                    >
-                                      *
+                                  <p className="form-row address-field validate-required validate-postcode form-row-wide">
+                                    <label>
+                                      Postcode / ZIP{" "}
+                                      <span
+                                        className="required"
+                                        title="required"
+                                      >
+                                        *
+                                      </span>
+                                    </label>
+                                    <span className="input-wrapper">
+                                      <input
+                                        type="text"
+                                        className="input-text"
+                                        name="postcode"
+                                        value={shipState?.postcode}
+                                        onChange={handlesChange}
+                                      />
                                     </span>
-                                  </label>
-                                  <span className="input-wrapper">
-                                    <input
-                                      type="text"
-                                      className="input-text"
-                                      name="postcode"
-                                      value={shipState?.postcode}
-                                      onChange={handlesChange}
-                                    />
-                                  </span>
-                                </p>
-                              </div>
-                              <div
-                                style={{
-                                  background: "black",
-                                  color: "white",
-                                  display: "flex",
-                                  justifyContent: "center",
-                                  width: "140px",
-                                  cursor: "pointer",
-                                  marginBottom: "10px",
-                                }}
-                                onClick={addOrUpdateAddress}
-                              >
-                                {shipState ? 'Update Address' : 'Add Address'}
-                              </div>
-                            </>
+                                  </p>
+                                </div>
+                                <div
+                                  style={{
+                                    background: "black",
+                                    color: "white",
+                                    display: "flex",
+                                    justifyContent: "center",
+                                    width: "140px",
+                                    cursor: "pointer",
+                                    marginBottom: "10px",
+                                  }}
+                                  onClick={addOrUpdateAddress}
+                                >
+                                  {shipState ? 'Update Address' : 'Add Address'}
+                                </div>
+                              </>
+                            )}
+
 
                           </div>
                         </div>
@@ -1007,15 +1015,16 @@ const ShopCheckout = () => {
                               <div className="terms-and-conditions-wrapper">
                                 <div className="privacy-policy-text"></div>
                               </div>
-                              <div
+                              <button
                                 type="submit"
                                 className="button alt"
                                 name="checkout_place_order"
                                 value="Place order"
-                                onClick={placeOrder}
+                                onClick={(e) => placeOrder(e)}
+                                disabled={buttonClicked}
                               >
                                 Place order
-                              </div>
+                              </button>
                             </div>
                           </div>
                         </div>

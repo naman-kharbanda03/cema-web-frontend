@@ -81,7 +81,7 @@ const WishListTable = () => {
                 {orderData?.length > 0 ?
                     <table className="wishlist-items">
                         <tbody>
-                            {orderData.map(order => (
+                            {orderData?.map(order => (
                                 <>
                                     <tr className="wishlist-item">
                                         <td className="wishlist-item-remove" onClick={(e) => {

@@ -47,10 +47,15 @@ const Sliders = () => {
                       {slider?.heading?.en}
                     </div>
                     <a
-                      href={"/products"}
+                      href={
+                        slider.link_by === 'category' ?
+                          `/products?id=${slider.linked_id}` :
+                          slider.link_by === 'url' ? slider.linked_id :
+                            slider.link_by === 'product' ? `/product-details?product_id=${slider.linked_id}` : '/products'
+                      }
                       className="button-slider button-black"
                     >
-                      SHOP NOW
+                      {slider?.buttonname?.en ? slider.buttonname.en : 'SHOP NOW'}
                     </a>
                   </div>
                 </div>

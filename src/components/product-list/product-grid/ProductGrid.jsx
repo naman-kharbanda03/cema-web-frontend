@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import { useShoppingCart } from "../../../context/ShoppingCartContext";
+import './productGrid.css'
 const ProductGrid = (props) => {
     const { AddToCart, handleAddRemoveWishlist, showInfoToastMessage } = useShoppingCart();
     const product = props.current;
@@ -8,6 +9,8 @@ const ProductGrid = (props) => {
     const [productAddress, setProductAddress] = useState();
     const [image, setImage] = useState([]);
     const [stock, setStock] = useState();
+    const [isInWishlist, setIsInWishlist] = useState(product?.isInWishlist);
+
 
 
     // useEffect(() => {
@@ -40,6 +43,13 @@ const ProductGrid = (props) => {
                                 <div className="onsale">-23%</div>
                                 <div className="hot">Hot</div>
                             </div> */}
+                            {
+                                product?.hot_product === 1 ?
+                                    <div className="product-lable">
+                                        <div className="hot">Hot</div>
+                                    </div>
+                                    : ''
+                            }
                             <div className="product-thumb-hover">
                                 <a href={product.address} target="_blank" rel="noopener noreferrer">
                                     <img
@@ -107,8 +117,9 @@ const ProductGrid = (props) => {
                                     className="btn-wishlist"
                                     data-title="Wishlist"
                                 >
-                                    <button className="product-btn"
+                                    <button className={isInWishlist === 1 ? `product-btn-active` : `product-btn`}
                                         onClick={(e) => {
+                                            setIsInWishlist(prev => prev === 1 ? 0 : 1);
                                             let prod = {};
                                             if (product?.type === "simple_product") {
                                                 prod = product;

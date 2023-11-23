@@ -139,7 +139,7 @@ export const ShoppingCartProvider = ({ children }) => {
                 }
                 const updatedItems = [...currList.Items, newItem];
                 const updatedCount = currList.totalItems + 1;
-                showSuccessToastMessage("Item Added in Local WishList");
+                showSuccessToastMessage("Item Added in WishList");
                 return {
                     ...currList,
                     Items: updatedItems,
@@ -150,7 +150,7 @@ export const ShoppingCartProvider = ({ children }) => {
                 const updatingItems = [...currList.Items];
                 const updatedItems = updatingItems.filter(item => !(item?.product_id === product?.id && item?.type === product?.type));
                 const updatedCount = currList.totalItems - 1;
-                showSuccessToastMessage("Item Removed in Local WishList");
+                showSuccessToastMessage("Item Removed in WishList");
                 return {
                     ...currList,
                     Items: updatedItems,
@@ -392,7 +392,7 @@ export const ShoppingCartProvider = ({ children }) => {
                 }
                 const updatedItems = [...currCart.Items, newItem];
                 const updatedCount = currCart.totalItems + amt;
-                showSuccessToastMessage('Item Added In Local Cart');
+                showSuccessToastMessage('Item Added In Cart');
                 return {
                     ...currCart,
                     Items: updatedItems,
@@ -406,7 +406,7 @@ export const ShoppingCartProvider = ({ children }) => {
                 if (updatingItems[foundIndex].qty + amt <= updatingItems[foundIndex].max_order_limit) {
                     updatingItems[foundIndex].qty += amt;
                     const updatedCount = currCart.totalItems + amt;
-                    showSuccessToastMessage('Item Added In Local Cart');
+                    showSuccessToastMessage('Item Added In Cart');
                     return {
                         ...currCart,
                         Items: updatingItems,
@@ -498,7 +498,8 @@ export const ShoppingCartProvider = ({ children }) => {
             addToWishlist2,
             removeFromLocalCart,
             cartData,
-            wishlistData
+            wishlistData,
+            wishListItems
         }}>
             {children}
             <ToastContainer />

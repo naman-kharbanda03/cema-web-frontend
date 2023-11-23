@@ -102,21 +102,26 @@ const Home = () => {
                 </div>
               </section>
 
-              <section className="section beatsellersec section-padding p-t-0 p-b-50 m-b-0">
-                <div className="section-container">
-                  <div className="block block-products slider">
+              <section className="section section-padding m-b-50">
+                <div className="section-container large">
+                  <div className="block block-products loadmore">
                     <div className="block-widget-wrap">
                       <div className="block-title">
                         <h2>Best Sellers</h2>
                       </div>
                       <div className="block-content">
                         <div className="content-product-list slick-wrap">
-                          <BestSellerSlider />
+                          <div class="products-list grid">
+                            <div class="row">
+                              <BestSellerSlider />
+                            </div>
+                          </div>
                         </div>
                       </div>
                     </div>
                   </div>
                   <br />
+
                   <div className="products-loadmore">
                     <Link to={"/listings?products=best_sellers"} >
                       <div className="btn button-outline loadmore">

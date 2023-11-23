@@ -22,7 +22,7 @@ const Listing = () => {
 
   const token = localStorage.getItem("accessToken");
   const categoryListAPI = apiConfig.categoryListAPI;
-  const { handleAddRemoveWishlist, AddToCart } = useShoppingCart();
+  const { handleAddRemoveWishlist, AddToCart, wishListItems } = useShoppingCart();
   const [view, setView] = useState("grid");
 
   const fetchDetails = () => {
@@ -43,12 +43,20 @@ const Listing = () => {
             const thumbnail = product?.thumbnail_path + '/' + product?.thumbnail;
             const hover = product?.thumbnail_path + '/' + product?.hover_thumbnail;
             const stock = product?.stock;
+            const isInWishlist = localStorage.getItem('accessToken')
+              ? product?.is_in_wishlist
+              : wishListItems.Items?.findIndex(item => item.product_id === product?.id) === -1
+                ? 0
+                : 1;
 
             return {
               ...product,
               stock: stock,
               image: [thumbnail, hover],
               address: `/product-details?product_id=${product.id}`,
+              desc: product?.product_detail.en,
+              isInWishlist: isInWishlist
+
             }
           }
 
@@ -56,12 +64,20 @@ const Listing = () => {
             const thumbnail = product?.image_path + '/' + product?.subvariants?.[0].variantimages.main_image;
             const hover = product?.image_path + '/' + product?.subvariants?.[0].variantimages.image1;
             const stock = product?.subvariants?.[0].stock;
+            const isInWishlist = localStorage.getItem('accessToken')
+              ? product?.is_in_wishlist
+              : wishListItems.Items?.findIndex(item => (item.product_id === product?.id && item.variant_id === product.subvariants[0].id)) === -1
+                ? 0
+                : 1;
 
             return {
               ...product,
               stock: stock,
               image: [thumbnail, hover],
               address: `/product-details?product_id=${product?.id}&variant_id=${product?.subvariants?.[0].id}`,
+              desc: product?.des.en,
+              isInWishlist: isInWishlist
+
             }
           }
 

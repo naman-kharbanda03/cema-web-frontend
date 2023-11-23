@@ -1,0 +1,77 @@
+/* .products-list.list
+  .product-wapper
+  .products-content
+  .btn-wishlist
+  .product-btn-active:before {
+  content: "\f08a";
+  position: absolute;
+  left: 0;
+  width: 100%;
+  color: white !important;
+  font-family: FontAwesome;
+  font-size: 19px;
+}
+.products-list.list
+  .product-wapper
+  .products-content
+  .btn-wishlist
+  .product-btn-active {
+  margin-top: 0;
+  width: 42px;
+  height: 42px;
+  line-height: 42px;
+  border: 1px solid #000;
+  text-align: center;
+  font-weight: 500;
+  padding: 0;
+  position: relative;
+  display: inline-block;
+  margin-right: 15px;
+  float: left;
+  font-size: 0;
+  background: black !important;
+} */
+
+/* .wishlist {
+  content: "\f08a";
+  position: absolute;
+  left: 0;
+  width: 100%;
+  color: blue !important;
+  font-family: FontAwesome;
+  font-size: 19px;
+} */
+
+.products-list.grid
+  .product-wapper
+  .products-thumb
+  .product-button
+  .product-btn-active {
+  font-size: 0;
+  background: #301f1f !important;
+  text-align: center;
+  position: relative;
+  white-space: nowrap;
+  margin-top: 0;
+  border: 0;
+  color: #fff;
+  width: 40px;
+  height: 40px;
+  padding: 0;
+  line-height: 40px;
+  cursor: pointer;
+  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
+}
+.products-list.grid
+  .product-wapper
+  .products-thumb
+  .product-button
+  .product-btn-active:before {
+  content: "\e634";
+  font-family: themify;
+  font-size: 16px;
+  line-height: 40px;
+  color: #ffffff;
+  -webkit-transition: all 0.1s ease;
+  transition: all 0.1s ease;
+}

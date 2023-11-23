@@ -31,7 +31,7 @@ const Banner2 = () => {
                 <div className="bg-banner">
                   <div className="banner-wrapper banners">
                     <div className="banner-image">
-                      <a href="#">
+                      <a href={`/products?id=${category.category_id}`}>
                         <img
                           className="demo-img img-fluid"
                           src={`${category?.image_path}/${category?.image}`}
@@ -42,7 +42,7 @@ const Banner2 = () => {
                     <div className="banner-wrapper-infor">
                       <div className="info">
                         <div className="content">
-                          <a className="link-title" href="#">
+                          <a className="link-title" href={`/products?id=${category.category_id}`}>
                             <h3 className="title-banner">
                               {category.title} <br /> {category.sub_title}
                             </h3>
@@ -50,11 +50,11 @@ const Banner2 = () => {
                           <div className="banner-image-description">
                             {category.description}
                           </div>
-                          <Link to="/products">
-                            <a className="button button-outline white" href="#">
-                              SHOP NOW
-                            </a>
-                          </Link>
+                          {/* <Link to="/products"> */}
+                          <a className="button button-outline white" href={`/products?id=${category.category_id}`}>
+                            SHOP NOW
+                          </a>
+                          {/* </Link> */}
 
                         </div>
                       </div>

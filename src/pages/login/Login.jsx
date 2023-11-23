@@ -162,8 +162,8 @@ const Login = (props) => {
                                     onChange={(e) => handleChange(e, "login")}
                                   />
                                 </div>
-                                {/* <div className="rememberme-lost">
-                                  <div className="remember-me">
+                                <div className="rememberme-lost">
+                                  {/* <div className="remember-me">
                                     <input
                                       name="rememberme"
                                       type="checkbox"
@@ -172,13 +172,13 @@ const Login = (props) => {
                                     <label className="inline">
                                       Remember me
                                     </label>
-                                  </div>
+                                  </div> */}
                                   <div className="lost-password">
                                     <Link to="/forgot-password">
                                       Lost your password?
                                     </Link>
                                   </div>
-                                </div> */}
+                                </div>
                                 <div className="button-login">
                                   <input
                                     type="submit"

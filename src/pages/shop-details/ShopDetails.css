@@ -1,0 +1,21 @@
+.wishlis::before {
+  content: "\e634" !important;
+  font-family: themify !important;
+  color: white !important;
+  background-color: black !important;
+}
+.wishlist::before {
+  content: "\e634" !important;
+  font-family: themify !important;
+}
+.shop-details .variations .attributes ul.colors li span {
+  /* background: blue !important; */
+  border: 1px solid !important;
+}
+
+.shop-details .variations .attributes ul.colors li span.Black {
+  background: black;
+}
+.shop-details .variations .attributes ul.colors li span.White {
+  background: wheat !important;
+}

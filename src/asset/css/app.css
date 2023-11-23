@@ -30961,7 +30961,7 @@ body i[class~="slick-arrow"][class~="fa-angle-right"] {
   line-height: 40px;
   border: 1px solid #cecece;
   margin-right: 10px;
-  color: #000;
+  color: black;
   border-radius: 50%;
   -webkit-border-radius: 50%;
   -moz-border-radius: 50%;
@@ -30977,7 +30977,7 @@ body i[class~="slick-arrow"][class~="fa-angle-right"] {
 .shop-details .buttons .btn-wishlist .product-btn:hover:before,
 .shop-details .buttons .btn-compare .product-btn:hover:before {
   color: #fff;
-  background: #000;
+  background: black;
   border-color: #000;
 }
 .shop-details .product-info .product-meta {

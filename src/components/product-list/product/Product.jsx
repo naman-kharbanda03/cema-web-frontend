@@ -4,6 +4,7 @@ import StarRatings from "react-star-ratings";
 import apiConfig from "../../../config/apiConfig";
 import { useShoppingCart } from "../../../context/ShoppingCartContext";
 // import { AddToCart } from "../../block/NewArrival";
+import './product.css';
 
 
 const Product = (props) => {
@@ -17,6 +18,7 @@ const Product = (props) => {
     const [productAddress, setProductAddress] = useState();
     const [image, setImage] = useState();
     const [stock, setStock] = useState();
+    const [isInWishlist, setIsInWishlist] = useState(product?.isInWishlist);
 
 
     // useEffect(() => {
@@ -48,9 +50,13 @@ const Product = (props) => {
 
                         {/* Products Thumb  */}
                         <div className="products-thumb">
-                            <div className="product-lable">
-                                <div className="hot">Hot</div>
-                            </div>
+                            {
+                                product?.hot_product === 1 ?
+                                    <div className="product-lable">
+                                        <div className="hot">Hot</div>
+                                    </div>
+                                    : ''
+                            }
                             <div className="product-thumb-hover">
                                 <a href={product.address} target="_blank" rel="noopener noreferrer">
 
@@ -89,7 +95,7 @@ const Product = (props) => {
                             <a href={product.address} target="_blank" rel="noopener noreferrer">
 
                                 <h3 className="product-title">
-                                    <a href="shop-details.html">{product?.product_name?.en}</a>
+                                    <a href={product.address}>{product?.product_name?.en}</a>
                                 </h3>
                             </a>
                             <span className="price">KD {product.offer_price}</span>
@@ -100,14 +106,19 @@ const Product = (props) => {
                                         starRatedColor="gold"
                                         starHoverColor="gold"
                                         numberOfStars={5}
-                                        starDimension="24px"
-                                        starSpacing="2px"
+                                        starDimension="15px"
+                                        starSpacing="1px"
                                     />
-                                    <p>Rating: {product.product_rating} out of 5</p>
+                                    <br />
+                                    <span>Rating: {product.product_rating} out of 5</span>
                                 </div>
-                                <div className="review-count">
-                                    ({product?.reviews?.length}<span> review</span>)
-                                </div>
+                                {
+                                    product?.reviews?.length !== 0 ?
+                                        <div className="review">
+                                            ({product?.reviews?.length}<span> reviews</span>)
+                                        </div> : ''
+                                }
+
                             </div>
                             <div className="product-button">
                                 <div
@@ -155,14 +166,17 @@ const Product = (props) => {
                                     className="btn-wishlist"
                                     data-title="Wishlist"
                                 >
-                                    <button className="product-btn"
-                                        // style={{ backgroundColor: 'black', color: 'white' }}
+                                    <button className={isInWishlist === 1 ? "product-btn-active" : 'product-btn'}
+                                        // style={styles.wishlist}
                                         // onClick={(e) => {
                                         //     handleAddRemoveWishlist(e, product);
                                         //     // document.documentElement.style.setProperty('--wishlist-color', 'white');
                                         //     // document.documentElement.style.setProperty('--wishlist-bk-color', 'black');
                                         // }}
                                         onClick={(e) => {
+                                            // document.documentElement.style.setProperty('--wishlist-color', 'white');
+                                            // document.documentElement.style.setProperty('--wishlist-bk-color', 'black');
+                                            setIsInWishlist(prev => prev === 1 ? 0 : 1);
                                             let prod = {};
                                             if (product?.type === "simple_product") {
                                                 prod = product;
@@ -187,7 +201,10 @@ const Product = (props) => {
                                     >
                                         Add to wishlist
                                     </button>
+                                    <br />
+
                                 </div>
+
                                 {/* <div
                                     className="btn-compare"
                                     data-title="Compare"
@@ -196,10 +213,11 @@ const Product = (props) => {
                                         Compare
                                     </button>
                                 </div> */}
+
                             </div>
                             <div className="product-description">
-                                {/* <div dangerouslySetInnerHTML={{ __html: product.product_detail }} /> */}
-                                {/* <span>Read more</span> */}
+                                <div dangerouslySetInnerHTML={{ __html: product.desc.length > 50 ? product?.desc.slice(0, 50) + '...' : product?.desc }} />
+                                {/* <span>...</span> */}
                             </div>
                         </div>
                     </div>

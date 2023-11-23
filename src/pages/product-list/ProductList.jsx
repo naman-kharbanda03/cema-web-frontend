@@ -32,7 +32,7 @@ const ProductList = () => {
   const [filteredProductList, setFilteredProductList] = useState([]);
   const [brands, setBrands] = useState([]);
   const [p, setP] = useState([]);
-  const { AddToCart, handleAddRemoveWishlist } = useShoppingCart();
+  const { AddToCart, handleAddRemoveWishlist, wishListItems } = useShoppingCart();
   const [categoryName, setCategoryName] = useState();
 
   const [categoryDetails, setCategoryDetails] = useState({
@@ -70,7 +70,7 @@ const ProductList = () => {
     const query = {
       currency: "INR",
       page: currentPage,
-      per_page: 10,
+      per_page: 12,
       price_range: `${filter?.minPrice}-${filter?.maxPrice}`,
       brand: filter.brand ? filter.brand : '',
     };
@@ -149,29 +149,46 @@ const ProductList = () => {
 
 
   useEffect(() => {
+    // console.log(wishListItems)
     const products = productList.map(product => {
       if (product?.type) {
         const thumbnail = product?.thumbnail_path + '/' + product?.thumbnail;
         const hover = product?.thumbnail_path + '/' + product?.hover_thumbnail;
         const stock = product?.stock;
         const address = `/product-details?product_id=${product.id}`;
+        const isInWishlist = localStorage.getItem('accessToken')
+          ? product?.is_in_wishlist
+          : wishListItems.Items?.findIndex(item => item.product_id === product?.id) === -1
+            ? 0
+            : 1;
+
         return {
           ...product,
           stock: stock,
           address: address,
-          image: [thumbnail, hover]
+          image: [thumbnail, hover],
+          desc: product?.product_detail.en,
+          isInWishlist: isInWishlist
         }
       } else {
         const thumbnail = product?.image_path + '/' + product?.subvariants?.[0].variantimages.main_image;
         const hover = product?.image_path + '/' + product?.subvariants?.[0].variantimages.image1;
         const stock = product?.subvariants?.[0].stock;
         const address = `/product-details?product_id=${product?.id}&variant_id=${product?.subvariants?.[0].id}`;
+        const isInWishlist = localStorage.getItem('accessToken')
+          ? product?.is_in_wishlist
+          : wishListItems.Items?.findIndex(item => (item.product_id === product?.id && item.variant_id === product.subvariants[0].id)) === -1
+            ? 0
+            : 1;
         return {
           ...product,
           stock: stock,
           address: address,
-          image: [thumbnail, hover]
+          image: [thumbnail, hover],
+          desc: product?.des.en,
+          isInWishlist: isInWishlist
         }
+
       }
     })
     console.log(products);

@@ -2,13 +2,14 @@ import React from "react";
 import PageTitle from "../../components/page-tittle/PageTitle";
 
 const ForgotPassword = () => {
+
   return (
     <>
       <div id="site-main" className="site-main">
         <div id="main-content" className="main-content">
           <div id="primary" className="content-area">
             {/* { page Info } */}
-            <PageTitle  current={"Forgot Password"}/>
+            <PageTitle current={"Forgot Password"} />
             {/* form */}
             <div id="content" className="site-content" role="main">
               <div className="section-padding">

@@ -5,7 +5,7 @@ import apiConfig from "../../../config/apiConfig";
 
 
 
-const OrdersTable = ({orderId}) => {
+const OrdersTable = ({ orderId }) => {
 
   const [orders, setOrders] = useState([]);
 
@@ -48,7 +48,7 @@ const OrdersTable = ({orderId}) => {
       })
       .then((data) => {
         console.log(data.orders);
-        setOrders(data.orders);
+        setOrders(data.orders.data);
         return data.orders;
       })
       .catch((error) => console.error("Problem with fetch operations", error));
@@ -58,8 +58,8 @@ const OrdersTable = ({orderId}) => {
     const apiUrl = apiConfig.getOrderAPI;
     fetchDetails(apiUrl);
   }, []);
-  useEffect(()=>{
-    if(orderId && orders?.length > 0){
+  useEffect(() => {
+    if (orderId && orders?.length > 0) {
       let prodId = orders.filter((order) => order?.order_id === orderId)[0]?.id
       openModal(prodId)
       setShowModal(true)
@@ -81,7 +81,7 @@ const OrdersTable = ({orderId}) => {
             </thead>
             <tbody>
               {
-                orders.map(order => (
+                orders?.map(order => (
                   <tr>
                     <td>#{order.order_id}</td>
                     <td>{order.order_date}</td>
@@ -121,9 +121,9 @@ const OrdersTable = ({orderId}) => {
                     <strong>{key}:</strong> {orderDetails[key]}
                   </li>
                 ))} */}
-                {Object.keys(orderDetails).map((key, index) =>{
-                  return <p><strong>{key} : </strong>{orderDetails[key]}</p>
-                })}
+              {Object.keys(orderDetails).map((key, index) => {
+                return <p><strong>{key} : </strong>{orderDetails[key]}</p>
+              })}
             </div>
             <div className="modal-footer">
               <button type="button" className="btn" onClick={closeModal}>

@@ -27,17 +27,19 @@ const Banner = () => {
   }, []);
   return (
     <div className="block block-banners layout-6 banners-effect no-space">
-      <div className="row">
-        <div className="col-md-6 left">
-          <div className="block-widget-banner layout-8">
-            <div className="bg-banner">
-              <div className="banner-wrapper banners">
-                <div className="banner-image">
-                  <a href="#">
+      <div className="row" >
+        <div className="col-md-6 left" style={{ width: '50%' }} >
+          <div className="block-widget-banner layout-8" style={{ maxWidth: '100%', maxHeight: '100%' }}>
+            <div className="bg-banner" style={{ maxWidth: '100%', maxHeight: '100%' }}>
+              <div className="banner-wrapper banners" style={{ maxWidth: '100%', maxHeight: '100%' }} >
+                <div className="" style={{ maxWidth: '100%', height: '100%' }} >
+                  <a href={`/products?id=${categories[0]?.category_id}`}>
                     <img
-                      width={959}
-                      height={837}
+                      // width={959}
+                      // height :100%
+                      // src={banner_11}
                       src={`https://www.demo609.amrithaa.com/backend-cema/public/images/category/${categories[0]?.image}`}
+                      style={{ maxHeight: '100%', objectFit: 'cover' }}
                       alt="Banner Image"
                     />
                   </a>
@@ -48,7 +50,7 @@ const Banner = () => {
                       <div className="banner-image-subtitle">
                         {categories[0]?.description}
                       </div>
-                      <a className="link-title" href="#">
+                      <a className="link-title" href={`/products?id=${categories[0]?.category_id}`}>
                         <h3 className="title-banner">{categories[0]?.title}</h3>
                       </a>
                     </div>
@@ -65,7 +67,7 @@ const Banner = () => {
                 <div className="bg-banner">
                   <div className="banner-wrapper banners">
                     <div className="banner-image">
-                      <a href="#">
+                      <a href={`/products?id=${categories[1]?.category_id}`}>
                         <img
                           width={961}
                           height={419}
@@ -80,7 +82,7 @@ const Banner = () => {
                           <div className="banner-image-subtitle">
                             {categories[1]?.description}
                           </div>
-                          <a className="link-title" href="#">
+                          <a className="link-title" href={`/products?id=${categories[1]?.category_id}`}>
                             <h3 className="title-banner">
                               {categories[1]?.title}
                             </h3>
@@ -99,7 +101,7 @@ const Banner = () => {
                 <div className="bg-banner">
                   <div className="banner-wrapper banners">
                     <div className="banner-image">
-                      <a href="#">
+                      <a href={`/products?id=${categories[2]?.category_id}`}>
                         <img
                           width={481}
                           height={419}
@@ -114,7 +116,7 @@ const Banner = () => {
                           <div className="banner-image-subtitle">
                             {categories[2]?.description}
                           </div>
-                          <a className="link-title" href="#">
+                          <a className="link-title" href={`/products?id=${categories[2]?.category_id}`}>
                             <h3 className="title-banner">{categories[2]?.title}</h3>
                           </a>
                         </div>
@@ -129,7 +131,7 @@ const Banner = () => {
                 <div className="bg-banner">
                   <div className="banner-wrapper banners">
                     <div className="banner-image">
-                      <a href="#">
+                      <a href={`/products?id=${categories[3]?.category_id}`}>
                         <img
                           width={481}
                           height={419}
@@ -144,7 +146,7 @@ const Banner = () => {
                           <div className="banner-image-subtitle">
                             {categories[3]?.description}
                           </div>
-                          <a className="link-title" href="#">
+                          <a className="link-title" href={`/products?id=${categories[3]?.category_id}`}>
                             <h3 className="title-banner">
                               {categories[3]?.title}
                             </h3>
@@ -158,8 +160,8 @@ const Banner = () => {
             </div>
           </div>
         </div>
-      </div>
-    </div>
+      </div >
+    </div >
   );
 };
 

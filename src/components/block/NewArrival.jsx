@@ -37,13 +37,13 @@ import ProductGrid from "../product-list/product-grid/ProductGrid";
 const NewArrival = () => {
   const [data, setData] = useState([{}]);
   const token = localStorage.getItem("accessToken");
-  const { AddToCart, handleAddRemoveWishlist } = useShoppingCart();
+  const { AddToCart, handleAddRemoveWishlist, wishListItems } = useShoppingCart();
 
 
 
   const fetchDetails = () => {
     fetch(
-      "https://www.demo609.amrithaa.com/backend-cema/public/api/products?per_page=10&page=1&new_arrival=1",
+      "https://www.demo609.amrithaa.com/backend-cema/public/api/products?per_page=12&page=1&new_arrival=1",
       {
         method: "GET",
       }
@@ -58,25 +58,42 @@ const NewArrival = () => {
           if (product?.type === 'simple_product') {
             const thumbnail = product?.thumbnail_path + '/' + product?.thumbnail;
             const hover = product?.thumbnail_path + '/' + product?.hover_thumbnail;
+            const stock = product?.stock;
+            const isInWishlist = localStorage.getItem('accessToken')
+              ? product?.is_in_wishlist
+              : wishListItems.Items?.findIndex(item => item.product_id === product?.id) === -1
+                ? 0
+                : 1;
             return {
               ...product,
               image: [thumbnail, hover],
               address: `/product-details?product_id=${product.id}`,
+              stock: stock,
+              isInWishlist: isInWishlist
             }
           }
 
-          else {
+          else if (product?.subvariants) {
             const thumbnail = product?.image_path + '/' + product?.subvariants?.[0].variantimages.main_image;
             const hover = product?.image_path + '/' + product?.subvariants?.[0].variantimages.image1;
+            const stock = product?.subvariants[0]?.stock;
+            const isInWishlist = localStorage.getItem('accessToken')
+              ? product?.is_in_wishlist
+              : wishListItems.Items?.findIndex(item => (item.product_id === product?.id && item.variant_id === product.subvariants[0].id)) === -1
+                ? 0
+                : 1;
             return {
               ...product,
               image: [thumbnail, hover],
               address: `/product-details?product_id=${product?.id}&variant_id=${product?.subvariants?.[0].id}`,
+              stock: stock,
+              isInWishlist: isInWishlist
             }
           }
 
-        })
-        setData(products);
+        });
+        const productsNotOutOfStock = products.filter(pro => pro.stock > 0);
+        setData(productsNotOutOfStock);
       })
       .catch((error) => console.error("Problem with fetch operations", error));
   };
@@ -88,7 +105,7 @@ const NewArrival = () => {
   return (
     <div className="products-list grid">
       <div className="row">
-        {data.map((product) => (
+        {data.slice(0, 4).map((product) => (
           // <div className="col-xl-3 col-lg-4 col-md-4 col-sm-6" key={product.id}>
           //   <div className="items">
           //     <div className="products-entry clearfix product-wapper">
