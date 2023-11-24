@@ -7,9 +7,10 @@ import apiConfig from "../../config/apiConfig";
 const CartProduct = (props) => {
   const { ordersData: orderData, orderQtyChanged } = props;
   const order = orderData;
-  const initialQty = order?.qty ? parseInt(order.qty) : 0;
-  const [orderQnty, setOrderQnty] = useState(initialQty);
-  const { setCartToggle, removeFromLocalCart, increaseItemInLocalCart, setCartItemsCount, showInfoToastMessage } = useShoppingCart();
+  // const initialQty = order?.qty ? parseInt(ordersData.qty) : 0;
+  const [orderQnty, setOrderQnty] = useState(order?.qty);
+  const { setCartToggle, removeFromLocalCart, increaseItemInLocalCart } = useShoppingCart();
+  console.log(order);
 
   const increaseQty = () => {
     setOrderQnty(orderQnty + 1);
@@ -26,25 +27,16 @@ const CartProduct = (props) => {
   const removeProduct = () => {
     decreaseQtyUtils();
     orderQtyChanged && orderQtyChanged(orderQnty);
-    // orderQnty !== 0 && setOrderQnty(0);
+    orderQnty !== 0 && setOrderQnty(0);
   };
 
   const increaseQtyUtils = (qty) => {
     const bearerToken = localStorage.getItem("accessToken");
-    let formData = {};
-    console.log(qty);
-    if (order?.variant_id) {
-      formData = {
-        quantity: qty,
-        id: order?.cart_id,
-        variant_id: order?.variant_id,
-      };
-    } else {
-      formData = {
-        quantity: qty,
-        id: order?.cart_id,
-      };
-    }
+    const formdata = {
+      quantity: qty,
+      id: order?.id,
+      variant_id: "",
+    };
     const apiUrl = apiConfig.updateCartAPI;
     if (bearerToken) {
       fetch(apiUrl, {
@@ -53,20 +45,19 @@ const CartProduct = (props) => {
           "Content-Type": "application/json",
           Authorization: `Bearer ${bearerToken}`,
         },
-        body: JSON.stringify(formData),
+        body: JSON.stringify(formdata),
       })
-        .then((response) => response.json())
+        .then((response) => response.text())
         .then((result) => {
-          console.log(result.count);
-          setCartItemsCount(parseInt(result.count));
-
+          console.log(result);
+          setCartToggle(prev => !prev);
         })
         .catch((error) => console.log("error", error));
     } else {
       const prod = {
-        id: order?.product_id,
-        type: order?.type,
+        id: order?.simple_product.id
       };
+
       increaseItemInLocalCart(qty - orderQnty, prod);
     }
   };
@@ -75,14 +66,14 @@ const CartProduct = (props) => {
     const bearerToken = localStorage.getItem("accessToken");
     const formdata = {
       quantity: orderQnty,
-      id: order?.cart_it,
+      id: order?.id,
       type: order?.simple_product?.type,
       price: order?.simple_product?.price,
       offerprice: order?.simple_product?.offer_price,
     };
     const apiUrl = apiConfig.removeFromCartAPI;
     if (bearerToken) {
-      fetch(`${apiUrl}/${order?.cart_id}`, {
+      fetch(`${apiUrl}/${order?.id}`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -90,16 +81,16 @@ const CartProduct = (props) => {
         },
         body: JSON.stringify(formdata),
       })
-        .then((response) => response.json())
+        .then((response) => response.text())
         .then((result) => {
-          console.log(result.count)
-          setCartItemsCount(parseInt(result.count));
+          console.log(result)
+          setCartToggle(prev => !prev);
+
         })
         .catch((error) => console.log("error", error));
     } else {
       const prod = {
-        id: order?.product_id,
-        type: order?.type,
+        id: order?.simple_product.id
       };
       removeFromLocalCart(prod);
     }
@@ -109,32 +100,29 @@ const CartProduct = (props) => {
   return (
     <tr className="cart-item">
       <td className="product-thumbnail">
-        <Link to={order?.link}>
+        <Link to={`/product-details?product_id=${order?.simple_product?.id}`}>
           <img
             width={600}
             height={600}
-            src={`${order?.image_path}/${order?.product_image}`}
+            src={`${orderData?.simple_product?.image_path}/${orderData?.simple_product?.product_image?.[0]}`}
             className="product-image"
             alt
           />
         </Link>
         <div className="product-name">
-          <Link to={order?.link}>
-            {order?.product_name?.en}
+          <Link to={`/product-details?product_id=${order?.simple_product?.id}`}>
+            {order?.simple_product?.product_name?.en}
           </Link>
         </div>
       </td>
       <td className="product-price">
         <span className="price">
-          KD {order?.price}
+          KD {order?.ori_offer_price}
         </span>
       </td>
       <td className="product-quantity">
         <div className="quantity">
-          <button type="button" className="minus" onClick={() => {
-            if (orderQnty === 1) showInfoToastMessage('Quantity atleast be one')
-            else decreaseQty();
-          }} >
+          <button type="button" className="minus" onClick={() => decreaseQty()}>
             -
           </button>
           <input
@@ -144,24 +132,20 @@ const CartProduct = (props) => {
             min={0}
             max
             name="quantity"
-            value={orderQnty}
+            value={order.qty}
             title="Qty"
             size={4}
             placeholder
             inputMode="numeric"
             autoComplete="off"
           />
-          <button type="button" className="plus" onClick={() => {
-            if (orderQnty < order.max_order_limit) increaseQty();
-            else showInfoToastMessage('Max Qty Reached');
-          }
-          }>
+          <button type="button" className="plus" onClick={() => increaseQty()}>
             +
           </button>
         </div>
       </td>
       <td className="product-subtotal">
-        <span>KD {Math.round((order?.price * orderQnty * 100)) / 100}</span>
+        <span>KD {Math.round((order?.ori_offer_price * orderQnty * 100)) / 100}</span>
       </td>
       <td className="product-remove">
         <a

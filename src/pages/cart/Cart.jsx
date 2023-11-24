@@ -11,6 +11,8 @@ const Cart = () => {
   const [orderData, setOrderData] = useState([]);
   const [orders, setOrders] = useState([]);
   const [total, setTotal] = useState();
+  const [grandTotal, setGrandTotal] = useState();
+  const [totalTaxAmount, setTotalTaxAmount] = useState();
   const [qtyChanged, setQtyChanged] = useState();
   const [couponCode, setCouponCode] = useState("");
   const [isCouponSuccess, setCoupanSuccess] = useState(false);
@@ -79,16 +81,18 @@ const Cart = () => {
         if (!response.ok) throw new Error("Network Issue");
         return response.json();
       }).then((datar) => {
-        console.log("Cart Data", datar);
         setOrderData(datar);
         setTotal(datar?.total);
+        setGrandTotal(datar?.grand_total);
+        setTotalTaxAmount(datar?.total_tax_amount);
         let order = {};
         setOrders([]);
         datar.data?.forEach(order => {
           if (order.simple_product) {
             order = {
               product_name: { en: order.simple_product.product_name.en },
-              price: order.simple_product.actual_selling_price,
+              price: order.semi_total,
+              ori_offer_price: order.ori_offer_price,
               product_id: order.simple_product.id,
               product_image: order.simple_product.product_image[0],
               image_path: order.simple_product.image_path,
@@ -99,11 +103,12 @@ const Cart = () => {
               max_order_limit: order.simple_product.max_order_qty,
             };
             setOrders(prev => ([...prev, order]));
-
           } else {
             order = {
               product_name: { en: order.product.name.en },
-              price: parseInt(order.price_total) + parseInt(order.product.price),
+              // price: parseInt(order.price_total) + parseInt(order.product.price),
+              price: order.semi_total,
+              ori_offer_price: order.ori_offer_price,
               product_id: order.pro_id,
               product_image: order.variant.variantimages.main_image,
               image_path: order.product.image_path,
@@ -327,9 +332,15 @@ const Cart = () => {
                                 </div>
                               </div>
                               <div className="order-total">
+                                <div className="title">Tax</div>
+                                <div>
+                                  <span>KD {totalTaxAmount}</span>
+                                </div>
+                              </div>
+                              <div className="order-total">
                                 <div className="title">Total</div>
                                 <div>
-                                  <span>KD {Math.round(total * 100) / 100}</span>
+                                  <span>KD {grandTotal }</span>
                                 </div>
                               </div>
                             </div>
