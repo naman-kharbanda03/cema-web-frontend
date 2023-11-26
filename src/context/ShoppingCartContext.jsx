@@ -280,7 +280,7 @@ export const ShoppingCartProvider = ({ children }) => {
 
 
 
-    const AddToCart = (product, amt) => {
+    const AddToCart = async (product, amt) => {
         const formData = {
             quantity: amt,
             product_id: product?.id,
@@ -291,28 +291,32 @@ export const ShoppingCartProvider = ({ children }) => {
         console.log(formData);
         if (bearerToken) {
             const apiUrl = apiConfig.addToCartAPI;
-            fetch(apiUrl, {
+            return fetch(apiUrl, {
                 method: "POST",
                 headers: {
                     "Content-Type": "application/json",
                     Authorization: `Bearer ${bearerToken}`,
                 },
                 body: JSON.stringify(formData),
-            }).then((response) => response.json())
+            }).then((response) => { return response.json() })
                 .then((data) => {
                     console.log("Response:", data);
                     if (data.success === true) {
                         setCartItemsCount(data.count);
                         showSuccessToastMessage(data.message);
-                    } else
+                        return true;
+                    } else {
                         showSuccessToastMessage(data.message);
+                        return false
+                    }
+
 
                 })
                 .catch((error) => {
                     console.error("Error:", error);
                 });
         } else {
-            increaseItemInLocalCart(amt, product);
+            return increaseItemInLocalCart(amt, product);
         }
     }
 
@@ -356,69 +360,62 @@ export const ShoppingCartProvider = ({ children }) => {
                     setCartToggle(prev => !prev);
                 });
         } else {
-            console.log(111111);
+            // console.log(111111);
             setCartToggle(prev => !prev);
         }
     }
 
     const increaseItemInLocalCart = (amt, product) => {
-        setCartItems(currCart => {
-            const foundIndex = currCart.Items.findIndex(item => item?.product_id === product.id && item?.type === product.type);
-            if (foundIndex === -1) {
-                // If the item doesn't exist in the cart, add it.
-                // const newItem = { quantity: `${amt}`, product_id: `${id}`, type: type };
-                // const newItem = {
-                //     qty: amt,
-                //     simple_product: {
-                //         id: product?.id,
-                //         price: product?.price,
-                //         image_path: product?.image_path,
-                //         product_image: [`${product?.product_image[0]}`],
-                //         product_name: { en: product?.product_name?.en },
-                //     }
-                // };
-                const newItem = {
-                    qty: amt,
-                    product_id: product.id,
-                    variant_id: product?.variant_id,
-                    price: product.price,
-                    image_path: product.image_path,
-                    product_name: { en: product.product_name.en },
-                    product_image: product.product_image[0],
-                    type: product?.type,
-                    stock: product?.stock,
-                    max_order_limit: product?.max_order_limit,
-                    link: product?.type === 'simple_product' ? `/product-details?product_id=${product.id}` : `/product-details?product_id=${product.id}&variant_id=${product?.variant_id}`
-                }
-                const updatedItems = [...currCart.Items, newItem];
-                const updatedCount = currCart.totalItems + amt;
-                showSuccessToastMessage('Item Added In Cart');
-                return {
-                    ...currCart,
-                    Items: updatedItems,
-                    totalItems: updatedCount,
-                }
-
-            } else {
-                // If the item exists, update its quantity.
-
-                const updatingItems = [...currCart.Items];
-                if (updatingItems[foundIndex].qty + amt <= updatingItems[foundIndex].max_order_limit) {
-                    updatingItems[foundIndex].qty += amt;
+        return new Promise((res, rej) => {
+            setCartItems(currCart => {
+                const foundIndex = currCart.Items.findIndex(item => item?.product_id === product.id && item?.type === product.type);
+                if (foundIndex === -1) {
+                    const newItem = {
+                        qty: amt,
+                        product_id: product.id,
+                        variant_id: product?.variant_id,
+                        price: product.price,
+                        image_path: product.image_path,
+                        product_name: { en: product.product_name.en },
+                        product_image: product.product_image[0],
+                        type: product?.type,
+                        stock: product?.stock,
+                        max_order_limit: product?.max_order_limit,
+                        link: product?.type === 'simple_product' ? `/product-details?product_id=${product.id}` : `/product-details?product_id=${product.id}&variant_id=${product?.variant_id}`
+                    }
+                    const updatedItems = [...currCart.Items, newItem];
                     const updatedCount = currCart.totalItems + amt;
                     showSuccessToastMessage('Item Added In Cart');
+                    res(true);
                     return {
                         ...currCart,
-                        Items: updatingItems,
+                        Items: updatedItems,
                         totalItems: updatedCount,
                     }
                 } else {
-                    showInfoToastMessage(`Max qty reached `);
-                    return { ...currCart }
-                }
+                    // If the item exists, update its quantity.
 
-            }
-        });
+                    const updatingItems = [...currCart.Items];
+                    if (updatingItems[foundIndex].qty + amt <= updatingItems[foundIndex].max_order_limit) {
+                        updatingItems[foundIndex].qty += amt;
+                        const updatedCount = currCart.totalItems + amt;
+                        showSuccessToastMessage('Item Added In Cart');
+                        res(true);
+                        return {
+                            ...currCart,
+                            Items: updatingItems,
+                            totalItems: updatedCount,
+                        }
+                    } else {
+                        showInfoToastMessage(`Max qty reached `);
+                        res(false);
+                        return { ...currCart }
+                    }
+
+                }
+            });
+        })
+
     };
 
     useEffect(() => {
@@ -499,7 +496,8 @@ export const ShoppingCartProvider = ({ children }) => {
             removeFromLocalCart,
             cartData,
             wishlistData,
-            wishListItems
+            wishListItems,
+            cartItems
         }}>
             {children}
             <ToastContainer />

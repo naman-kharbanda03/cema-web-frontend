@@ -8,28 +8,19 @@ const ProductGrid = (props) => {
 
     const [productAddress, setProductAddress] = useState();
     const [image, setImage] = useState([]);
-    const [stock, setStock] = useState();
-    const [isInWishlist, setIsInWishlist] = useState(product?.isInWishlist);
+    const [stock, setStock] = useState(0);
+    const [InWishlist, setInWishlist] = useState(0);
+    const [InCart, setInCart] = useState(0);
 
+    console.log(InWishlist, product.InWishlist);
 
+    useEffect(() => {
+        setInWishlist(product.InWishlist);
+        setInCart(product?.InCart);
 
-    // useEffect(() => {
-    //     setImage([]);
-    //     if (product?.type) {
-    //         setProductAddress(`/product-details?product_id=${product.id}`);
-    //         const thumbnail = product?.thumbnail_path + '/' + product?.thumbnail;
-    //         const hover = product?.thumbnail_path + '/' + product?.hover_thumbnail;
-    //         setImage([thumbnail, hover]);
-    //         setStock(product?.stock);
-    //     }
-    //     else {
-    //         setProductAddress(`/product-details?product_id=${product?.id}&variant_id=${product?.subvariants?.[0].id}`);
-    //         const thumbnail = product?.image_path + '/' + product?.subvariants?.[0].variantimages.main_image;
-    //         const hover = product?.image_path + '/' + product?.subvariants?.[0].variantimages.image1;
-    //         setImage([thumbnail, hover]);
-    //         setStock(product?.subvariants?.[0].stock);
-    //     }
-    // }, []);
+        return () => setInWishlist(0);
+    }, [product])
+
     return (
         <>
             <div
@@ -75,16 +66,24 @@ const ProductGrid = (props) => {
                             <div className="product-button">
                                 <div
                                     className="btn-add-to-cart"
-                                    data-title={product.stock > 0 ? 'Add to cart' : 'Out of stock'}
+                                    data-title={product.stock <= 0 ? 'Out of stock' : InCart ? 'Added to Cart' : 'Add to Cart'}
                                     aria-disabled
                                 >
+
                                     <a
                                         rel="nofollow"
+                                        className={InCart ? `added-to-cart` : 'product-btn'}
                                         onClick={() => {
                                             let prod = {};
                                             if (product?.type === 'simple_product') {
-                                                if (product.stock > 0)
-                                                    AddToCart(product, 1);
+                                                if (product.stock > 0) {
+                                                    AddToCart(product, 1).then(result => {
+                                                        if (result) {
+                                                            setInCart(prev => !prev);
+                                                        }
+                                                    });
+                                                }
+
                                                 else showInfoToastMessage('Out Of Stock')
                                             }
                                             else {
@@ -103,23 +102,27 @@ const ProductGrid = (props) => {
                                                         type: "variant",
                                                         link: `/product-details?product_id=${product.id}&variant_id=${product.subvariants?.[0]?.id}`,
                                                     }
-                                                    AddToCart(prod, 1);
+                                                    AddToCart(prod, 1).then(result => {
+                                                        if (result) {
+                                                            setInCart(prev => !prev);
+                                                        }
+                                                    });
                                                 } else showInfoToastMessage('Out Of Stock')
                                             }
                                         }
                                         }
-                                        className="product-btn button"
                                     >
-                                        {product.stock > 0 ? 'Add to cart' : 'Out of stock'}
+                                        {/* {product.stock > 0 ? 'Add to cart' : 'Out of stock'} */}
                                     </a>
                                 </div>
                                 <div
                                     className="btn-wishlist"
                                     data-title="Wishlist"
                                 >
-                                    <button className={isInWishlist === 1 ? `product-btn-active` : `product-btn`}
+                                    <button className={InWishlist ? `product-btn-active` : `product-btn`}
                                         onClick={(e) => {
-                                            setIsInWishlist(prev => prev === 1 ? 0 : 1);
+                                            // console.log(InWishlist, product.InWishlist);
+                                            setInWishlist(prev => !prev);
                                             let prod = {};
                                             if (product?.type === "simple_product") {
                                                 prod = product;

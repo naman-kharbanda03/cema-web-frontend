@@ -5,12 +5,29 @@ import apiConfig from "../../config/apiConfig";
 
 const Footer = () => {
   const [links, setLinks] = useState([]);
+  const [data, setData] = useState({});
+
   useEffect(() => {
     fetch(apiConfig.getSocialLinks, {
       method: 'GET'
     }).then(response => response.json())
       .then(data => {
         setLinks(data);
+      })
+
+    fetch(apiConfig.getFooterLinks, {
+      method: 'GET'
+    }).then(response => response.json())
+      .then(data => {
+        const dataObj = data.data.reduce((acc, obj) => {
+          const type = obj.type;
+          acc[type] = acc[type] || [];
+          acc[type] = [...acc[type], obj];
+          return acc;
+        }, {});
+        // console.log(dataObj);
+        setData(dataObj);
+        return true;
       })
   }, []);
   useEffect(() => console.log(links), [links])
@@ -27,51 +44,23 @@ const Footer = () => {
                 <div className="col-lg-4 column-left">
                   <div className="column-wrap">
                     <div className="row">
-                      <div className="col-lg-6 md-b-20">
-                        <div className="block block-menu m-b-20">
-                          <h2 className="block-title">About</h2>
-                          <div className="block-content">
-                            <ul>
-                              <li>
-                                <a href="javascript:;">About Us</a>
-                              </li>
-                              <li>
-                                <a href="javascript:;">Locate a Store</a>
-                              </li>
-                              <li>
-                                <a href="javascript:;">Write to us</a>
-                              </li>
-                              <li>
-                                <a href="javascript:;">Careers</a>
-                              </li>
-                            </ul>
+                      {Object.keys(data)?.map(key => (
+                        <div className="col-lg-6 ">
+                          <div className="block block-menu m-b-20">
+                            <h2 className="block-title">{key}</h2>
+                            <div className="block-content">
+                              <ul>
+                                {data[key]?.map(obj => (
+                                  <li>
+                                    <a href={obj?.url}>{obj?.title}</a>
+                                  </li>
+                                ))}
+                              </ul>
+                            </div>
                           </div>
                         </div>
-                      </div>
-                      <div className="col-lg-6">
-                        <div className="block block-menu">
-                          <h2 className="block-title">HELP</h2>
-                          <div className="block-content">
-                            <ul>
-                              <li>
-                                <a href="javascript:;">Contact Us</a>
-                              </li>
-                              <li>
-                                <a href="javascript:;">Track Your Order</a>
-                              </li>
-                              <li>
-                                <a href="javascript:;">Returns &amp; Refunds</a>
-                              </li>
-                              <li>
-                                <a href="javascript:;">Privacy Policy</a>
-                              </li>
-                              <li>
-                                <a href="javascript:;">FAQs</a>
-                              </li>
-                            </ul>
-                          </div>
-                        </div>
-                      </div>
+                      ))}
+
                     </div>
                   </div>
                 </div>
@@ -106,6 +95,8 @@ const Footer = () => {
                     </div>
                   </div>
                 </div>
+
+
                 <div className="col-lg-4 column-right">
                   <div className="column-wrap">
                     <div className="block block-newsletter">
@@ -138,6 +129,8 @@ const Footer = () => {
           </div>
         </div>
       </div>
+
+
       <div className="footer-bottom">
         <div className="section-padding">
           <div className="section-container">

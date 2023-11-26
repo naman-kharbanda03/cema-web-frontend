@@ -22,13 +22,17 @@ const Listing = () => {
 
   const token = localStorage.getItem("accessToken");
   const categoryListAPI = apiConfig.categoryListAPI;
-  const { handleAddRemoveWishlist, AddToCart, wishListItems } = useShoppingCart();
+  const { handleAddRemoveWishlist, AddToCart, wishListItems, cartItems } = useShoppingCart();
   const [view, setView] = useState("grid");
 
   const fetchDetails = () => {
     const apiUrl = apiConfig.listingAPI;
-    fetch(`${apiUrl}?per_page=4&page=${currentPage}&${products}=1`, {
+    const token = localStorage.getItem('accessToken');
+    fetch(`${apiUrl}?per_page=12&page=${currentPage}&${products}=1`, {
       method: "GET",
+      headers: {
+        Authorization: `Bearer ${token}`
+      }
     })
       .then((response) => {
         if (!response.ok) throw new Error("Network Issue");
@@ -48,6 +52,11 @@ const Listing = () => {
               : wishListItems.Items?.findIndex(item => item.product_id === product?.id) === -1
                 ? 0
                 : 1;
+            const InCart = localStorage.getItem('accessToken')
+              ? product?.is_in_cart
+              : cartItems.Items?.findIndex(item => item.product_id === product?.id) === -1
+                ? 0
+                : 1;
 
             return {
               ...product,
@@ -55,7 +64,8 @@ const Listing = () => {
               image: [thumbnail, hover],
               address: `/product-details?product_id=${product.id}`,
               desc: product?.product_detail.en,
-              isInWishlist: isInWishlist
+              InWishlist: isInWishlist,
+              InCart: InCart
 
             }
           }
@@ -66,7 +76,12 @@ const Listing = () => {
             const stock = product?.subvariants?.[0].stock;
             const isInWishlist = localStorage.getItem('accessToken')
               ? product?.is_in_wishlist
-              : wishListItems.Items?.findIndex(item => (item.product_id === product?.id && item.variant_id === product.subvariants[0].id)) === -1
+              : wishListItems.Items?.findIndex(item => (item.product_id === product?.id && item.type === 'variant')) === -1
+                ? 0
+                : 1;
+            const InCart = localStorage.getItem('accessToken')
+              ? product?.is_in_cart
+              : cartItems.Items?.findIndex(item => (item.product_id === product?.id && item.type === 'variant')) === -1
                 ? 0
                 : 1;
 
@@ -76,7 +91,8 @@ const Listing = () => {
               image: [thumbnail, hover],
               address: `/product-details?product_id=${product?.id}&variant_id=${product?.subvariants?.[0].id}`,
               desc: product?.des.en,
-              isInWishlist: isInWishlist
+              InWishlist: isInWishlist,
+              InCart: InCart,
 
             }
           }

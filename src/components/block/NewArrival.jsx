@@ -69,7 +69,7 @@ const NewArrival = () => {
               image: [thumbnail, hover],
               address: `/product-details?product_id=${product.id}`,
               stock: stock,
-              isInWishlist: isInWishlist
+              InWishlist: isInWishlist
             }
           }
 
@@ -79,7 +79,7 @@ const NewArrival = () => {
             const stock = product?.subvariants[0]?.stock;
             const isInWishlist = localStorage.getItem('accessToken')
               ? product?.is_in_wishlist
-              : wishListItems.Items?.findIndex(item => (item.product_id === product?.id && item.variant_id === product.subvariants[0].id)) === -1
+              : wishListItems.Items?.findIndex(item => (item.product_id === product?.id && item.type === 'variant')) === -1
                 ? 0
                 : 1;
             return {
@@ -87,7 +87,7 @@ const NewArrival = () => {
               image: [thumbnail, hover],
               address: `/product-details?product_id=${product?.id}&variant_id=${product?.subvariants?.[0].id}`,
               stock: stock,
-              isInWishlist: isInWishlist
+              InWishlist: isInWishlist
             }
           }
 

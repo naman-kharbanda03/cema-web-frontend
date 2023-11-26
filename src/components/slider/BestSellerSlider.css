@@ -1,9 +1,4 @@
-.products-list.grid
-  .product-wapper
-  .products-thumb
-  .product-button
-  .btn-wishlist
-  .product-btn-active {
+.product-wapper .products-thumb .product-button .product-btn-active {
   font-size: 0;
   background: #301f1f !important;
   text-align: center;
@@ -19,12 +14,8 @@
   cursor: pointer;
   box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
 }
-.products-list.grid
-  .product-wapper
-  .products-thumb
-  .product-button
-  .btn-wishlist
-  .product-btn-active:before {
+
+.product-wapper .products-thumb .product-button .product-btn-active:before {
   content: "\e634";
   font-family: themify;
   font-size: 16px;
@@ -33,12 +24,3 @@
   -webkit-transition: all 0.1s ease;
   transition: all 0.1s ease;
 }
-
-/* .products-list.grid
-  .product-wapper
-  .products-thumb
-  .product-button
-  .btn-add-to-cart
-  .product-btn {
-  background: rgb(0, 0, 0);
-} */

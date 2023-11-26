@@ -32,7 +32,7 @@ const ProductList = () => {
   const [filteredProductList, setFilteredProductList] = useState([]);
   const [brands, setBrands] = useState([]);
   const [p, setP] = useState([]);
-  const { AddToCart, handleAddRemoveWishlist, wishListItems } = useShoppingCart();
+  const { AddToCart, handleAddRemoveWishlist, wishListItems, cartItems } = useShoppingCart();
   const [categoryName, setCategoryName] = useState();
 
   const [categoryDetails, setCategoryDetails] = useState({
@@ -70,7 +70,7 @@ const ProductList = () => {
     const query = {
       currency: "INR",
       page: currentPage,
-      per_page: 12,
+      per_page: 10,
       price_range: `${filter?.minPrice}-${filter?.maxPrice}`,
       brand: filter.brand ? filter.brand : '',
     };
@@ -161,6 +161,11 @@ const ProductList = () => {
           : wishListItems.Items?.findIndex(item => item.product_id === product?.id) === -1
             ? 0
             : 1;
+        const InCart = localStorage.getItem('accessToken')
+          ? product?.is_in_cart
+          : cartItems.Items?.findIndex(item => item.product_id === product?.id) === -1
+            ? 0
+            : 1;
 
         return {
           ...product,
@@ -168,25 +173,34 @@ const ProductList = () => {
           address: address,
           image: [thumbnail, hover],
           desc: product?.product_detail.en,
-          isInWishlist: isInWishlist
+          InWishlist: isInWishlist,
+          InCart: InCart,
         }
       } else {
         const thumbnail = product?.image_path + '/' + product?.subvariants?.[0].variantimages.main_image;
         const hover = product?.image_path + '/' + product?.subvariants?.[0].variantimages.image1;
         const stock = product?.subvariants?.[0].stock;
         const address = `/product-details?product_id=${product?.id}&variant_id=${product?.subvariants?.[0].id}`;
-        const isInWishlist = localStorage.getItem('accessToken')
+        const InWishlist = localStorage.getItem('accessToken')
           ? product?.is_in_wishlist
-          : wishListItems.Items?.findIndex(item => (item.product_id === product?.id && item.variant_id === product.subvariants[0].id)) === -1
+          : wishListItems.Items?.findIndex(item => (item.product_id === product?.id && item.type === 'variant')) === -1
             ? 0
             : 1;
+
+        const InCart = localStorage.getItem('accessToken')
+          ? product?.is_in_cart
+          : cartItems.Items?.findIndex(item => (item.product_id === product?.id && item.type === 'variant')) === -1
+            ? 0
+            : 1;
+        // console.log(address, InWishlist)
         return {
           ...product,
           stock: stock,
           address: address,
           image: [thumbnail, hover],
           desc: product?.des.en,
-          isInWishlist: isInWishlist
+          InWishlist: InWishlist,
+          InCart: InCart
         }
 
       }

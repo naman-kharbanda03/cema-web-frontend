@@ -18,9 +18,12 @@ const Product = (props) => {
     const [productAddress, setProductAddress] = useState();
     const [image, setImage] = useState();
     const [stock, setStock] = useState();
-    const [isInWishlist, setIsInWishlist] = useState(product?.isInWishlist);
+    const [isInWishlist, setIsInWishlist] = useState(0);
 
-
+    useEffect(() => {
+        setIsInWishlist(product.InWishlist);
+        return () => setIsInWishlist(0);
+    }, [product])
     // useEffect(() => {
     //     if (product?.type) {
     //         setProductAddress(`/product-details?product_id=${product.id}`);
@@ -166,7 +169,7 @@ const Product = (props) => {
                                     className="btn-wishlist"
                                     data-title="Wishlist"
                                 >
-                                    <button className={isInWishlist === 1 ? "product-btn-active" : 'product-btn'}
+                                    <button className={isInWishlist ? "product-btn-active" : 'product-btn'}
                                         // style={styles.wishlist}
                                         // onClick={(e) => {
                                         //     handleAddRemoveWishlist(e, product);
@@ -176,7 +179,7 @@ const Product = (props) => {
                                         onClick={(e) => {
                                             // document.documentElement.style.setProperty('--wishlist-color', 'white');
                                             // document.documentElement.style.setProperty('--wishlist-bk-color', 'black');
-                                            setIsInWishlist(prev => prev === 1 ? 0 : 1);
+                                            setIsInWishlist(prev => !prev);
                                             let prod = {};
                                             if (product?.type === "simple_product") {
                                                 prod = product;

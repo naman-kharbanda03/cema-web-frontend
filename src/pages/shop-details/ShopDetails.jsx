@@ -9,6 +9,8 @@ import "./ShopDetails.css";
 import { toast } from "react-toastify";
 import { useLocation, useNavigate } from "react-router-dom";
 import { UserData } from "../../context/UserContext";
+import { FacebookIcon, FacebookShareButton, TwitterShareButton, XIcon } from 'react-share'
+
 
 
 const ShopDetails = (product) => {
@@ -50,6 +52,7 @@ const ShopDetails = (product) => {
   const [isInWishlist, setIsInWishlist] = useState(0)
 
   const fetchDetails = () => {
+    const token = localStorage.getItem('accessToken')
     let apiUrl = ``;
     console.log(variant_id);
     if (variant_id !== null) {
@@ -58,6 +61,10 @@ const ShopDetails = (product) => {
     else apiUrl = apiConfig.productDetailsAPI + '/' + product_id + '/' + 'simple_product';
     fetch(apiUrl, {
       method: "GET",
+      headers: {
+        // "Content-Type": "application/json",
+        Authorization: `Bearer ${token}`,
+      }
     })
       .then((response) => {
         if (!response.ok) throw new Error("Network Issue");
@@ -69,11 +76,11 @@ const ShopDetails = (product) => {
           setData(data.data.original.product);
           setReviews(data?.data?.original.product.ratingsAndreviews);
           const isInWishlist = localStorage.getItem('accessToken')
-            ? data.data.is_in_wishlist
-            : wishListItems.Items?.findIndex(item => (item?.product_id === data.data.original.product.product_id)) === -1
+            ? data.data.original.product.is_in_wishlist
+            : wishListItems.Items?.findIndex(item => (item?.product_id === data.data.original.product.product_id && item?.type === 'variant')) === -1
               ? 0
               : 1;
-          // console.log(isInWishlist);
+          console.log(isInWishlist);
           setIsInWishlist(isInWishlist);
         }
         else if (data.data.combinations.length === 1) {
@@ -88,7 +95,7 @@ const ShopDetails = (product) => {
             : wishListItems.Items?.findIndex(item => (item?.product_id === data.data.combinations[0]?.id)) === -1
               ? 0
               : 1;
-          // console.log(isInWishlist, 'wishlist');
+          console.log(isInWishlist, 'wishlist');
           setThumb(A);
           setImage(hover);
           setVariant(0);
@@ -563,7 +570,7 @@ const ShopDetails = (product) => {
                           </span>
                           <span className="posted-in">
                             Category:{" "}
-                            <a href="shop-grid-left.html" rel="tag">
+                            <a href={`/products?id=${data?.category_id}`} rel="tag">
                               {data?.category_id}
                             </a>
                           </span>
@@ -577,25 +584,37 @@ const ShopDetails = (product) => {
                           }
 
                         </div>
-                        <div className="social-share">
-                          <a
+                        <div className="social-share" style={{ display: 'flex', width: '15%', justifyContent: 'space-evenly' }}>
+                          {/* <a
                             href="#"
                             title="Facebook"
                             className="share-facebook"
                             target="_blank"
                           >
                             <i className="fa fa-facebook"></i>Facebook
-                          </a>
-                          <a href="#" title="Twitter" className="share-twitter">
+                          </a> */}
+                          <FacebookShareButton url={window.location.href} className="share-facebook">
+                            <FacebookIcon size={32} round />
+                          </FacebookShareButton>
+
+                          {/* <a href="#" title="Twitter" className="share-twitter">
                             <i className="fa fa-twitter"></i>Twitter
-                          </a>
-                          <a
+                          </a> */}
+                          {/* {console.log(window.location.href)} */}
+                          <TwitterShareButton
+                            url={`${window.location.href}`}
+                            title={'Share'}
+                            className="share-twitter"
+                          >
+                            <XIcon size={32} round />
+                          </TwitterShareButton>
+                          {/* <a
                             href="#"
                             title="Pinterest"
                             className="share-pinterest"
                           >
                             <i className="fa fa-pinterest"></i>Pinterest
-                          </a>
+                          </a> */}
                         </div>
                       </div>
                     </div>

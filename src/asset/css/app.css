@@ -29828,6 +29828,7 @@ body i[class~="slick-arrow"][class~="fa-angle-right"] {
   .added-to-cart:before {
   content: "\4e";
   font-family: ElegantIcons;
+  width: 10px;
 }
 .products-list.grid
   .product-wapper
@@ -30032,9 +30033,10 @@ body i[class~="slick-arrow"][class~="fa-angle-right"] {
   border: 1px solid #e8e8e8;
   color: #a9a8a8;
   font-size: 15px;
-  line-height: 48px;
+  /* line-height: 48px; */
   width: 100%;
-  padding: 0 15px;
+  height: 100%;
+  padding: 0 13px 5px 8px;
   -webkit-transition: all 0.2s ease;
   transition: all 0.2s ease;
   text-align: center;
@@ -30097,6 +30099,7 @@ body i[class~="slick-arrow"][class~="fa-angle-right"] {
   font-family: ElegantIcons;
   text-indent: 0;
   text-transform: none;
+  width: 10px;
 }
 .products-list.list .product-wapper {
   margin-bottom: 40px;

@@ -95,29 +95,25 @@ const WishListTable = () => {
                                             <span></span>
                                         </td>
                                         <td className="wishlist-item-image">
-                                            <Link to={order.link}>
-                                                <a href="shop-details.html">
-                                                    <img
-                                                        width="600"
-                                                        height="600"
-                                                        src={order?.image_path + '/' + order?.product_image}
-                                                        alt=""
-                                                    />
-                                                </a>
-                                            </Link>
+                                            <a href={order.link}>
+                                                <img
+                                                    width="600"
+                                                    height="600"
+                                                    src={order?.image_path + '/' + order?.product_image}
+                                                    alt=""
+                                                />
+                                            </a>
                                         </td>
                                         <td className="wishlist-item-info">
                                             <div className="wishlist-item-name">
-                                                <Link to={order.link}>
-                                                    <a href="shop-details.html">
-                                                        {order?.product_name?.en}
-                                                    </a>
-                                                </Link>
+                                                <a href={order.link}>
+                                                    {order?.product_name?.en}
+                                                </a>
                                             </div>
                                             <div className="wishlist-item-price">
-                                                {/* <span>{order.simple_product.price}</span> */}
+                                                <span>KD {order.price}</span>
                                             </div>
-                                            <div className="wishlist-item-time">June 6, 2022</div>
+                                            {/* <div className="wishlist-item-time">June 6, 2022</div> */}
                                         </td>
                                         <td className="wishlist-item-actions">
                                             <div className="wishlist-item-stock">{order?.stock > 0 ? "In Stock" : "Out of Stock"}</div>
@@ -128,11 +124,11 @@ const WishListTable = () => {
                                                     data-title="Add to cart"
                                                 >
                                                     {order?.stock > 0
-                                                        ? <a
+                                                        ? <button
                                                             rel="nofollow"
                                                             href="#"
                                                             className="product-btn button"
-                                                            onClick={() => {
+                                                            onClick={(e) => {
                                                                 const prod = {
                                                                     id: order?.product_id,
                                                                     price: order?.price,
@@ -145,12 +141,17 @@ const WishListTable = () => {
                                                                     max_order_limit: order?.max_order_limit,
                                                                     link: order?.link,
                                                                 }
-                                                                console.log(order);
-                                                                AddToCart(prod, 1);
+                                                                // console.log(order);
+                                                                AddToCart(prod, 1)
+                                                                    .then((result) => {
+                                                                        if (result)
+                                                                            handleAddRemoveWishlist(e, prod);
+                                                                    })
+                                                                // handleAddRemoveWishlist(e, prod);
                                                             }}
                                                         >
-                                                            Add to cart
-                                                        </a>
+                                                            Move to cart
+                                                        </button>
                                                         : ''}
                                                     {" "}
                                                     &nbsp;&nbsp;
