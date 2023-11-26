@@ -34,7 +34,7 @@ import ProductGrid from "../product-list/product-grid/ProductGrid";
 //     });
 // }
 
-const NewArrival = () => {
+const NewArrival = ({ section }) => {
   const [data, setData] = useState([{}]);
   const token = localStorage.getItem("accessToken");
   const { AddToCart, handleAddRemoveWishlist, wishListItems } = useShoppingCart();
@@ -43,7 +43,7 @@ const NewArrival = () => {
 
   const fetchDetails = () => {
     fetch(
-      "https://www.demo609.amrithaa.com/backend-cema/public/api/products?per_page=12&page=1&new_arrival=1",
+      `${apiConfig.listingAPI}?per_page=12&page=1&${section}=1`,
       {
         method: "GET",
       }

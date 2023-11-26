@@ -53,7 +53,7 @@ const Home = () => {
                       <div className="block-content">
                         <div class="products-list grid">
                           <div class="row">
-                            <NewArrival />
+                            <NewArrival section={`new_arrival`} />
                           </div>
                         </div>
                         <div className="products-loadmore">
@@ -102,7 +102,7 @@ const Home = () => {
                 </div>
               </section>
 
-              <section className="section section-padding m-b-50">
+              {/* <section className="section section-padding m-b-50">
                 <div className="section-container large">
                   <div className="block block-products loadmore">
                     <div className="block-widget-wrap">
@@ -135,6 +135,40 @@ const Home = () => {
                         <i className="icon-arrow-down" aria-hidden="true" />
                       </div>
                     </Link>
+                  </div>
+                </div>
+              </section> */}
+
+              <section className="section section-padding m-b-50">
+                <div className="section-container large">
+                  {/* Block Products */}
+                  <div className="block block-products loadmore">
+                    <div className="block-widget-wrap">
+                      <div className="block-title">
+                        <h2>Best Sellers</h2>
+                      </div>
+                      <div className="block-content">
+                        <div class="products-list grid">
+                          <div class="row">
+                            <NewArrival section={`best_seller`} />
+                          </div>
+                        </div>
+                        <div className="products-loadmore">
+                          <Link to={"/listings?products=best_sellers"} >
+                            <div className="btn button-outline loadmore">
+                              <div className="lds-ellipsis">
+                                <div />
+                                <div />
+                                <div />
+                                <div />
+                              </div>
+                              <span >View more</span>
+                              <i className="icon-arrow-down" aria-hidden="true" />
+                            </div>
+                          </Link>
+                        </div>
+                      </div>
+                    </div>
                   </div>
                 </div>
               </section>

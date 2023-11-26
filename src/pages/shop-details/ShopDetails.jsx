@@ -138,6 +138,7 @@ const ShopDetails = (product) => {
       if (combination.id === parseInt(variant_id)) {
         setVariant(index);
         setImage(data.images_path + '/' + combination.images[0].image);
+        // setCurrentColor(combination.varaints)
         // combination.variants.forEach(variant => {
         //   if (variant.attr_name === 'Color') {
         //     setCurrentColor(variant.var_name);
@@ -195,7 +196,7 @@ const ShopDetails = (product) => {
 
   const giveReview = (e) => {
     e.preventDefault();
-    if (!review?.name || !review?.email || !review?.review) {
+    if (!review?.name || !review?.email || !review?.review || !review?.quality) {
       toast.warning("Please fill all the fields", {
         position: toast.POSITION.BOTTOM_LEFT,
       });
@@ -206,9 +207,9 @@ const ShopDetails = (product) => {
     //   formData.append(key, review[key]);
     // });
     console.log(review);
-    formData.append('quality', review.quality || '0');
-    formData.append('Price', '5');
-    formData.append('Value', '3');
+    formData.append('quality', review.quality);
+    formData.append('Price', review.quality);
+    formData.append('Value', review.quality);
     formData.append('product_id', data.product_id);
     formData.append('review', review.review);
     formData.append('type', data?.type === 'simple_product' ? 'simple' : 'variant');
@@ -566,7 +567,7 @@ const ShopDetails = (product) => {
                         </div>
                         <div className="product-meta">
                           <span className="sku-wrapper">
-                            SKU: <span className="sku">{data?.SKU}</span>
+                            SKU: <span className="sku">{data?.sku}</span>
                           </span>
                           <span className="posted-in">
                             Category:{" "}

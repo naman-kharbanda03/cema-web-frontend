@@ -412,7 +412,7 @@ const Header = () => {
                             </div>
                           </div>
                         </li>
-                        <li className="level-0 menu-item menu-item-has-children mega-menu mega-menu-fullwidth">
+                        <li className="level-0 menu-item menu-item-has-children mega-menu level-menu-fullwidth">
                           <a href="/products">
                             <span className="menu-item-text">Products</span>
                           </a>

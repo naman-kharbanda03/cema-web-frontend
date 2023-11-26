@@ -257,7 +257,7 @@ const Cart = () => {
                                         Continue Shopping
                                       </a>
                                     </h2> */}
-                                        <Link to={"/products"}>
+                                        <a href={"/products"}>
                                           <div
                                             type="submit"
                                             name="update_cart"
@@ -266,7 +266,7 @@ const Cart = () => {
                                           >
                                             Continue Shopping
                                           </div>
-                                        </Link>
+                                        </a>
                                       </div>
                                     </td>
                                   </tr>
@@ -324,6 +324,12 @@ const Cart = () => {
                                     Shipping options will be updated during
                                     checkout.
                                   </p>
+                                </div>
+                              </div>
+                              <div className="order-total">
+                                <div className="title">Tax</div>
+                                <div>
+                                  <span>KD {orderData?.total_tax_amount}</span>
                                 </div>
                               </div>
                               <div className="order-total">

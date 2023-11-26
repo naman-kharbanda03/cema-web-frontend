@@ -927,12 +927,12 @@ const ShopCheckout = () => {
                                 <span>KD {datta?.discount_amount}</span>
                               </div>
                             </div>
-                            {/* <div className="cart-subtotal">
-                              <h2>Shipping Charges</h2>
+                            <div className="cart-subtotal">
+                              <h2>Tax</h2>
                               <div className="subtotal-price">
-                                <span>Amit Please send</span>
+                                <span>KD {datta?.total_tax_amount}</span>
                               </div>
-                            </div> */}
+                            </div>
                             <div className="order-total">
                               <h2>Total</h2>
                               <div className="total-price">

@@ -4300,7 +4300,7 @@ body i[class~="slick-arrow"][class~="fa-angle-right"] {
   width: 562pt;
 }
 .site-navigation ul > li.level-0.mega-menu.level-menu-fullwidth > .sub-menu {
-  width: 200pt;
+  width: auto;
 }
 [class~="site-header"] [class~="header-mobile"] [class~="navbar-toggle"] {
   border-right-style: none;
