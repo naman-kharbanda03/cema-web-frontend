@@ -48,7 +48,7 @@ const ShopCheckout = () => {
   const handleCheckboxChange = (e) => {
     const newValue = e.target.checked; // Get the new value of the checkbox
     setShipToDifferentAddress(newValue); // Update the state
-    setShipState(state);
+    // setShipState(state);
   };
 
   const addOrUpdateBillingAddress = () => {
@@ -140,17 +140,33 @@ const ShopCheckout = () => {
 
     if (orders.length === 0) {
       showInfoToastMessage('Please add products')
+      setButtonClicked(false);
     } else if (!state.id) {
       showInfoToastMessage('Please add billing address')
-    } else if (!shipState.id) {
+      setButtonClicked(false);
+
+    } else if (!shipState.id && !shipToDifferentAddress) {
       showInfoToastMessage('Please add shipping address')
+      setButtonClicked(false);
+
     }
     else {
-      const formdata = {
-        grand_total: datta?.grand_total,
-        billing_id: state?.id,
-        shipping_id: shipState?.id,
-      };
+      var formdata = {};
+      if (shipToDifferentAddress) {
+        formdata = {
+          grand_total: datta?.grand_total,
+          billing_id: state?.id,
+          shipping_id: shipState?.id ? shipState.id : '',
+          sameAsBilling: 1
+        };
+      } else {
+        formdata = {
+          grand_total: datta?.grand_total,
+          billing_id: state?.id,
+          shipping_id: shipState?.id,
+        };
+      }
+
       fetch(apiConfig.checkoutAPI, {
         method: "POST",
         headers: {
@@ -170,6 +186,7 @@ const ShopCheckout = () => {
               // navigate(`/account?activeTab=orders&orderId=${"EODD" + result?.order_id}`)
             }, 1000)
           } else {
+            setButtonClicked(false);
             showInfoToastMessage(result.message)
           }
 

@@ -30,6 +30,7 @@ const apiConfig = {
   removeFromCartAPI: `${BASE_URL}/api/removeFromCart`,
   updateCartAPI: `${BASE_URL}/api/updateCartQuantity`,
   addToWishlistArrayAPI: `${BASE_URL}/api/add_remove_wishlist_array`,
+
   listingAPI: `${BASE_URL}/api/products`,
   slidersAPI: `${BASE_URL}/api/getSlider`,
   changePassword: `${BASE_URL}/api/password/change`,
@@ -38,7 +39,7 @@ const apiConfig = {
   homeSecondCategory: `${BASE_URL}/api/homeSecondcategories`,
   homeFirstCategory: `${BASE_URL}/api/homeFirstcategories`,
   //rating
-  addProductReview: `${BASE_URL}/api/addSimpleProductReview`,
+  addProductReview: `${BASE_URL}/api/add_review`,
 
   navCategoriesAPI: `${BASE_URL}/api/navCategories`,
   createBillingAddress: `${BASE_URL}/api/create-billing-address`,

@@ -157,7 +157,7 @@ const OrdersTable = ({ orderId }) => {
 
                 </div>
                 <div style={{ width: '33%' }}>
-                  <h6><strong>Date</strong></h6>
+                  <h6><strong>Date</strong></h6>{orderDetails?.order_date}
 
                 </div>
               </div>
