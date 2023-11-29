@@ -182,6 +182,7 @@ const ShopDetails = (product) => {
     setColors(colors);
     setSizes(sizes);
     setSizesObj(sizesObj);
+    setAttrributes(attributes);
     console.log(combinations, colors, sizes, sizesObj, attributes);
   }, [location.search, data])
 
@@ -418,54 +419,104 @@ const ShopDetails = (product) => {
                           {/* <p>{data?.description.en}</p> */}
                         </div>
 
+                        {
+                          // variant_id
+                          // ?
+                          // <div className="variations">
+                          //   <table cellspacing="0">
+                          //     <tbody>
+                          //       <tr>
+                          //         <td className="label" style={{ marginBottom: '10px' }}>Color</td>
+                          //         <td className="attributes">
+                          //           <ul className="colors">
+                          //             {colors?.map(color => (
+                          //               <li>
+                          //                 <span className={''} style={{ background: `${color}` }}
+                          //                   onClick={() => {
+                          //                     setCurrentColor(color);
+                          //                     setCurrentSize(sizesObj?.[color]?.[0])
+                          //                   }}
+                          //                 ></span>
+                          //               </li>
+                          //             ))}
+                          //           </ul>
+                          //         </td>
+                          //       </tr>
+                          //       {sizes?.length ?
+                          //         <tr>
+                          //           <td className="label">Sizes</td>
+                          //           <td className="attributes">
+                          //             <ul className="text">
+                          //               {/* {sizes?.map(size => (
+                          //               <li>
+                          //                 <span
+                          //                   onClick={() => setCurrentSize(size)}
+                          //                 >{size}</span>
+                          //               </li>
+                          //             ))} */}
+                          //               {sizesObj?.[currentColor]?.map(size => (
+                          //                 <li>
+                          //                   <span
+                          //                     onClick={() => setCurrentSize(size)}
+                          //                   >{size}</span>
+                          //                 </li>
+                          //               ))}
+                          //             </ul>
+                          //           </td>
+                          //         </tr> : <></>}
+                          //     </tbody>
+                          //   </table>
+                          // </div>
+                          // : 
+                          // ''
+                        }
+
                         {variant_id
                           ?
                           <div className="variations">
                             <table cellspacing="0">
                               <tbody>
-                                <tr>
-                                  <td className="label" style={{ marginBottom: '10px' }}>Color</td>
-                                  <td className="attributes">
-                                    <ul className="colors">
-                                      {colors?.map(color => (
-                                        <li>
-                                          <span className={''} style={{ background: `${color}` }}
-                                            onClick={() => {
-                                              setCurrentColor(color);
-                                              setCurrentSize(sizesObj?.[color]?.[0])
-                                            }}
-                                          ></span>
-                                        </li>
-                                      ))}
-                                    </ul>
-                                  </td>
-                                </tr>
-                                {sizes?.length ?
-                                  <tr>
-                                    <td className="label">Sizes</td>
-                                    <td className="attributes">
-                                      <ul className="text">
-                                        {/* {sizes?.map(size => (
-                                        <li>
-                                          <span
-                                            onClick={() => setCurrentSize(size)}
-                                          >{size}</span>
-                                        </li>
-                                      ))} */}
-                                        {sizesObj?.[currentColor]?.map(size => (
-                                          <li>
-                                            <span
-                                              onClick={() => setCurrentSize(size)}
-                                            >{size}</span>
-                                          </li>
-                                        ))}
-                                      </ul>
-                                    </td>
-                                  </tr> : <></>}
+                                {
+                                  data?.attributes.map(attri => (
+                                    <tr>
+                                      <td className="label" style={{ marginBottom: '7px' }}>{attri.attrribute}</td>
+                                      <td className="attributes">
+                                        <ul className="colors">
+                                          {attrributes?.[attri.attrribute]?.map(val => {
+                                            if (attri.attrribute === 'Color')
+                                              return (
+                                                <li>
+                                                  <span className={''}
+                                                    style={{ background: `${val}` }}
+                                                  // onClick={() => {
+                                                  //   setCurrentColor(color);
+                                                  //   setCurrentSize(sizesObj?.[color]?.[0])
+                                                  // }}
+                                                  ></span>
+                                                </li>
+                                              )
+                                            return (
+                                              <li>
+                                                <span className={''}
+                                                  style={{ background: 'white', width: 'fit-content' }}
+                                                // onClick={() => {
+                                                //   setCurrentColor(color);
+                                                //   setCurrentSize(sizesObj?.[color]?.[0])
+                                                // }}
+                                                >{val}</span>
+                                              </li>
+                                            )
+                                          })}
+                                        </ul>
+                                      </td>
+                                    </tr>
+                                  ))
+                                }
                               </tbody>
                             </table>
                           </div>
                           : ''}
+
 
                         <div className="buttons">
                           <div className="add-to-cart-wrap">
