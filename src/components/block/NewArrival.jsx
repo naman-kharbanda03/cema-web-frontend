@@ -65,11 +65,28 @@ const NewArrival = ({ section }) => {
                 ? 0
                 : 1;
             return {
-              ...product,
+              // ...product,
               image: [thumbnail, hover],
               address: `/product-details?product_id=${product.id}`,
               stock: stock,
-              InWishlist: isInWishlist
+              InWishlist: isInWishlist,
+
+              //Later properties
+              id: product.id,
+              variant_id: null,
+              product_name: { en: product?.product_name?.en },
+              image_path: product?.thumbnail_path,
+              product_image: [
+                `${product.thumbnail}`,
+              ],
+              stock: product?.stock,
+              max_order_limit: product?.max_order_qty,
+              price: product?.price,
+              type: "simple_product",
+              link: `/product-details?product_id=${product.id}`,
+              hot_product: product.hot_product,
+              reviews: product?.reviews,
+              product_rating: product?.product_rating
             }
           }
 
@@ -83,11 +100,27 @@ const NewArrival = ({ section }) => {
                 ? 0
                 : 1;
             return {
-              ...product,
+              // ...product,
               image: [thumbnail, hover],
               address: `/product-details?product_id=${product?.id}&variant_id=${product?.subvariants?.[0].id}`,
               stock: stock,
-              InWishlist: isInWishlist
+              InWishlist: isInWishlist,
+
+              id: product.id,
+              variant_id: product.subvariants?.[0]?.id,
+              product_name: { en: product?.product_name?.en },
+              image_path: product?.image_path,
+              product_image: [
+                `${product.subvariants?.[0]?.variantimages?.image1}`,
+              ],
+              stock: product?.subvariants?.[0]?.stock,
+              max_order_limit: product?.subvariants?.[0]?.max_order_qty,
+              price: product?.subvariants?.[0]?.price,
+              type: "variant",
+              link: `/product-details?product_id=${product.id}&variant_id=${product.subvariants?.[0]?.id}`,
+              hot_product: product.hot_product,
+              reviews: product?.reviews,
+              product_rating: product?.product_rating
             }
           }
 

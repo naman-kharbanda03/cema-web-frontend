@@ -10,7 +10,7 @@ const WishListTable = () => {
     const [data, setData] = useState([]);
     const [orderData, setOrderData] = useState([]);
     const [toggle, setToggle] = useState(false);
-    const { AddToCart, wishListToggle, handleAddRemoveWishlist } = useShoppingCart();
+    const { AddToCart, wishListToggle, handleAddRemoveWishlist, showSuccessToastMessage } = useShoppingCart();
 
     useEffect(() => {
         const token = localStorage.getItem('accessToken');
@@ -101,6 +101,7 @@ const WishListTable = () => {
                                                     height="600"
                                                     src={order?.image_path + '/' + order?.product_image}
                                                     alt=""
+                                                    style={{ border: '1px solid' }}
                                                 />
                                             </a>
                                         </td>
@@ -127,6 +128,7 @@ const WishListTable = () => {
                                                         ? <button
                                                             rel="nofollow"
                                                             href="#"
+                                                            style={{ border: '1px solid' }}
                                                             className="product-btn button"
                                                             onClick={(e) => {
                                                                 const prod = {
@@ -144,8 +146,12 @@ const WishListTable = () => {
                                                                 // console.log(order);
                                                                 AddToCart(prod, 1)
                                                                     .then((result) => {
-                                                                        if (result)
-                                                                            handleAddRemoveWishlist(e, prod);
+                                                                        if (result.result)
+                                                                            handleAddRemoveWishlist(e, prod).then(result => {
+                                                                                if (result.result) {
+                                                                                    showSuccessToastMessage('Item removed from wishlist and added to cart')
+                                                                                }
+                                                                            });
                                                                     })
                                                                 // handleAddRemoveWishlist(e, prod);
                                                             }}
@@ -165,7 +171,11 @@ const WishListTable = () => {
                                                                 variant_id: order?.type !== 'simple_product' ? order?.variant_id : null,
                                                                 type: order?.type
                                                             }
-                                                            handleAddRemoveWishlist(e, prod)
+                                                            handleAddRemoveWishlist(e, prod).then(result => {
+                                                                if (result.result) {
+                                                                    showSuccessToastMessage(result.message)
+                                                                }
+                                                            });
                                                         }}
                                                     >
                                                         Remove

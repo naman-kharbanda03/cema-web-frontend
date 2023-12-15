@@ -9,11 +9,13 @@ import "./ShopDetails.css";
 import { toast } from "react-toastify";
 import { useLocation, useNavigate } from "react-router-dom";
 import { UserData } from "../../context/UserContext";
-import { FacebookIcon, FacebookShareButton, TwitterShareButton, XIcon } from 'react-share'
+import { FacebookIcon, FacebookShareButton, TwitterShareButton, XIcon } from 'react-share';
+import NoCombinationModal from "../../components/shop-details/noCombinationModal";
 
 
 
 const ShopDetails = (product) => {
+
   const [data, setData] = useState();
   const [image, setImage] = useState("");
   const [activeTabId, setActiveTabId] = useState(1);
@@ -21,48 +23,47 @@ const ShopDetails = (product) => {
   const [review, setReview] = useState();
   const [thumb, setThumb] = useState();
   const [toggleForm, SetForm] = useState(false);
+
   const targetRef = useRef(null);
   const navigate = useNavigate();
 
   const token = localStorage.getItem("accessToken");
+
   const url = new URL(window.location.href);
   const params = new URLSearchParams(url.search);
   const product_id = params.get("product_id");
   const variant_id = params.get('variant_id');
 
+
   const location = useLocation();
   const queryParams = new URLSearchParams(location.search);
   const [variant, setVariant] = useState();
-  const [defaultVID, setDefaultVID] = useState();
 
 
-  const { AddToCart, handleAddRemoveWishlist, showInfoToastMessage, wishListItems } = useShoppingCart();
-  const { LOGGEDIN, redirect, setRedirect } = useContext(UserData);
+  const { AddToCart, handleAddRemoveWishlist, showInfoToastMessage, wishListItems, showSuccessToastMessage } = useShoppingCart();
+  const { LOGGEDIN } = useContext(UserData);
 
   const [quant, setQuant] = useState(1);
 
-  const [colorMap, setColorMap] = useState();
-  const [colors, setColors] = useState();
-  const [sizes, setSizes] = useState();
-  const [currentColor, setCurrentColor] = useState('');
-  const [currentSize, setCurrentSize] = useState('');
+
+
+  const [selectedCombination, setSelectedCombination] = useState();
   const [attrributes, setAttrributes] = useState();
-  const [combinations, setCombinations] = useState();
-  const [sizesObj, setSizesObj] = useState({});
+  const [noCombination, setNoCombination] = useState(false);
   const [isInWishlist, setIsInWishlist] = useState(0)
+  const [combination, setCombination] = useState();
 
   const fetchDetails = () => {
     const token = localStorage.getItem('accessToken')
     let apiUrl = ``;
-    console.log(variant_id);
+    // console.log(variant_id);
     if (variant_id !== null) {
-      apiUrl = `${apiConfig.productDetailsAPI}/${product_id}/variant?variant_id=${variant_id}&currency=INR`;
+      apiUrl = `${apiConfig.productDetailsAPI}/${product_id}/variant?variant_id=${variant_id}&currency=KD`;
     }
     else apiUrl = apiConfig.productDetailsAPI + '/' + product_id + '/' + 'simple_product';
     fetch(apiUrl, {
       method: "GET",
       headers: {
-        // "Content-Type": "application/json",
         Authorization: `Bearer ${token}`,
       }
     })
@@ -71,7 +72,8 @@ const ShopDetails = (product) => {
         return response.json();
       })
       .then((data) => {
-        console.log("cart -->", data?.data);
+        // console.log("cart -->", data?.data);
+
         if (variant_id !== undefined && data?.data?.original) {
           setData(data.data.original.product);
           setReviews(data?.data?.original.product.ratingsAndreviews);
@@ -80,7 +82,7 @@ const ShopDetails = (product) => {
             : wishListItems.Items?.findIndex(item => (item?.product_id === data.data.original.product.product_id && item?.type === 'variant')) === -1
               ? 0
               : 1;
-          console.log(isInWishlist);
+          // console.log(isInWishlist);
           setIsInWishlist(isInWishlist);
         }
         else if (data.data.combinations.length === 1) {
@@ -89,111 +91,59 @@ const ShopDetails = (product) => {
           let thumbnail = data.data.thumbnail_path + "/" + data.data.thumbnail;
           let hover = data.data.thumbnail_path + "/" + data.data.hover_thumbnail;
           let A = [thumbnail, hover];
-          // let B = [{ 'image': data.data.thumbnail }, { 'image': data.data.hover_thumbnail }]
           const isInWishlist = localStorage.getItem('accessToken')
             ? data.data.is_in_wishlist
             : wishListItems.Items?.findIndex(item => (item?.product_id === data.data.combinations[0]?.id)) === -1
               ? 0
               : 1;
-          console.log(isInWishlist, 'wishlist');
+          // console.log(isInWishlist, 'wishlist');
           setThumb(A);
           setImage(hover);
           setVariant(0);
+          setCombination(data.data.combinations[0]);
           setIsInWishlist(isInWishlist);
           setData((prev) => {
-            // const combination = { ...data.data.combinations?.[0] };
-            // const images = [...combination.images, ...B];
-            // combination.images = images;
-            // console.log(combination);
             return {
               ...prev,
               type: 'simple_product',
-              // combination: combination,
             }
           })
         }
-        console.log("testing", data.data);
+        // console.log("testing", data.data);
       })
       .catch((error) => console.error("Problem with fetch operations", error));
   };
   useEffect(() => {
-    const colors = [];
-    const sizes = [];
-    var sizesObj = {};
-    const combinations = [];
+
     const attributes = {};
-    const attributesArray = []
+    const queryCombination = {};
+
+    // Attributes Extracted.
     data?.attributes?.forEach(attri => {
       attributes[attri.attrribute] = [];
-      // var obj = {
-      //   name: attri.attrribute,
-      //   values: []
-      // }
-      // attributesArray.push(obj);
     })
-    console.log('start');
+
+    // Attributes Object
+    data?.attributes?.map(attri => {
+      const value = params.get(attri.attrribute);
+      queryCombination[attri.attrribute] = value;
+    })
+    // console.log(queryCombination);
+    setSelectedCombination(queryCombination);
+
+    checkForCombination(queryCombination);
+
+    //Attributes to display on front end
     data?.combinations?.forEach((combination, index) => {
-      let color = "";
-      let size = "";
-      if (combination.id === parseInt(variant_id)) {
-        setVariant(index);
-        setImage(data.images_path + '/' + combination.images[0].image);
-        // setCurrentColor(combination.varaints)
-        // combination.variants.forEach(variant => {
-        //   if (variant.attr_name === 'Color') {
-        //     setCurrentColor(variant.var_name);
-        //     console.log("currentcolor", variant.var_name)
-        //   }
-
-        //   if (variant.attr_name === 'Size') {
-        //     setCurrentSize(variant.var_name);
-        //     console.log("currentsize", variant.var_name);
-        //   }
-        // })
-      }
-
       combination.variants.forEach(variant => {
-        if (variant.attr_name === "Color") color = variant.var_name;
-        if (variant.attr_name === "Size") size = variant.var_name;
         if (!attributes[variant.attr_name].includes(variant.var_name))
           attributes[variant.attr_name]?.push(variant.var_name);
       })
-      const obj = {
-        index: index,
-        id: combination.id,
-        Color: color,
-        Size: size
-      }
-      combinations.push(obj);
-      if (color && !colors.includes(color)) {
-        colors.push(color);
-      }
-      if (size && !sizes.includes(size)) {
-        sizes.push(size);
-      }
-      if (!sizesObj[color]) {
-        sizesObj[color] = [size];
-      }
-      else {
-        sizesObj[color].push(size);
-      }
     })
-    setCombinations(combinations);
-    setColors(colors);
-    setSizes(sizes);
-    setSizesObj(sizesObj);
-    setAttrributes(attributes);
-    console.log(combinations, colors, sizes, sizesObj, attributes);
-  }, [location.search, data])
 
-  useEffect(() => {
-    console.log(currentSize, currentColor);
-    const selectedCombination = combinations?.find(combination => (combination?.Color === currentColor && combination?.Size === currentSize)) || 'Not';
-    console.log(selectedCombination);
-    if (selectedCombination !== 'Not') {
-      navigate(`/product-details?product_id=${product_id}&variant_id=${selectedCombination?.id}`)
-    }
-  }, [currentColor, currentSize])
+    setAttrributes(attributes);
+    // console.log(attributes);
+  }, [location.search, data])
 
   const giveReview = (e) => {
     e.preventDefault();
@@ -204,9 +154,6 @@ const ShopDetails = (product) => {
       return;
     }
     const formData = new FormData();
-    // Object.keys(review).map((key) => {
-    //   formData.append(key, review[key]);
-    // });
     console.log(review);
     formData.append('quality', review.quality);
     formData.append('Price', review.quality);
@@ -258,12 +205,93 @@ const ShopDetails = (product) => {
       };
     });
   };
-  const scrollToSection = () => {
-    targetRef.current.scrollIntoView({ behavior: "smooth" });
-  };
+
   useEffect(() => {
     fetchDetails();
   }, []);
+  function objectToQueryString(obj) {
+    const queryParams = Object.entries(obj)
+      .map(([key, value]) => {
+        if (value === null) return;
+        return `${encodeURIComponent(key)}=${encodeURIComponent(value)}`
+      })
+      .join('&');
+
+    return queryParams;
+  }
+  function removeNullValues(obj) {
+    const newObj = { ...obj }; // Create a shallow copy of the original object
+
+    for (const key in newObj) {
+      if (newObj[key] === null) {
+        delete newObj[key]; // Remove the key-value pair if the value is null
+      }
+    }
+
+    return newObj;
+  }
+  const scrollToSection = () => {
+    targetRef.current.scrollIntoView({ behavior: "smooth" });
+  };
+
+  const checkForCombination = (combination) => {
+
+    //If no query in url
+    if (Object.values(combination).every(val => val === null)) {
+      const combination = data?.combinations?.find(comb => comb.default === 'Yes')
+      setCombination(combination);
+      setImage(`${data?.images_path}/${combination?.images[0].image}`)
+      setVariant(combination?.id)
+      setQuant(1);
+      // console.log(2);
+    }
+    // if some query in url
+    else if (Object.values(combination).some(val => val === null)) {
+      // console.log(1);
+      const filteredQuery = removeNullValues(combination);
+      const selectedCombination = data?.combinations?.find(comb =>
+        Object.entries(filteredQuery).every(([attr, val]) =>
+          comb.variants.some(variant => {
+            if (variant.attr_name === attr && variant.var_name === val) {
+              return true;
+            }
+            return false
+          })
+        )
+      );
+      // console.log(selectedCombination);
+      if (selectedCombination) {
+        setCombination(selectedCombination);
+        setVariant(selectedCombination.id)
+        setImage(`${data?.images_path}/${selectedCombination.images[0].image}`);
+        setQuant(1);
+
+      }
+    }
+    //if all query in
+    else if (Object.values(combination).every(val => val !== null)) {
+      const selectedCombination = data?.combinations?.find(comb =>
+        Object.entries(combination).every(([attr, val]) =>
+          comb.variants.some(variant => {
+            if (variant.attr_name === attr && variant.var_name === val) {
+              return true;
+            }
+            return false
+          })
+        )
+      );
+      if (selectedCombination && data.combinations) {
+        setCombination(selectedCombination);
+        setVariant(selectedCombination.id);
+        setImage(`${data?.images_path}/${selectedCombination.images[0].image}`)
+        setQuant(1);
+
+      }
+      else
+        setNoCombination(true);
+    }
+  }
+  // useEffect(() => { console.log(selectedCombination) }, [selectedCombination]);
 
   return (
     <div id="site-main" className="site-main">
@@ -320,7 +348,7 @@ const ShopDetails = (product) => {
                                     </span>
                                   </div>
                                 ))}
-                                {data?.combinations?.[variant]?.images.map((images) => (
+                                {combination?.images.map((images) => (
                                   <div className="img-item slick-slide">
                                     <span className="img-thumbnail-scroll">
                                       <img
@@ -371,16 +399,18 @@ const ShopDetails = (product) => {
                       <div className="product-info col-lg-5 col-md-12 col-12 ">
                         <h1 className="title">{data?.product_name?.en}</h1>
                         <span className="price">
-                          <del aria-hidden="true">
+                          <del
+                            aria-hidden="true"
+                          >
                             <span>
-                              {data?.combinations?.[variant]?.symbol}
-                              {data?.combinations?.[variant]?.mainprice}
+                              KD{' '}
+                              {combination?.mainprice}
                             </span>
                           </del>
                           <ins>
                             <span>
-                              {data?.combinations?.[variant]?.symbol}
-                              {data?.combinations?.[variant]?.offerprice}
+                              KD {' '}
+                              {combination?.offerprice}
                             </span>
                           </ins>
                         </span>
@@ -419,57 +449,8 @@ const ShopDetails = (product) => {
                           {/* <p>{data?.description.en}</p> */}
                         </div>
 
-                        {
-                          // variant_id
-                          // ?
-                          // <div className="variations">
-                          //   <table cellspacing="0">
-                          //     <tbody>
-                          //       <tr>
-                          //         <td className="label" style={{ marginBottom: '10px' }}>Color</td>
-                          //         <td className="attributes">
-                          //           <ul className="colors">
-                          //             {colors?.map(color => (
-                          //               <li>
-                          //                 <span className={''} style={{ background: `${color}` }}
-                          //                   onClick={() => {
-                          //                     setCurrentColor(color);
-                          //                     setCurrentSize(sizesObj?.[color]?.[0])
-                          //                   }}
-                          //                 ></span>
-                          //               </li>
-                          //             ))}
-                          //           </ul>
-                          //         </td>
-                          //       </tr>
-                          //       {sizes?.length ?
-                          //         <tr>
-                          //           <td className="label">Sizes</td>
-                          //           <td className="attributes">
-                          //             <ul className="text">
-                          //               {/* {sizes?.map(size => (
-                          //               <li>
-                          //                 <span
-                          //                   onClick={() => setCurrentSize(size)}
-                          //                 >{size}</span>
-                          //               </li>
-                          //             ))} */}
-                          //               {sizesObj?.[currentColor]?.map(size => (
-                          //                 <li>
-                          //                   <span
-                          //                     onClick={() => setCurrentSize(size)}
-                          //                   >{size}</span>
-                          //                 </li>
-                          //               ))}
-                          //             </ul>
-                          //           </td>
-                          //         </tr> : <></>}
-                          //     </tbody>
-                          //   </table>
-                          // </div>
-                          // : 
-                          // ''
-                        }
+
+
 
                         {variant_id
                           ?
@@ -477,32 +458,44 @@ const ShopDetails = (product) => {
                             <table cellspacing="0">
                               <tbody>
                                 {
-                                  data?.attributes.map(attri => (
+                                  data?.attributes?.map(attri => (
                                     <tr>
-                                      <td className="label" style={{ marginBottom: '7px' }}>{attri.attrribute}</td>
+                                      <td className="label" style={{ marginBottom: '0px' }}>{attri.attrribute}</td>
                                       <td className="attributes">
                                         <ul className="colors">
                                           {attrributes?.[attri.attrribute]?.map(val => {
-                                            if (attri.attrribute === 'Color')
+                                            if (attri.attrribute === 'Color' || attri.attrribute === 'color')
                                               return (
                                                 <li>
-                                                  <span className={''}
+                                                  <span className={combination?.variants?.some(variant => variant.var_name === val) ? 'active' : ''}
                                                     style={{ background: `${val}` }}
-                                                  // onClick={() => {
-                                                  //   setCurrentColor(color);
-                                                  //   setCurrentSize(sizesObj?.[color]?.[0])
-                                                  // }}
+                                                    onClick={() => {
+                                                      console.log(selectedCombination);
+                                                      const combination = selectedCombination;
+                                                      combination[attri.attrribute] = val;
+                                                      // console.log(combination);
+                                                      const link = objectToQueryString(combination);
+                                                      checkForCombination(combination);
+                                                      // navigate(`/product-details?product_id=10&variant_id=12&${link}`)
+                                                    }}
                                                   ></span>
                                                 </li>
                                               )
                                             return (
                                               <li>
-                                                <span className={''}
-                                                  style={{ background: 'white', width: 'fit-content' }}
-                                                // onClick={() => {
-                                                //   setCurrentColor(color);
-                                                //   setCurrentSize(sizesObj?.[color]?.[0])
-                                                // }}
+                                                <span className={combination?.variants?.some(variant => variant.var_name === val) ? 'active' : ''}
+                                                  style={{
+                                                    background: 'white',
+                                                    // width: 'fit-content'
+                                                  }}
+                                                  onClick={() => {
+                                                    console.log(selectedCombination);
+
+                                                    const combination = selectedCombination;
+                                                    combination[attri.attrribute] = val;
+                                                    const link = objectToQueryString(combination);
+                                                    checkForCombination(combination);
+                                                  }}
                                                 >{val}</span>
                                               </li>
                                             )
@@ -525,7 +518,7 @@ const ShopDetails = (product) => {
                                 type="button"
                                 className="plus"
                                 onClick={() => {
-                                  if (quant < data.combinations?.[variant]?.maxorderlimit)
+                                  if (quant < combination.maxorderlimit)
                                     setQuant((count) => count + 1);
                                   else showInfoToastMessage('Max order limit');
                                 }}
@@ -563,22 +556,28 @@ const ShopDetails = (product) => {
                               onClick={() => {
                                 const prod = {
                                   id: data?.product_id,
-                                  price: data?.combinations?.[variant]?.mainprice,
+                                  price: combination?.offerprice,
                                   image_path: data?.images_path,
                                   product_image: [
-                                    `${data?.combinations[variant]?.images[0]?.image}`,
+                                    `${combination?.images[0]?.image}`,
                                   ],
                                   product_name: { en: data?.product_name?.en },
                                   type: data?.type || "variant",
-                                  variant_id: data?.type !== 'simple_product' ? data?.combinations[variant].id : null,
-                                  max_order_limit: data?.combinations[variant]?.maxorderlimit,
+                                  variant_id: data?.type !== 'simple_product' ? combination?.id : null,
+                                  max_order_limit: combination?.maxorderlimit,
                                 };
                                 console.log(prod);
-                                if (data?.combinations?.[variant]?.stock > 0)
-                                  AddToCart(prod, quant);
+                                if (combination?.stock > 0)
+                                  AddToCart(prod, quant).then(result => {
+                                    if (result.result) {
+                                      showSuccessToastMessage(result.message)
+                                    } else {
+                                      showInfoToastMessage(result.message)
+                                    }
+                                  });;
                               }}
                             >
-                              {data?.combinations?.[variant]?.stock > 0
+                              {combination?.stock > 0
                                 ? `Add to cart`
                                 : `Out of stock`}
                             </div>
@@ -598,14 +597,22 @@ const ShopDetails = (product) => {
                                   product_name: { en: data?.product_name?.en },
                                   image_path: data?.images_path,
                                   product_image: [
-                                    `${data?.combinations?.[0].images?.[0].image}`,
+                                    `${combination?.images?.[0].image}`,
                                   ],
-                                  stock: data.combinations?.[0].stock,
-                                  price: data?.combinations?.[0]?.mainprice,
+                                  stock: combination?.stock,
+                                  price: combination?.offerprice,
                                   type: data?.type || "variant",
-                                  variant_id: data?.type !== 'simple_product' ? data?.combinations?.[0].id : null
+                                  variant_id: data?.type !== 'simple_product' ? combination?.id : null
                                 };
-                                handleAddRemoveWishlist(e, prod);
+                                handleAddRemoveWishlist(e, prod).then(result => {
+                                  if (result) {
+                                    if (result.result) {
+                                      showSuccessToastMessage(result.message);
+                                    }
+                                    // if (result === true) showSuccessToastMessage('Product added in wishlist');
+                                    // else if (result === -1) showSuccessToastMessage('Product removed from wishlist')
+                                  }
+                                });
                               }}
                             >
                               Add to wishlist
@@ -683,7 +690,6 @@ const ShopDetails = (product) => {
                             className={`nav-link ${activeTabId === 1 ? "active" : ""
                               }`}
                             data-toggle="tab"
-                            // href="#description"
                             role="tab"
                             onClick={() => {
                               setActiveTabId(1);
@@ -710,7 +716,6 @@ const ShopDetails = (product) => {
                             className={`nav-link ${activeTabId === 3 ? "active" : ""
                               }`}
                             data-toggle="tab"
-                            // href="#reviews"
                             role="tab"
                             onClick={() => setActiveTabId(3)}
                           >
@@ -1391,6 +1396,7 @@ const ShopDetails = (product) => {
               </div> */}
             </div>
           </div>
+          <NoCombinationModal showModal={noCombination} setShowModal={setNoCombination} />
         </div>
       </div>
     </div >

@@ -42,3 +42,6 @@
   .product-btn {
   background: rgb(0, 0, 0);
 } */
+.Toastify__toast-body {
+  font-family: inherit;
+}

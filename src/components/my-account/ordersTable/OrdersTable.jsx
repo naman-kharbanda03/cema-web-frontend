@@ -140,11 +140,11 @@ const OrdersTable = ({ orderId }) => {
                     <h6><strong >Billing Address</strong></h6>
                   </div>
                   <div style={{ margin: '10%', height: '50%' }}>
-                    <h6><strong>{orderDetails?.billing_address?.firstname},{' '}{orderDetails?.billing_address?.mobile}</strong></h6>
+                    <h6><strong>{orderDetails?.billing_address?.name},{' '}{orderDetails?.billing_address?.phone}</strong></h6>
                     {orderDetails?.billing_address?.address},<br />
-                    {orderDetails?.billing_address?.city},{orderDetails?.billing_address?.state},{orderDetails?.shipping_address?.country}
+                    {orderDetails?.billing_address?.city},{orderDetails?.billing_address?.state},{orderDetails?.billing_address?.country}
                     <br />
-                    {orderDetails?.billing_address?.pincode}
+                    {orderDetails?.billing_address?.pin_code}
                   </div>
                 </div>
               </div>
@@ -173,16 +173,16 @@ const OrdersTable = ({ orderId }) => {
                           <div style={{ width: '40%' }}>
                             <img
                               src={item?.thumb_path + '/' + item?.product_thumb}
-                              style={{ border: '1px solid', width: '100%', maxHeight: '100%', objectFit: 'contain' }}
+                              style={{ border: '1px solid', maxWidth: '100%', objectFit: 'fill' }}
                             />
                           </div>
-                          <div style={{ marginLeft: '10px' }}>
+                          <div style={{ marginLeft: '10px', display: 'flex', flexDirection: 'column', justifyContent: 'center' }}>
                             <h6>{item?.product_name?.en}</h6>
 
                             Qty: {item?.qty}
                           </div>
                         </div>
-                        <div style={{ width: '50%', marginLeft: '10px' }}>
+                        <div style={{ width: '50%', marginLeft: '10px', display: 'flex', justifyContent: 'center', flexDirection: 'column' }}>
                           <h6>KD {item?.price}</h6>
                         </div>
                       </div>

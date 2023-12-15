@@ -3,7 +3,7 @@ import { Link } from "react-router-dom";
 import { useShoppingCart } from "../../../context/ShoppingCartContext";
 import './productGrid.css'
 const ProductGrid = (props) => {
-    const { AddToCart, handleAddRemoveWishlist, showInfoToastMessage } = useShoppingCart();
+    const { AddToCart, handleAddRemoveWishlist, showInfoToastMessage, showSuccessToastMessage } = useShoppingCart();
     const product = props.current;
 
     const [productAddress, setProductAddress] = useState();
@@ -12,10 +12,10 @@ const ProductGrid = (props) => {
     const [InWishlist, setInWishlist] = useState(0);
     const [InCart, setInCart] = useState(0);
 
-    console.log(InWishlist, product.InWishlist);
 
     useEffect(() => {
-        setInWishlist(product.InWishlist);
+        // console.log(product)
+        setInWishlist(product?.InWishlist);
         setInCart(product?.InCart);
 
         return () => setInWishlist(0);
@@ -44,7 +44,7 @@ const ProductGrid = (props) => {
                             <div className="product-thumb-hover">
                                 <a href={product.address} target="_blank" rel="noopener noreferrer">
                                     <img
-                                        width={600}
+                                        // width={600}
                                         style={{ width: '300px', height: '328px', objectFit: 'contain' }}
                                         src={product.image?.[0]}
                                         // src={product.image_path?.replace('gallery', `${product?.thumbnail}`)}
@@ -52,14 +52,13 @@ const ProductGrid = (props) => {
                                         alt="image not available"
                                     />
                                     <img
-                                        width="600"
-                                        height="600"
+                                        // width="600"
+                                        // height="600"
                                         style={{ width: '300px', height: '328px', objectFit: 'contain' }}
                                         src={product.image?.[1]}
                                         // src={product.image_path?.replace('gallery', `${product?.hover_thumbnail}`)}
-                                        // src={product.image_path + '/' + product.hover_thumbnail}
                                         className="hover-image back"
-                                        alt=""
+                                        alt="image not available"
                                     />
                                 </a>
                             </div>
@@ -77,17 +76,39 @@ const ProductGrid = (props) => {
                                             let prod = {};
                                             if (product?.type === 'simple_product') {
                                                 if (product.stock > 0) {
-                                                    AddToCart(product, 1).then(result => {
-                                                        if (result) {
-                                                            setInCart(prev => !prev);
-                                                        }
-                                                    });
+                                                    prod = {
+                                                        id: product.id,
+                                                        variant_id: null,
+                                                        product_name: { en: product?.product_name?.en },
+                                                        image_path: product?.thumbnail_path,
+                                                        product_image: [
+                                                            `${product.thumbnail}`,
+                                                        ],
+                                                        stock: product?.stock,
+                                                        max_order_limit: product?.max_order_qty,
+                                                        price: product?.offer_price,
+                                                        type: "simple_product",
+                                                        link: `/product-details?product_id=${product.id}`,
+                                                    }
+                                                    if (InCart) {
+                                                        showInfoToastMessage(`Already in cart, you can change it's quantity in cart`);
+                                                    } else {
+                                                        AddToCart(product, 1).then(result => {
+                                                            if (result.result) {
+                                                                showSuccessToastMessage(result.message)
+                                                                setInCart(prev => !prev);
+                                                            } else {
+                                                                showInfoToastMessage(result.message)
+                                                            }
+                                                        });
+                                                    }
+
                                                 }
 
                                                 else showInfoToastMessage('Out Of Stock')
                                             }
                                             else {
-                                                if (product?.subvariants?.[0]?.stock > 0) {
+                                                if (product?.stock > 0) {
                                                     prod = {
                                                         id: product.id,
                                                         variant_id: product.subvariants?.[0]?.id,
@@ -102,11 +123,20 @@ const ProductGrid = (props) => {
                                                         type: "variant",
                                                         link: `/product-details?product_id=${product.id}&variant_id=${product.subvariants?.[0]?.id}`,
                                                     }
-                                                    AddToCart(prod, 1).then(result => {
-                                                        if (result) {
-                                                            setInCart(prev => !prev);
-                                                        }
-                                                    });
+                                                    if (InCart) {
+                                                        showInfoToastMessage(`Already in cart, you can it's change quantity in cart`);
+
+                                                    } else {
+                                                        AddToCart(product, 1).then(result => {
+                                                            if (result.result) {
+                                                                showSuccessToastMessage(result.message)
+                                                                setInCart(prev => !prev);
+                                                            } else {
+                                                                showInfoToastMessage(result.message)
+                                                            }
+                                                        });
+                                                    }
+
                                                 } else showInfoToastMessage('Out Of Stock')
                                             }
                                         }
@@ -142,7 +172,13 @@ const ProductGrid = (props) => {
                                                     link: `/product-details?product_id=${product.id}&variant_id=${product.subvariants?.[0]?.id}`,
                                                 };
                                             }
-                                            handleAddRemoveWishlist(e, prod)
+                                            handleAddRemoveWishlist(e, product).then(result => {
+                                                if (result.result) {
+                                                    showSuccessToastMessage(result.message);
+                                                }
+                                                // if (result === true) showSuccessToastMessage('Product added in wishlist');
+                                                // else if (result === -1) showSuccessToastMessage('Product removed from wishlist')
+                                            })
                                         }}
                                     >
                                         Add to wishlist
@@ -158,7 +194,7 @@ const ProductGrid = (props) => {
                                     </a>
                                 </h3>
                                 <span className="price">
-                                    {product.stock > 0 ? `KD ${product.offer_price}` : `Out Of Stock`}
+                                    {product.stock > 0 ? `KD ${product.price}` : `Out Of Stock`}
                                 </span>
                             </div>
                         </div>

@@ -6,13 +6,23 @@ import apiConfig from "../../config/apiConfig";
 const Footer = () => {
   const [links, setLinks] = useState([]);
   const [data, setData] = useState({});
+  const [obj, setobj] = useState({
+    fb: 'facebook',
+    tw: 'twitter',
+    youtube: 'youtube',
+    instagram: 'instagram',
+    linkedin: 'linkedin',
+    pinterest: 'pinterest',
+    googleplus: 'google',
+    rss: 'rss'
+  })
 
   useEffect(() => {
     fetch(apiConfig.getSocialLinks, {
       method: 'GET'
     }).then(response => response.json())
       .then(data => {
-        setLinks(data);
+        setLinks(data.data);
       })
 
     fetch(apiConfig.getFooterLinks, {
@@ -30,7 +40,6 @@ const Footer = () => {
         return true;
       })
   }, []);
-  useEffect(() => console.log(links), [links])
   return (
     <footer
       id="site-footer"
@@ -50,8 +59,8 @@ const Footer = () => {
                             <h2 className="block-title">{key}</h2>
                             <div className="block-content">
                               <ul>
-                                {data[key]?.map(obj => (
-                                  <li>
+                                {data[key]?.map((obj, index) => (
+                                  <li key={index}>
                                     <a href={obj?.url}>{obj?.title}</a>
                                   </li>
                                 ))}
@@ -71,26 +80,13 @@ const Footer = () => {
                     </div>
                     <div className="block block-social">
                       <ul className="social-link">
-                        <li>
-                          <a href={links?.data?.[1]?.url}>
-                            <i className="fa fa-twitter" />
-                          </a>
-                        </li>
-                        <li>
-                          <a href={'https://instagram.com'}>
-                            <i className="fa fa-instagram" />
-                          </a>
-                        </li>
-                        <li>
-                          <a href={links?.data?.[0]?.url}>
-                            <i className="fa fa-facebook-f" />
-                          </a>
-                        </li>
-                        <li>
-                          <a href={links?.data?.[2].url}>
-                            <i className="fa fa-youtube-play" />
-                          </a>
-                        </li>
+                        {links?.map(link => (
+                          <li>
+                            <a href={link?.url}>
+                              <i className={obj[link.icon] ? `fa fa-${obj[link.icon]}` : `fa fa-${link.icon}`} />
+                            </a>
+                          </li>
+                        ))}
                       </ul>
                     </div>
                   </div>

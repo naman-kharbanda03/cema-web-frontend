@@ -27,7 +27,9 @@ export const ShoppingCartProvider = ({ children }) => {
 
 
     const showInfoToastMessage = (msg) => {
-        toast.info(msg, {
+        toast.info(<div >
+            <span>{`${msg}`}</span>
+        </div>, {
             position: toast.POSITION.BOTTOM_LEFT,
         });
     };
@@ -38,9 +40,6 @@ export const ShoppingCartProvider = ({ children }) => {
         });
     };
 
-    const getQuantity = (id) => {
-        return cartItems.find(item => item.Uid === id)?.quantity || 0;
-    }
 
 
 
@@ -74,7 +73,7 @@ export const ShoppingCartProvider = ({ children }) => {
     }, []);
 
 
-    const handleAddRemoveWishlist = (e, product) => {
+    const handleAddRemoveWishlist = async (e, product) => {
         e.preventDefault();
         const formData = new FormData();
         console.log(product);
@@ -93,7 +92,7 @@ export const ShoppingCartProvider = ({ children }) => {
         const apiURl = apiConfig.addRemoveWishlistAPI;
         const token = localStorage.getItem('accessToken');
         if (token) {
-            fetch(apiURl, {
+            return fetch(apiURl, {
                 method: "POST",
                 headers: {
                     'Authorization': `Bearer ${token}`,
@@ -107,130 +106,148 @@ export const ShoppingCartProvider = ({ children }) => {
                     console.log(data);
                     setWishListCount(data.count);
                     setWishListToggle(prev => !prev);
-                    showSuccessToastMessage(data.msg);
-                    return data;
+                    // showSuccessToastMessage(data.msg);
+                    return {
+                        result: true,
+                        message: data.msg
+                    };
                 })
                 .catch((error) => {
                     console.error("Error:", error);
+                    return {
+                        result: true,
+                        message: 'Operation failed'
+                    };
                 });
         } else {
-            increaseDecreaseItemInLocalWishlist(product);
+            return increaseDecreaseItemInLocalWishlist(product);
         }
 
     }
-    const increaseDecreaseItemInLocalWishlist = (product) => {
-        setWishListItems(currList => {
-            let foundIndex = null;
-            console.log(product);
-            foundIndex = currList.Items.findIndex(item => item?.product_id === product?.id && item?.type === product?.type);
-            if (foundIndex === -1) {
-                const newItem = {
-                    product_id: product?.id,
-                    product_name: {
-                        en: product?.product_name.en
-                    },
-                    image_path: product?.image_path,
-                    product_image: [`${product.product_image?.[0]}`],
-                    variant_id: product?.variant_id,
-                    stock: product?.stock,
-                    price: product?.price,
-                    type: product?.type || 'variant',
-                    link: product?.type === 'simple_product' ? `/product-details?product_id=${product.id}` : `/product-details?product_id=${product.id}&variant_id=${product?.variant_id}`
+    const increaseDecreaseItemInLocalWishlist = async (product) => {
+        return new Promise((res, rej) => {
+            setWishListItems(currList => {
+                let foundIndex = null;
+                console.log(product);
+                foundIndex = currList.Items.findIndex(item => item?.product_id === product?.id && item?.type === product?.type);
+                if (foundIndex === -1) {
+                    const newItem = {
+                        product_id: product?.id,
+                        product_name: {
+                            en: product?.product_name.en
+                        },
+                        image_path: product?.image_path,
+                        product_image: [`${product.product_image?.[0]}`],
+                        variant_id: product?.variant_id,
+                        stock: product?.stock,
+                        price: product?.price,
+                        type: product?.type || 'variant',
+                        link: product?.type === 'simple_product' ? `/product-details?product_id=${product.id}` : `/product-details?product_id=${product.id}&variant_id=${product?.variant_id}`
+                    }
+                    const updatedItems = [...currList.Items, newItem];
+                    const updatedCount = currList.totalItems + 1;
+                    res({
+                        result: true,
+                        message: 'Item added in wishList'
+                    });
+                    // showSuccessToastMessage("Item Added in WishList");
+                    return {
+                        ...currList,
+                        Items: updatedItems,
+                        totalItems: updatedCount,
+                    }
                 }
-                const updatedItems = [...currList.Items, newItem];
-                const updatedCount = currList.totalItems + 1;
-                showSuccessToastMessage("Item Added in WishList");
-                return {
-                    ...currList,
-                    Items: updatedItems,
-                    totalItems: updatedCount,
+                else {
+                    const updatingItems = [...currList.Items];
+                    const updatedItems = updatingItems.filter(item => !(item?.product_id === product?.id && item?.type === product?.type));
+                    const updatedCount = currList.totalItems - 1;
+                    // showSuccessToastMessage("Item Removed in WishList");
+                    res({
+                        result: true,
+                        message: 'Item removed in wishList'
+                    });
+                    return {
+                        ...currList,
+                        Items: updatedItems,
+                        totalItems: updatedCount,
+                    }
                 }
-            }
-            else {
-                const updatingItems = [...currList.Items];
-                const updatedItems = updatingItems.filter(item => !(item?.product_id === product?.id && item?.type === product?.type));
-                const updatedCount = currList.totalItems - 1;
-                showSuccessToastMessage("Item Removed in WishList");
-                return {
-                    ...currList,
-                    Items: updatedItems,
-                    totalItems: updatedCount,
-                }
-            }
-            // if (product?.type === "simple_product") {
-            //     foundIndex = currList.Items.findIndex(item => item?.simple_product?.id === product?.id);
-            //     if (foundIndex === -1) {
-            //         const newItem = {
-            //             simple_product: {
-            //                 id: product?.id,
-            //                 variant_id: "NA",
-            //                 product_name: {
-            //                     en: product?.product_name.en
-            //                 },
-            //                 image_path: product?.image_path,
-            //                 product_image: [`${product.product_image?.[0]}`],
-            //                 stock: product?.stock,
-            //                 price: product?.price,
-            //                 type: product?.type
-            //             }
-            //         };
-            //         const updatedItems = [...currList.Items, newItem];
-            //         const updatedCount = currList.totalItems + 1;
-            //         showSuccessToastMessage("Item Added in Local WishList");
-            //         return {
-            //             ...currList,
-            //             Items: updatedItems,
-            //             totalItems: updatedCount,
-            //         }
-            //     } else {
-            //         const updatingItems = [...currList.Items];
-            //         const updatedItems = updatingItems.filter(item => item?.simple_product?.id !== product?.id);
-            //         const updatedCount = currList.totalItems - 1;
-            //         showSuccessToastMessage("Item Removed in Local WishList");
-            //         return {
-            //             ...currList,
-            //             Items: updatedItems,
-            //             totalItems: updatedCount,
-            //         }
-            //     }
-            // } else {
-            //     foundIndex = currList.Items.findIndex(item => item?.variant?.id === product?.id);
-            //     if (foundIndex === -1) {
-            //         const newItem = {
-            //             variant: {
-            //                 id: product?.id,
-            //                 variant_id: product?.variant_id,
-            //                 product_name: {
-            //                     en: product?.product_name?.en
-            //                 },
-            //                 image_path: product?.image_path,
-            //                 product_image: [`${product.product_image?.[0]}`],
-            //                 stock: product?.stock,
-            //                 price: product?.price,
-            //                 type: "variant_product"
-            //             }
-            //         };
-            //         const updatedItems = [...currList.Items, newItem];
-            //         const updatedCount = currList.totalItems + 1;
-            //         showSuccessToastMessage("Item Added in Local WishList");
-            //         return {
-            //             ...currList,
-            //             Items: updatedItems,
-            //             totalItems: updatedCount,
-            //         }
-            //     } else {
-            //         const updatingItems = [...currList.Items];
-            //         const updatedItems = updatingItems.filter(item => item?.variant?.id !== product?.id);
-            //         const updatedCount = currList.totalItems - 1;
-            //         showSuccessToastMessage("Item Removed in Local WishList");
-            //         return {
-            //             ...currList,
-            //             Items: updatedItems,
-            //             totalItems: updatedCount,
-            //         }
-            //     }
-            // }
-        });
+                // if (product?.type === "simple_product") {
+                //     foundIndex = currList.Items.findIndex(item => item?.simple_product?.id === product?.id);
+                //     if (foundIndex === -1) {
+                //         const newItem = {
+                //             simple_product: {
+                //                 id: product?.id,
+                //                 variant_id: "NA",
+                //                 product_name: {
+                //                     en: product?.product_name.en
+                //                 },
+                //                 image_path: product?.image_path,
+                //                 product_image: [`${product.product_image?.[0]}`],
+                //                 stock: product?.stock,
+                //                 price: product?.price,
+                //                 type: product?.type
+                //             }
+                //         };
+                //         const updatedItems = [...currList.Items, newItem];
+                //         const updatedCount = currList.totalItems + 1;
+                //         showSuccessToastMessage("Item Added in Local WishList");
+                //         return {
+                //             ...currList,
+                //             Items: updatedItems,
+                //             totalItems: updatedCount,
+                //         }
+                //     } else {
+                //         const updatingItems = [...currList.Items];
+                //         const updatedItems = updatingItems.filter(item => item?.simple_product?.id !== product?.id);
+                //         const updatedCount = currList.totalItems - 1;
+                //         showSuccessToastMessage("Item Removed in Local WishList");
+                //         return {
+                //             ...currList,
+                //             Items: updatedItems,
+                //             totalItems: updatedCount,
+                //         }
+                //     }
+                // } else {
+                //     foundIndex = currList.Items.findIndex(item => item?.variant?.id === product?.id);
+                //     if (foundIndex === -1) {
+                //         const newItem = {
+                //             variant: {
+                //                 id: product?.id,
+                //                 variant_id: product?.variant_id,
+                //                 product_name: {
+                //                     en: product?.product_name?.en
+                //                 },
+                //                 image_path: product?.image_path,
+                //                 product_image: [`${product.product_image?.[0]}`],
+                //                 stock: product?.stock,
+                //                 price: product?.price,
+                //                 type: "variant_product"
+                //             }
+                //         };
+                //         const updatedItems = [...currList.Items, newItem];
+                //         const updatedCount = currList.totalItems + 1;
+                //         showSuccessToastMessage("Item Added in Local WishList");
+                //         return {
+                //             ...currList,
+                //             Items: updatedItems,
+                //             totalItems: updatedCount,
+                //         }
+                //     } else {
+                //         const updatingItems = [...currList.Items];
+                //         const updatedItems = updatingItems.filter(item => item?.variant?.id !== product?.id);
+                //         const updatedCount = currList.totalItems - 1;
+                //         showSuccessToastMessage("Item Removed in Local WishList");
+                //         return {
+                //             ...currList,
+                //             Items: updatedItems,
+                //             totalItems: updatedCount,
+                //         }
+                //     }
+                // }
+            });
+        })
+
     }
     useEffect(() => {
         setWishListCount(wishListItems.totalItems);
@@ -302,18 +319,24 @@ export const ShoppingCartProvider = ({ children }) => {
                 .then((data) => {
                     console.log("Response:", data);
                     if (data.success === true) {
-                        setCartItemsCount(data.count);
-                        showSuccessToastMessage(data.message);
-                        return true;
+                        setCartItemsCount(data.count_product);
+                        // showSuccessToastMessage(data.message);
+                        return {
+                            result: true,
+                            message: data.message
+                        };
                     } else {
-                        showSuccessToastMessage(data.message);
-                        return false
+                        // showInfoToastMessage(data.message);
+                        // return false;
+                        return {
+                            result: false,
+                            message: data.message
+                        };
                     }
-
-
                 })
                 .catch((error) => {
                     console.error("Error:", error);
+                    return false
                 });
         } else {
             return increaseItemInLocalCart(amt, product);
@@ -365,7 +388,7 @@ export const ShoppingCartProvider = ({ children }) => {
         }
     }
 
-    const increaseItemInLocalCart = (amt, product) => {
+    const increaseItemInLocalCart = async (amt, product) => {
         return new Promise((res, rej) => {
             setCartItems(currCart => {
                 const foundIndex = currCart.Items.findIndex(item => item?.product_id === product.id && item?.type === product.type);
@@ -379,14 +402,17 @@ export const ShoppingCartProvider = ({ children }) => {
                         product_name: { en: product.product_name.en },
                         product_image: product.product_image[0],
                         type: product?.type,
-                        stock: product?.stock,
+                        stock: product.stock,
                         max_order_limit: product?.max_order_limit,
                         link: product?.type === 'simple_product' ? `/product-details?product_id=${product.id}` : `/product-details?product_id=${product.id}&variant_id=${product?.variant_id}`
                     }
                     const updatedItems = [...currCart.Items, newItem];
-                    const updatedCount = currCart.totalItems + amt;
-                    showSuccessToastMessage('Item Added In Cart');
-                    res(true);
+                    const updatedCount = currCart.totalItems + 1;
+                    // showSuccessToastMessage('Item Added In Cart');
+                    res({
+                        result: true,
+                        message: 'Item added in cart'
+                    });
                     return {
                         ...currCart,
                         Items: updatedItems,
@@ -398,17 +424,23 @@ export const ShoppingCartProvider = ({ children }) => {
                     const updatingItems = [...currCart.Items];
                     if (updatingItems[foundIndex].qty + amt <= updatingItems[foundIndex].max_order_limit) {
                         updatingItems[foundIndex].qty += amt;
-                        const updatedCount = currCart.totalItems + amt;
-                        showSuccessToastMessage('Item Added In Cart');
-                        res(true);
+                        // const updatedCount = currCart.totalItems + amt;
+                        // showSuccessToastMessage('Item Added In Cart');
+                        res({
+                            result: true,
+                            message: 'Item added in cart'
+                        });
                         return {
                             ...currCart,
                             Items: updatingItems,
-                            totalItems: updatedCount,
+                            // totalItems: updatedCount,
                         }
                     } else {
                         showInfoToastMessage(`Max qty reached `);
-                        res(false);
+                        res({
+                            result: false,
+                            message: `Max qty reached `
+                        });
                         return { ...currCart }
                     }
 
@@ -435,9 +467,10 @@ export const ShoppingCartProvider = ({ children }) => {
             }).then((datar) => {
                 // console.log("Cart Data", datar);
                 setCartData(datar);
-                setCartItemsCount(datar.data.reduce((accumalator, item) => {
-                    return accumalator + parseInt(item.qty);
-                }, 0));
+                setCartItemsCount(datar.count_product)
+                // setCartItemsCount(datar.data.reduce((accumalator, item) => {
+                //     return accumalator + parseInt(item.qty);
+                // }, 0));
                 // showInfoToastMessage();
                 return datar;
 
@@ -449,27 +482,32 @@ export const ShoppingCartProvider = ({ children }) => {
         setCartItemsCount(cartItems?.totalItems);
     }, [cartItems])
 
+
     const removeFromLocalCart = (product) => {
         // If the item exists, update its quantity.
-        setCartItems(currCart => {
-            const foundIndex = currCart.Items.findIndex(item => item.product_id === product.id && item.type === product.type);
-            if (foundIndex !== -1) {
-                const updatingItems = [...currCart.Items];
-                console.log(updatingItems)
-                const updatedItems = updatingItems.filter(item => !(item.product_id === product.id && item.type === product.type));
-                console.log(updatedItems)
+        return new Promise((res, rej) => {
+            setCartItems(currCart => {
+                const foundIndex = currCart.Items.findIndex(item => item.product_id === product.id && item.type === product.type);
+                if (foundIndex !== -1) {
+                    const updatingItems = [...currCart.Items];
+                    console.log(updatingItems)
+                    const updatedItems = updatingItems.filter(item => !(item.product_id === product.id && item.type === product.type));
+                    console.log(updatedItems)
 
-                const amt = updatingItems[foundIndex].qty;
-                const updatedCount = currCart.totalItems - amt;
-                showSuccessToastMessage("Item Removed in Local Cart");
-                console.log(updatedItems);
-                return {
-                    ...currCart,
-                    Items: updatedItems,
-                    totalItems: updatedCount,
+                    const amt = updatingItems[foundIndex].qty;
+                    const updatedCount = currCart.totalItems - 1;
+                    showSuccessToastMessage("Item Removed in Local Cart");
+                    console.log(updatedItems);
+                    res(true);
+                    return {
+                        ...currCart,
+                        Items: updatedItems,
+                        totalItems: updatedCount,
+                    }
                 }
-            }
-        });
+            });
+        })
+
 
 
     }

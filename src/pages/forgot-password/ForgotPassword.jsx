@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import PageTitle from "../../components/page-tittle/PageTitle";
 import apiConfig from "../../config/apiConfig";
 import { useShoppingCart } from "../../context/ShoppingCartContext";
@@ -29,6 +29,10 @@ const ForgotPassword = () => {
     e.preventDefault();
     setOTPButton(true);
     const formData = new FormData();
+    if (!state.OTP) {
+      setOTPButton(false);
+      return showInfoToastMessage('Please enter OTP');
+    }
     formData.append("email", state.email);
     formData.append("two_factor_code", state.OTP);
 
@@ -42,6 +46,7 @@ const ForgotPassword = () => {
           setOTPVerified(true);
         } else {
           showInfoToastMessage(data.message);
+          setOTPButton(false);
           if (data.two_factor_expires === true) setOTPSent(false);
         }
       });
@@ -58,11 +63,12 @@ const ForgotPassword = () => {
       body: formData
     }).then(response => response.json())
       .then(data => {
-        if (data.success === true) {
+        if (data.status === true) {
           showSuccessToastMessage(data.message);
           setOTPSent(true);
         } else {
-          showInfoToastMessage(data.message);
+          showInfoToastMessage(data.msg || data.message);
+          setUsernameButton(false);
         }
 
       });
@@ -70,7 +76,14 @@ const ForgotPassword = () => {
   const ResetPassword = (e) => {
     e.preventDefault(e);
     setResetButton(true);
-    if (state.password !== state.confirmPassword) return showInfoToastMessage('Passwords dont match');
+    if (!state?.password || !state?.confirmPassword) {
+      setResetButton(false);
+      return showInfoToastMessage('Please enter passwords');
+    }
+    if (state.password !== state.confirmPassword) {
+      setResetButton(false);
+      return showInfoToastMessage('Passwords dont match');
+    }
     const formData = new FormData();
     formData.append('email', state.email);
     formData.append('password', state.password);
@@ -82,14 +95,16 @@ const ForgotPassword = () => {
     }).then(response => response.json())
       .then(data => {
         if (data.errors) {
-          showInfoToastMessage(data.message);
+          showInfoToastMessage(data?.message || data?.msg);
+          setResetButton(false);
         }
         if (data.success === true) {
-          showSuccessToastMessage(data.message);
+          showSuccessToastMessage(data?.message);
           window.location.href = '/login'
         }
       });
   }
+  useEffect(() => console.log(OTPSent), [OTPSent])
 
   return (
     <>
@@ -138,9 +153,9 @@ const ForgotPassword = () => {
                       </>
                         : !OTPVerified
                           ?
-                          <>
+                          (<>
                             <p>
-                              You would have received an OTO from our side. Please Enter it.
+                              You would have received an OTP from our side. Please Enter it.
                             </p>
                             <p className="form-row form-row-first">
                               <label>OTP</label>
@@ -164,7 +179,7 @@ const ForgotPassword = () => {
                                 Enter OTP
                               </button>
                             </p>
-                          </>
+                          </>)
                           :
                           <>
                             <p>

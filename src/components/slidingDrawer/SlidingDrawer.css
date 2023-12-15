@@ -1,0 +1,45 @@
+/* Drawer.css */
+
+.drawer-container {
+  position: fixed;
+  top: 0;
+  left: -40%; /* Initially hidden */
+  width: 40%;
+  height: 100%;
+  background-color: #ffffff;
+  /* padding: 20px; */
+  box-shadow: 2px 0 5px rgba(0, 0, 0, 0.2);
+  transition: left 0.3s ease;
+  z-index: 2000;
+}
+
+.main-content {
+  transition: margin-left 0.3s ease;
+  padding: 0px;
+  margin: 0px;
+  /* display: flex; */
+  /* flex-direction: column; */
+  /* flex-wrap: wrap-column; */
+}
+.main-contentd ul li {
+  list-style: none;
+  padding: 10% 0px 0px 0px;
+}
+.main-contentd ul {
+  padding: 10%;
+}
+
+.menu-button {
+  font-size: 20px;
+  cursor: pointer;
+  background-color: #ffffff;
+  padding: 5% 0 0 90%;
+}
+
+.drawer-container.open {
+  left: 0;
+}
+
+.main-content.open {
+  margin-left: 0px;
+}

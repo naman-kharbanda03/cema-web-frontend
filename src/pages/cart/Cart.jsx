@@ -15,7 +15,8 @@ const Cart = () => {
   const [couponCode, setCouponCode] = useState("");
   const [isCouponSuccess, setCoupanSuccess] = useState(false);
   const [couponData, setCouponData] = useState();
-  const { cartItemsCount, cartData } = useShoppingCart();
+  const { cartItemsCount, cartItems, setCartItemsCount } = useShoppingCart();
+  const [cost, setCost] = useState({});
 
   const handleCouponCodeChange = (e) => {
     setCouponCode(e.target.value);
@@ -54,8 +55,8 @@ const Cart = () => {
       .then((response) => response.json())
       .then((result) => {
         console.log("status", result?.["status"]);
-        result.status == "fail" && showInfoToastMessage();
-        if (result.status == "success") {
+        result.status === "fail" && showInfoToastMessage();
+        if (result.status === "success") {
           showSuccessToastMessage(result?.msg);
           setCoupanSuccess(true);
           setCouponData(result);
@@ -80,15 +81,23 @@ const Cart = () => {
         return response.json();
       }).then((datar) => {
         console.log("Cart Data", datar);
+        setCost({
+          total: datar?.grand_total,
+          subtotal: datar?.cart_sub_total,
+          shipping: datar?.shipping_charge,
+          tax: datar?.total_tax_amount,
+          discount: datar?.discount_amount,
+        })
         setOrderData(datar);
-        setTotal(datar?.total);
+        // setTotal(datar?.total);
+        setCartItemsCount(parseInt(datar?.count_product));
         let order = {};
         setOrders([]);
         datar.data?.forEach(order => {
           if (order.simple_product) {
             order = {
               product_name: { en: order.simple_product.product_name.en },
-              price: order.simple_product.actual_selling_price,
+              price: order.ori_offer_price,
               product_id: order.simple_product.id,
               product_image: order.simple_product.product_image[0],
               image_path: order.simple_product.image_path,
@@ -103,7 +112,7 @@ const Cart = () => {
           } else {
             order = {
               product_name: { en: order.product.name.en },
-              price: parseInt(order.price_total) + parseInt(order.product.price),
+              price: order.ori_offer_price,
               product_id: order.pro_id,
               product_image: order.variant.variantimages.main_image,
               image_path: order.product.image_path,
@@ -121,24 +130,44 @@ const Cart = () => {
 
       }).catch((error) => console.error("Problem with fetch", error));
 
-    } else {
+    }
+    else {
+      // console.log(2);
       const orders = JSON.parse(localStorage.getItem('cart'));
       setOrders(orders?.Items);
-      setTotal(() => {
-        return orders?.Items.reduce((acc, item) => {
+      setCost((prev) => {
+        const subtotal = orders?.Items.reduce((acc, item) => {
           return acc + (item.qty * item.price);
         }, 0);
-
+        return {
+          ...prev,
+          subtotal: subtotal
+        }
       })
     }
   }
-  useEffect(() => {
-    getCartDetails();
-  }, [cartItemsCount]);
+
+  // useEffect(() => {
+  //   // When not Logged in ;
+  //   if (!localStorage.getItem('accessToken')) {
+  //     const orders = JSON.parse(localStorage.getItem('cart'));
+  //     setOrders(orders?.Items);
+  //     setTotal(() => {
+  //       return orders?.Items.reduce((acc, item) => {
+  //         return acc + (item.qty * item.price);
+  //       }, 0);
+  //     })
+  //   }
+  // }, [cartItemsCount])
 
   useEffect(() => {
+    console.log(cartItems);
     getCartDetails();
-  }, [qtyChanged]);
+  }, [cartItems, qtyChanged]);
+
+  // useEffect(() => {
+  //   console.log(orders);
+  // }, [orders]);
 
   // useEffect(() => {
   //   let order = {};
@@ -216,8 +245,11 @@ const Cart = () => {
                                 {orders?.map((order) => (
                                   <tbody>
                                     <CartProduct
+                                      setOrders={setOrders}
                                       orderQtyChanged={setQtyChange}
                                       ordersData={order}
+                                      setTotal={setTotal}
+                                      getCartDetails={getCartDetails}
                                     />
                                   </tbody>
                                 ))}
@@ -245,18 +277,13 @@ const Cart = () => {
                                             name="apply_coupon"
                                             className="button"
                                             value="Apply coupon"
-                                            onClick={applyCoupon}
+                                            onClick={() => applyCoupon()}
                                           >
                                             {isCouponSuccess
                                               ? "Applied"
                                               : "Apply coupon"}
                                           </div>
                                         </div>
-                                        {/* <h2>
-                                      <a href="shop-grid-left.html">
-                                        Continue Shopping
-                                      </a>
-                                    </h2> */}
                                         <a href={"/products"}>
                                           <div
                                             type="submit"
@@ -282,7 +309,7 @@ const Cart = () => {
                               <div className="cart-subtotal">
                                 <div className="title">Subtotal</div>
                                 <div>
-                                  <span>KD {Math.round((couponData?.subtotal || total) * 100) / 100}</span>
+                                  <span>KD {Math.round((cost?.subtotal) * 100) / 100}</span>
                                 </div>
                               </div>
 
@@ -290,59 +317,32 @@ const Cart = () => {
                                 <div className="cart-subtotal">
                                   <div className="title">Discount</div>
                                   <div>
-                                    <span>-KD{Math.round(couponData?.coupan_discount * 100) / 100}</span>
+                                    <span>-KD {Math.round(couponData?.coupan_discount * 100) / 100}</span>
                                   </div>
                                 </div>
                               )}
-                              <div className="shipping-totals">
-                                <div className="title">Shipping</div>
+                              {/* <div className="order-total">
+                                <div className="title">Shipping Charge</div>
                                 <div>
-                                  {/* <ul className="shipping-methods custom-radio">
-                                  <li>
-                                    <input
-                                      type="radio"
-                                      name="shipping_method"
-                                      data-index={0}
-                                      defaultValue="free_shipping"
-                                      className="shipping_method"
-                                      defaultChecked="checked"
-                                    />
-                                    <label>Free shipping</label>
-                                  </li>
-                                  <li>
-                                    <input
-                                      type="radio"
-                                      name="shipping_method"
-                                      data-index={0}
-                                      defaultValue="flat_rate"
-                                      className="shipping_method"
-                                    />
-                                    <label>Flat rate</label>
-                                  </li>
-                                </ul> */}
-                                  <p className="shipping-desc">
-                                    Shipping options will be updated during
-                                    checkout.
-                                  </p>
+                                  <span>KD {Math.round(cost?.shipping * 100) / 100}</span>
                                 </div>
-                              </div>
-                              <div className="order-total">
+                              </div> */}
+                              {/* <div className="order-total">
                                 <div className="title">Tax</div>
                                 <div>
-                                  <span>KD {orderData?.total_tax_amount}</span>
+                                  <span>KD {Math.round(cost?.tax * 100) / 100}</span>
                                 </div>
-                              </div>
+                            </div>*/}
                               <div className="order-total">
                                 <div className="title">Total</div>
                                 <div>
-                                  <span>KD {Math.round(total * 100) / 100}</span>
+                                  <span>KD {Math.round(cost?.subtotal * 100) / 100}</span>
                                 </div>
                               </div>
                             </div>
                             <div className="proceed-to-checkout">
                               <Link to="/shop-checkout">
                                 <div
-                                  href="shop-checkout.html"
                                   className="checkout-button button"
                                 >
                                   Proceed to checkout

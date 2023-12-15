@@ -41,3 +41,9 @@
   font-family: FontAwesome;
   font-size: 19px;
 } */
+
+@media (min-width: 768px) {
+  .col-md-42 {
+    width: 33.333% !important;
+  }
+}

@@ -14,7 +14,7 @@ const Product = (props) => {
     // console.log(product.thumbpath + '/' + product.images[0].image);
     const { increaseItem, getQuantity } = useShoppingCart();
     const token = localStorage.getItem('accessToken');
-    const { handleAddRemoveWishlist, AddToCart, showInfoToastMessage } = useShoppingCart();
+    const { handleAddRemoveWishlist, AddToCart, showInfoToastMessage, showSuccessToastMessage } = useShoppingCart();
     const [productAddress, setProductAddress] = useState();
     const [image, setImage] = useState();
     const [stock, setStock] = useState();
@@ -24,24 +24,6 @@ const Product = (props) => {
         setIsInWishlist(product.InWishlist);
         return () => setIsInWishlist(0);
     }, [product])
-    // useEffect(() => {
-    //     if (product?.type) {
-    //         setProductAddress(`/product-details?product_id=${product.id}`);
-    //         const thumbnail = product?.thumbnail_path + '/' + product?.thumbnail;
-    //         const hover = product?.thumbnail_path + '/' + product?.hover_thumbnail;
-    //         setImage([thumbnail, hover]);
-    //         setStock(product?.stock);
-
-    //     }
-    //     else {
-    //         setProductAddress(`/product-details?product_id=${product?.id}&variant_id=${product?.subvariants?.[0].id}`);
-    //         const thumbnail = product?.image_path + '/' + product?.subvariants?.[0].variantimages.main_image;
-    //         const hover = product?.image_path + '/' + product?.subvariants?.[0].variantimages.image1;
-    //         setImage([thumbnail, hover]);
-    //         setStock(product?.subvariants?.[0].stock);
-
-    //     }
-    // }, []);
 
 
 
@@ -49,7 +31,7 @@ const Product = (props) => {
         <>
             <div className="products-entry clearfix product-wapper">
                 <div className="row">
-                    <div className="col-md-4">
+                    <div className="col-md-42">
 
                         {/* Products Thumb  */}
                         <div className="products-thumb">
@@ -61,13 +43,13 @@ const Product = (props) => {
                                     : ''
                             }
                             <div className="product-thumb-hover">
-                                <a href={product.address} target="_blank" rel="noopener noreferrer">
+                                <a href={product?.address} target="_blank" rel="noopener noreferrer">
 
 
                                     <img
                                         width="600"
                                         height="600"
-                                        src={product.image?.[0]}
+                                        src={product?.image?.[0]}
                                         className="post-image"
                                         alt=""
                                     />
@@ -95,17 +77,17 @@ const Product = (props) => {
                     </div>
                     <div className="col-md-8">
                         <div className="products-content">
-                            <a href={product.address} target="_blank" rel="noopener noreferrer">
+                            <a href={product?.address} target="_blank" rel="noopener noreferrer">
 
                                 <h3 className="product-title">
                                     <a href={product.address}>{product?.product_name?.en}</a>
                                 </h3>
                             </a>
-                            <span className="price">KD {product.offer_price}</span>
+                            <span className="price">KD {product?.price}</span>
                             <div className="rating">
                                 <div className="rating">
                                     <StarRatings
-                                        rating={product.product_rating}
+                                        rating={product?.product_rating}
                                         starRatedColor="gold"
                                         starHoverColor="gold"
                                         numberOfStars={5}
@@ -113,7 +95,7 @@ const Product = (props) => {
                                         starSpacing="1px"
                                     />
                                     <br />
-                                    <span>Rating: {product.product_rating} out of 5</span>
+                                    <span>Rating: {product?.product_rating} out of 5</span>
                                 </div>
                                 {
                                     product?.reviews?.length !== 0 ?
@@ -127,6 +109,7 @@ const Product = (props) => {
                                 <div
                                     className="btn-add-to-cart"
                                     data-title="Add to cart"
+                                    style={{ cursor: 'pointer' }}
                                 // onClick={() => increaseItem(product.id, 1)}
                                 >
                                     <a
@@ -134,12 +117,33 @@ const Product = (props) => {
                                         onClick={() => {
                                             let prod = {};
                                             if (product?.type === 'simple_product') {
-                                                if (product.stock > 0)
-                                                    AddToCart(product, 1);
+                                                if (product.stock > 0) {
+                                                    prod = {
+                                                        id: product?.id,
+                                                        variant_id: null,
+                                                        product_name: { en: product?.product_name?.en },
+                                                        image_path: product?.image_path,
+                                                        product_image: [
+                                                            `${product?.thumbnail}`,
+                                                        ],
+                                                        stock: product?.stock,
+                                                        max_order_limit: product?.max_order_qty,
+                                                        price: product?.offer_price,
+                                                        type: "simple_product",
+                                                        link: `/product-details?product_id=${product?.id}`,
+                                                    }
+                                                    AddToCart(product, 1).then(result => {
+                                                        if (result.result) {
+                                                            showSuccessToastMessage(result.message)
+                                                        } else {
+                                                            showInfoToastMessage(result.message)
+                                                        }
+                                                    });
+                                                }
                                                 else showInfoToastMessage('Out Of Stock')
                                             }
                                             else {
-                                                if (product?.subvariants?.[0]?.stock > 0) {
+                                                if (product?.stock > 0) {
                                                     prod = {
                                                         id: product.id,
                                                         variant_id: product.subvariants?.[0]?.id,
@@ -152,9 +156,15 @@ const Product = (props) => {
                                                         max_order_limit: product?.subvariants?.[0]?.max_order_qty,
                                                         price: product?.subvariants?.[0]?.price,
                                                         type: "variant",
-                                                        link: `/product-details?product_id=${product.id}&variant_id=${product.subvariants?.[0]?.id}`,
+                                                        link: `/product-details?product_id=${product?.id}&variant_id=${product.subvariants?.[0]?.id}`,
                                                     }
-                                                    AddToCart(prod, 1);
+                                                    AddToCart(product, 1).then(result => {
+                                                        if (result.result) {
+                                                            showSuccessToastMessage(result.message)
+                                                        } else {
+                                                            showInfoToastMessage(result.message)
+                                                        }
+                                                    });;
                                                 }
                                                 else showInfoToastMessage('Out Of Stock')
                                             }
@@ -183,6 +193,7 @@ const Product = (props) => {
                                             let prod = {};
                                             if (product?.type === "simple_product") {
                                                 prod = product;
+
                                             }
                                             else {
                                                 prod = {
@@ -199,7 +210,13 @@ const Product = (props) => {
                                                     link: `/product-details?product_id=${product.id}&variant_id=${product.subvariants?.[0]?.id}`,
                                                 };
                                             }
-                                            handleAddRemoveWishlist(e, prod)
+                                            handleAddRemoveWishlist(e, product).then(result => {
+                                                if (result.result) {
+                                                    showSuccessToastMessage(result.message);
+                                                }
+                                                // if (result === true) showSuccessToastMessage('Product added in wishlist');
+                                                // else if (result === -1) showSuccessToastMessage('Product removed from wishlist');
+                                            })
                                         }}
                                     >
                                         Add to wishlist

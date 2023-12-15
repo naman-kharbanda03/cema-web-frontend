@@ -3279,9 +3279,9 @@ input::-webkit-outer-spin-button {
 [class~="loading"]:before {
   background-color: rgba(0, 0, 0, 0.9);
 }
-.quantity {
-  width: auto;
-}
+/* .quantity {
+  width: 200px;
+} */
 .quantity {
   position: relative;
 }
@@ -4526,7 +4526,7 @@ body i[class~="slick-arrow"][class~="fa-angle-right"] {
 [class~="site-header"]
   [class~="header-mobile"]
   [class~="navbar-toggle"]:before {
-  font-family: wpbingofont;
+  font-family: hey;
 }
 [class~="site-header"]
   [class~="header-mobile"]
@@ -6974,7 +6974,7 @@ body i[class~="slick-arrow"][class~="fa-angle-right"] {
   border-bottom-width: 0;
 }
 [class~="site-navigation"] ul div[class~="sub-menu"] [class~="sub-menu-title"] {
-  padding-bottom: 10px !important;
+  padding-bottom: 5px !important;
 }
 [class~="form-login-register"] [class~="box-content"] {
   border-right-width: 0.010416667in;
@@ -30662,7 +30662,7 @@ body i[class~="slick-arrow"][class~="fa-angle-right"] {
   font-weight: 500;
   letter-spacing: 1.5px;
   text-transform: uppercase;
-  width: 60px;
+  width: fit-content;
 }
 .shop-details .variations .label:after {
   position: relative;
@@ -30707,8 +30707,8 @@ body i[class~="slick-arrow"][class~="fa-angle-right"] {
   color: #000;
 }
 .shop-details .variations .attributes ul.colors li span {
-  width: 28px;
-  height: 28px;
+  width: 38px;
+  height: 38px;
   display: inline-block;
   border-radius: 50%;
   -webkit-border-radius: 50%;
@@ -30744,10 +30744,10 @@ body i[class~="slick-arrow"][class~="fa-angle-right"] {
 .shop-details .variations .attributes ul.colors li span:before {
   content: "";
   position: absolute;
-  top: calc(50% - 18px);
-  left: calc(50% - 18px);
-  width: 36px;
-  height: 36px;
+  top: calc(50% - 22px);
+  left: calc(50% - 22.5px);
+  width: 45px;
+  height: 45px;
   border: 1px solid #000;
   border-radius: 50%;
   -webkit-border-radius: 50%;
@@ -30760,10 +30760,7 @@ body i[class~="slick-arrow"][class~="fa-angle-right"] {
   opacity: 0;
   visibility: hidden;
 }
-.shop-details .variations .attributes ul.colors li span:hover:before {
-  opacity: 1;
-  visibility: visible;
-}
+
 .shop-details .buttons {
   display: flex;
   vertical-align: top;

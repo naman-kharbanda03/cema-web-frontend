@@ -1,3 +1,9 @@
 .site-navigation ul > li.level-0.mega-menu > .sub-menu {
   width: fit-content !important;
 }
+@font-face {
+  font-family: "hey";
+  src: url("../../../src/asset/fonts/wpbingo.woff") format("woff");
+  src: url("../../../src/asset/fonts/wpbingo.ttf") format("ttf");
+  src: url("../../../src/asset/fonts/wpbingo.eot") format("eot");
+}

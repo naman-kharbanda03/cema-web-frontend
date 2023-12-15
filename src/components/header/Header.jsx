@@ -8,7 +8,7 @@ import { useShoppingCart } from "../../context/ShoppingCartContext";
 import { UserData } from "../../context/UserContext";
 import styles from './Header.module.css'
 
-const Header = () => {
+const Header = ({ setOpenDrawer }) => {
   const navigate = useNavigate();
   const handleNavigate = (name, link) => {
     navigate(`/listings?products=${link}`, { state: { name } });
@@ -46,7 +46,6 @@ const Header = () => {
     })
       .then(res => res.json())
       .then(data => {
-        console.log(data);
         setCategoryList(data.categories.data);
       })
   }, []);
@@ -152,6 +151,7 @@ const Header = () => {
                     type="button"
                     id="show-megamenu"
                     className="navbar-toggle"
+                    onClick={() => setOpenDrawer(prev => !prev)}
                   />
                 </div>
               </div>
@@ -172,6 +172,18 @@ const Header = () => {
 
               {/* Right Cart Icon */}
               <div className="col-xl-4 col-lg-4 col-md-4 col-sm-3 col-3 header-right">
+                <div className="user-box" style={{ width: '30px', fontSize: '19px' }}>
+                  <Link to="/account">
+                    <i class="fa-regular fa-user" />                  </Link>
+
+                </div>
+                <div className="wishlist-box" style={{ width: '30px', fontSize: '20px' }}>
+                  <Link to="/wishlist">
+                    <i className="ti-heart" />
+                  </Link>
+                  {/* <span className="count-wishlist">{wishListCount}</span> */}
+                </div>
+
                 <div className="cema-topcart dropdown">
                   <div className="dropdown mini-cart top-cart">
                     <div className="remove-cart-shadow" />
@@ -184,11 +196,12 @@ const Header = () => {
                       aria-expanded="false"
                     >
                       <div className="icons-cart">
-                        <i className="icon-large-paper-bag" />
+                        <i className="ti-bag" />
                         <span className="cart-count">{cartItemsCount}</span>
                       </div>
+
                     </Link>
-                    <div className="dropdown-menu cart-popup mmenu">
+                    {/* <div className="dropdown-menu cart-popup mmenu">
                       <div className="cart-empty-wrap">
                         <ul className="cart-list">
                           <li className="empty">
@@ -277,7 +290,7 @@ const Header = () => {
                           </a>
                         </div>
                       </div>
-                    </div>
+                    </div> */}
                   </div>
                 </div>
               </div>
@@ -324,9 +337,7 @@ const Header = () => {
                       <ul id="menu-main-menu" className="menu">
                         <li
                           className="level-0 menu-item"
-                        // onClick={() =>
-                        //   handleNavigate("New Arrivals", "new_arrival")
-                        // }
+                          key='1'
                         >
                           <a href={`/listings?products=new_arrival`}>
                             <span className="menu-item-text">New Arrivals</span>
@@ -334,15 +345,13 @@ const Header = () => {
                         </li>
                         <li
                           className="level-0 menu-item"
-                        // onClick={() =>
-                        //   handleNavigate("Best Sellers", "best_sellers")
-                        // }
+                          key='2'
                         >
                           <a href={`/listings?products=best_sellers`}>
                             <span className="menu-item-text">Best Sellers</span>
                           </a>
                         </li>
-                        <li className="level-0 menu-item menu-item-has-children mega-menu level-menu-fullwidth">
+                        <li className="level-0 menu-item menu-item-has-children mega-menu level-menu-fullwidth" key='3'>
                           <a href={`/`}>
                             <span className="menu-item-text">More</span>
                           </a>
@@ -360,43 +369,24 @@ const Header = () => {
                                             {items?.title?.en}
                                           </h2>
                                         </Link>
-                                        {/* <ul className="menu-list">
-                                      {category?.subcategory.map(
-                                        (subCategory) => (
-                                          <Link
-                                            to={{
-                                              pathname: "/products",
-                                              search: `?category=${subCategory.title.en}&id=${subCategory.id}`,
-                                            }}
-                                          >
-                                            <li>
-                                              <a href="javascript:;">
-                                                <span className="menu-item-text">
-                                                  {subCategory?.title?.en}
-                                                </span>
-                                              </a>
-                                            </li>
-                                          </Link>
-                                        )
-                                      )}
-                                    </ul> */}
+
                                       </div>
                                     </div>
                                   );
                                 return (
                                   <div className="col-md-4">
-                                    <div className="menu-section">
+                                    <div className="menu-section" style={{ marginBottom: '10px' }}>
 
-                                      <h2 className="sub-menu-title">
+                                      <h2 className="sub-menu-title" style={{ marginBottom: 0, }}>
                                         {items?.title?.en}
                                       </h2>
-                                      <ul className="menu-list">
+                                      <ul className="menu-list" style={{ marginTop: 0, }}>
                                         {items?.linked_parent?.map(
-                                          (cat) => (
+                                          (cat, index) => (
                                             <a
                                               href={`/products?id=${cat}`}
                                             >
-                                              <li>
+                                              <li key={index}>
                                                 <span className="menu-item-text">
                                                   {fetchCategoryById(parseInt(cat))}
                                                 </span>
@@ -412,7 +402,7 @@ const Header = () => {
                             </div>
                           </div>
                         </li>
-                        <li className="level-0 menu-item menu-item-has-children mega-menu level-menu-fullwidth">
+                        <li className="level-0 menu-item menu-item-has-children mega-menu level-menu-fullwidth" key='4'>
                           <a href="/products">
                             <span className="menu-item-text">Products</span>
                           </a>
@@ -523,7 +513,7 @@ const Header = () => {
                           // })
                         }
 
-                        <li className="level-0 menu-item">
+                        <li className="level-0 menu-item" key='5'>
                           <Link to="/contact">
                             <span className="menu-item-text">Contact</span>
                           </Link>
@@ -556,114 +546,6 @@ const Header = () => {
                         </Link>
                       )}
 
-                      {/* <div className="form-login-register">
-                        <div className="box-form-login">
-                          <div className="active-login" />
-                          <div className="box-content">
-                            <div className="form-login active">
-                              <form
-                                id="login_ajax"
-                                method="post"
-                                className="login"
-                              >
-                                <h2>Sign in</h2>
-                                <p className="status" />
-                                <div className="content">
-                                  <div className="username">
-                                    <input
-                                      type="text"
-                                      required="required"
-                                      className="input-text"
-                                      name="username"
-                                      id="username"
-                                      placeholder="Your name"
-                                    />
-                                  </div>
-                                  <div className="password">
-                                    <input
-                                      className="input-text"
-                                      required="required"
-                                      type="password"
-                                      name="password"
-                                      id="password"
-                                      placeholder="Password"
-                                    />
-                                  </div>
-                                  <div className="rememberme-lost">
-                                    <div className="rememberme">
-                                      <input
-                                        name="rememberme"
-                                        type="checkbox"
-                                        id="rememberme"
-                                        defaultValue="forever"
-                                      />
-                                      <label
-                                        htmlFor="rememberme"
-                                        className="inline"
-                                      >
-                                        Remember me
-                                      </label>
-                                    </div>
-                                    <div className="lost_password">
-                                      <a href="forgot-password.html">
-                                        Lost your password?
-                                      </a>
-                                    </div>
-                                  </div>
-                                  <div className="button-login">
-                                    <input
-                                      type="submit"
-                                      className="button"
-                                      name="login"
-                                      defaultValue="Login"
-                                    />
-                                  </div>
-                                  <div className="button-next-reregister">
-                                    Create An Account
-                                  </div>
-                                </div>
-                              </form>
-                            </div>
-                            <div className="form-register">
-                              <form method="post" className="register">
-                                <h2>REGISTER</h2>
-                                <div className="content">
-                                  <div className="email">
-                                    <input
-                                      type="email"
-                                      className="input-text"
-                                      placeholder="Email"
-                                      name="email"
-                                      id="reg_email"
-                                      defaultValue
-                                    />
-                                  </div>
-                                  <div className="password">
-                                    <input
-                                      type="password"
-                                      className="input-text"
-                                      placeholder="Password"
-                                      name="password"
-                                      id="reg_password"
-                                    />
-                                  </div>
-                                  <div className="button-register">
-                                    <input
-                                      type="submit"
-                                      className="button"
-                                      name="register"
-                                      defaultValue="Register"
-                                    />
-                                  </div>
-                                  <div className="button-next-login">
-                                    Already has an account
-                                  </div>
-                                </div>
-                              </form>
-                            </div>
-                          </div>
-                        </div>
-                      </div> */}
                     </div>
                     {/* Search */}
                     {/* <div className="search-box">
@@ -695,7 +577,7 @@ const Header = () => {
                             <span className="cart-count">{cartItemsCount}</span>
                           </div>
                         </Link>
-                        <div className="dropdown-menu cart-popup">
+                        {/* <div className="dropdown-menu cart-popup">
                           <div className="cart-empty-wrap">
                             <ul className="cart-list">
                               <li className="empty">
@@ -784,7 +666,7 @@ const Header = () => {
                               </a>
                             </div>
                           </div>
-                        </div>
+                        </div> */}
                       </div>
                     </div>
                   </div>

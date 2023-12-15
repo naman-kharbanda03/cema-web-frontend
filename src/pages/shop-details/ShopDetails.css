@@ -11,11 +11,16 @@
 .shop-details .variations .attributes ul.colors li span {
   /* background: blue !important; */
   border: 1px solid !important;
+  font-size: 16px;
+  text-align: center;
 }
-
-.shop-details .variations .attributes ul.colors li span.Black {
-  background: black;
+.shop-details .variations .attributes ul.colors li span.active:before {
+  border: 1px solid black !important;
+  visibility: visible;
+  opacity: 1;
+  /* width: fit-content; */
 }
-.shop-details .variations .attributes ul.colors li span.White {
-  background: wheat !important;
+.shop-details .variations .attributes ul.colors li span:hover:before {
+  opacity: 1;
+  visibility: visible;
 }

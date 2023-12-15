@@ -1,38 +1,54 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import image from "../../asset/images/product/3.jpg";
 import { Link } from "react-router-dom";
 import { useShoppingCart } from "../../context/ShoppingCartContext";
 import apiConfig from "../../config/apiConfig";
 
 const CartProduct = (props) => {
-  const { ordersData: orderData, orderQtyChanged } = props;
-  const order = orderData;
-  const initialQty = order?.qty ? parseInt(order.qty) : 0;
-  const [orderQnty, setOrderQnty] = useState(initialQty);
-  const { setCartToggle, removeFromLocalCart, increaseItemInLocalCart, setCartItemsCount, showInfoToastMessage } = useShoppingCart();
+  const { ordersData: orderData, orderQtyChanged, setOrders, setTotal, getCartDetails } = props;
+  // const order = orderData;
+  const [order, setOrder] = useState();
+  // const initialQty = order?.qty ? parseInt(order.qty) : 0;
+  // const [orderQnty, setOrderQnty] = useState(initialQty);
+  const { setCartToggle, removeFromLocalCart, increaseItemInLocalCart, setCartItemsCount, showInfoToastMessage, showSuccessToastMessage } = useShoppingCart();
 
-  const increaseQty = () => {
-    setOrderQnty(orderQnty + 1);
-    increaseQtyUtils(orderQnty + 1);
-    orderQtyChanged && orderQtyChanged(orderQnty);
+  useEffect(() => {
+    setOrder(orderData);
+  }, [orderData])
+
+  const increaseQty = (id) => {
+    // setOrderQnty(orderQnty + 1);       //Front end Change
+    increaseQtyUtils(order.qty + 1).then(result => {
+      if (result) {
+        getCartDetails();
+      }
+    });   // Api call
+    // orderQtyChanged && orderQtyChanged(orderQnty);   //idk
   };
 
-  const decreaseQty = () => {
-    orderQnty !== 0 && setOrderQnty(orderQnty - 1);
-    increaseQtyUtils(orderQnty - 1);
-    orderQtyChanged && orderQtyChanged(orderQnty);
+  const decreaseQty = (id) => {
+    // orderQnty !== 0 && setOrderQnty(orderQnty - 1);   // front end change
+    increaseQtyUtils(order.qty - 1).then(result => {
+      if (result) {
+        getCartDetails();
+      }
+    });                 // api call
+    // orderQtyChanged && orderQtyChanged(orderQnty);    // idk
   };
 
-  const removeProduct = () => {
-    decreaseQtyUtils();
-    orderQtyChanged && orderQtyChanged(orderQnty);
-    // orderQnty !== 0 && setOrderQnty(0);
+  const removeProduct = (id) => {
+    decreaseQtyUtils(id)
+      .then(result => {
+        if (result) {
+          getCartDetails();
+        }
+      });
   };
 
   const increaseQtyUtils = (qty) => {
     const bearerToken = localStorage.getItem("accessToken");
     let formData = {};
-    console.log(qty);
+    // console.log(qty);
     if (order?.variant_id) {
       formData = {
         quantity: qty,
@@ -47,7 +63,7 @@ const CartProduct = (props) => {
     }
     const apiUrl = apiConfig.updateCartAPI;
     if (bearerToken) {
-      fetch(apiUrl, {
+      return fetch(apiUrl, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -57,8 +73,16 @@ const CartProduct = (props) => {
       })
         .then((response) => response.json())
         .then((result) => {
-          console.log(result.count);
-          setCartItemsCount(parseInt(result.count));
+          if (result.success === true) {
+            // console.log(result.count);
+            // setCartItemsCount(parseInt(result.count));
+            // setTotal(result.gtotal);
+            showSuccessToastMessage('Quantity Updated');
+            return true;
+          }
+          else {
+            showInfoToastMessage(result.message);
+          }
 
         })
         .catch((error) => console.log("error", error));
@@ -67,33 +91,30 @@ const CartProduct = (props) => {
         id: order?.product_id,
         type: order?.type,
       };
-      increaseItemInLocalCart(qty - orderQnty, prod);
+      return increaseItemInLocalCart(qty - order?.qty, prod);
     }
   };
 
-  const decreaseQtyUtils = () => {
+  const decreaseQtyUtils = (id) => {
     const bearerToken = localStorage.getItem("accessToken");
-    const formdata = {
-      quantity: orderQnty,
-      id: order?.cart_it,
-      type: order?.simple_product?.type,
-      price: order?.simple_product?.price,
-      offerprice: order?.simple_product?.offer_price,
-    };
     const apiUrl = apiConfig.removeFromCartAPI;
     if (bearerToken) {
-      fetch(`${apiUrl}/${order?.cart_id}`, {
+      return fetch(`${apiUrl}/${id}`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
           Authorization: `Bearer ${bearerToken}`,
         },
-        body: JSON.stringify(formdata),
+        // body: JSON.stringify(formdata),
       })
         .then((response) => response.json())
         .then((result) => {
-          console.log(result.count)
-          setCartItemsCount(parseInt(result.count));
+          // console.log(result.count)
+          if (result?.success === true) {
+            showSuccessToastMessage(result.message);
+            // setCartItemsCount(parseInt(result.count));
+            return true;
+          }
         })
         .catch((error) => console.log("error", error));
     } else {
@@ -101,10 +122,11 @@ const CartProduct = (props) => {
         id: order?.product_id,
         type: order?.type,
       };
-      removeFromLocalCart(prod);
+      return removeFromLocalCart(prod);
     }
 
   };
+  // useEffect(()=>setOrderQnty(order.qty),[])
 
   return (
     <tr className="cart-item">
@@ -132,8 +154,8 @@ const CartProduct = (props) => {
       <td className="product-quantity">
         <div className="quantity">
           <button type="button" className="minus" onClick={() => {
-            if (orderQnty === 1) showInfoToastMessage('Quantity atleast be one')
-            else decreaseQty();
+            if (order.qty === 1) showInfoToastMessage('Quantity atleast be one')
+            else decreaseQty(order?.cart_id);
           }} >
             -
           </button>
@@ -144,7 +166,7 @@ const CartProduct = (props) => {
             min={0}
             max
             name="quantity"
-            value={orderQnty}
+            value={order?.qty}
             title="Qty"
             size={4}
             placeholder
@@ -152,8 +174,8 @@ const CartProduct = (props) => {
             autoComplete="off"
           />
           <button type="button" className="plus" onClick={() => {
-            if (orderQnty < order.max_order_limit) increaseQty();
-            else showInfoToastMessage('Max Qty Reached');
+            if (order.qty < order.max_order_limit) increaseQty(order.cart_id);
+            else showInfoToastMessage('Product Maximum Quantity Reached');
           }
           }>
             +
@@ -161,12 +183,12 @@ const CartProduct = (props) => {
         </div>
       </td>
       <td className="product-subtotal">
-        <span>KD {Math.round((order?.price * orderQnty * 100)) / 100}</span>
+        <span>KD {Math.round((order?.price * order?.qty * 100)) / 100}</span>
       </td>
       <td className="product-remove">
         <a
           className="remove"
-          onClick={() => removeProduct()}
+          onClick={() => removeProduct(order?.cart_id)}
           style={{ cursor: "pointer" }}
         >
           ×

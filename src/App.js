@@ -23,15 +23,18 @@ import Protected from "./routeHandlers/AvailabePostLogin/Projected";
 import CookieBanner from "./components/CookieBanner/cookie";
 import CookieConsent from "react-cookie-consent";
 import PreLoader from "./components/pre-loader/PreLoader";
+import Layout from "./layouts/Layout";
 
 function App() {
   // const [isLoggedIn, setIsLoggedIn] = useState(false);
   // useEffect(() => console.log(isLoggedIn), [isLoggedIn]);
   const [loading, setLoading] = useState(false);
+  const [openDrawer, setOpenDrawer] = useState(false);
+
   useEffect(() => {
     setTimeout(() => {
       setLoading(true);
-    }, 1500);
+    }, 2000);
   });
   return (
     <div
@@ -40,72 +43,75 @@ function App() {
     >
       <UserContextWrapper>
         <ShoppingCartProvider>
-          <Header />
-          <Routes>
-            {/* Home */}
-            <Route path="/" element={<Home />} />
+          <Layout OpenDrawer={openDrawer} setOpenDrawer={setOpenDrawer}>
+            <Header setOpenDrawer={setOpenDrawer} />
+            <Routes>
+              {/* Home */}
+              <Route path="/" element={<Home />} />
 
-            {/* login */}
-            <Route
-              path="/login"
-              element={
-                <HiddenPostLogin>
-                  <Login />
-                </HiddenPostLogin>
-              }
-            />
-            {/* forgot-password */}
-            <Route
-              path="/forgot-password"
-              element={
-                <HiddenPostLogin>
-                  <ForgotPassword />
-                </HiddenPostLogin>
-              }
-            />
-            {/* cart */}
-            <Route path="/cart" element={<Cart />} />
+              {/* login */}
+              <Route
+                path="/login"
+                element={
+                  <HiddenPostLogin>
+                    <Login />
+                  </HiddenPostLogin>
+                }
+              />
+              {/* forgot-password */}
+              <Route
+                path="/forgot-password"
+                element={
+                  <HiddenPostLogin>
+                    <ForgotPassword />
+                  </HiddenPostLogin>
+                }
+              />
+              {/* cart */}
+              <Route path="/cart" element={<Cart />} />
 
-            {/* contact */}
-            <Route path="/contact" element={<Contact />} />
+              {/* contact */}
+              <Route path="/contact" element={<Contact />} />
 
-            {/* listings */}
-            <Route path="/listings" element={<Listing />} />
+              {/* listings */}
+              <Route path="/listings" element={<Listing />} />
 
-            {/* account */}
-            <Route
-              path="/account"
-              element={
-                <Protected>
-                  <MyAccount />
-                </Protected>
-              }
-            />
-            <Route path="/products" element={<ProductList />} />
-            <Route
-              path="/shop-checkout"
-              element={
-                <Protected>
-                  <ShopCheckout />
-                </Protected>
-              }
-            />
-            <Route path="/wishlist" element={<ShopWishlist />} />
-            <Route path="/product-details" element={<ShopDetails />} />
-            <Route path="/edit-address" element={<CreateEditAddress />} />
-          </Routes>
-          {loading === true ? "" : <PreLoader />}
-          <CookieConsent
-            location="bottom"
-            buttonText="I understand"
-            cookieName="myCookieConsent"
-            style={{ background: "#333" }}
-            buttonStyle={{ background: "#007BFF" }}
-          >
-            This website uses cookies to ensure you get the best experience on
-            our website.
-          </CookieConsent>
-          <Footer />
+              {/* account */}
+              <Route
+                path="/account"
+                element={
+                  <Protected>
+                    <MyAccount />
+                  </Protected>
+                }
+              />
+              <Route path="/products" element={<ProductList />} />
+              <Route
+                path="/shop-checkout"
+                element={
+                  <Protected>
+                    <ShopCheckout />
+                  </Protected>
+                }
+              />
+              <Route path="/wishlist" element={<ShopWishlist />} />
+              <Route path="/product-details" element={<ShopDetails />} />
+              <Route path="/edit-address" element={<CreateEditAddress />} />
+            </Routes>
+            {loading === true ? "" : <PreLoader />}
+            <CookieConsent
+              location="bottom"
+              buttonText="I understand"
+              cookieName="myCookieConsent"
+              style={{ background: "#333" }}
+              buttonStyle={{ background: "#007BFF" }}
+            >
+              This website uses cookies to ensure you get the best experience on
+              our website.
+            </CookieConsent>
+            <Footer />
+          </Layout>
+
           {/* <PreLoader /> */}
           {/* <BackToTop /> */}
         </ShoppingCartProvider>

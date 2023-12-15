@@ -16,6 +16,7 @@ const ShopCheckout = () => {
   const [buttonClicked, setButtonClicked] = useState(false);
   // billing fields
   const { showSuccessToastMessage, showInfoToastMessage } = useShoppingCart();
+  const [costs, setCosts] = useState({});
 
 
   const [state, setState] = useState({});
@@ -211,6 +212,12 @@ const ShopCheckout = () => {
       .then((data) => {
         if (data) {
           console.log("getCartData:", data.total);
+          setCosts({
+            grand_total: data.grand_total,
+            sub_total: data.checkut_total,
+            tax: data.total_tax_amount,
+            discount: data.discount_amount,
+          })
           setTotal(data.total);
           setDatta(data);
           setOrders([]);
@@ -227,7 +234,7 @@ const ShopCheckout = () => {
               }
             } else if (product.product) {
               prod = {
-                price: product.price_total,
+                price: product.product_price,
                 qty: product.qty,
                 name: product.product.product_name.en,
                 image_path: product.product.image_path,
@@ -935,26 +942,26 @@ const ShopCheckout = () => {
                             <div className="cart-subtotal">
                               <h2>Subtotal</h2>
                               <div className="subtotal-price">
-                                <span>KD {total}</span>
+                                <span>KD {Math.round(costs?.sub_total * 100) / 100}</span>
                               </div>
                             </div>
                             <div className="cart-subtotal">
                               <h2>Discount</h2>
                               <div className="subtotal-price">
-                                <span>KD {datta?.discount_amount}</span>
+                                <span>KD {Math.round(costs?.discount * 100) / 100}</span>
                               </div>
                             </div>
                             <div className="cart-subtotal">
                               <h2>Tax</h2>
                               <div className="subtotal-price">
-                                <span>KD {datta?.total_tax_amount}</span>
+                                <span>KD {Math.round(costs?.tax * 100) / 100}</span>
                               </div>
                             </div>
                             <div className="order-total">
                               <h2>Total</h2>
                               <div className="total-price">
                                 <strong>
-                                  <span>KD {datta?.grand_total}</span>
+                                  <span>KD {Math.round(costs?.grand_total * 100) / 100}</span>
                                 </strong>
                               </div>
                             </div>

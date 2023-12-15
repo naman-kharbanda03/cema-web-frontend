@@ -9,7 +9,7 @@ const PageTitle = ({ current }) => {
           <h1 className="text-title-heading">{current}</h1>
         </div>
         <div className="breadcrumbs">
-          <Link to="/">Home</Link>
+          <a href="/">Home</a>
           <span className="delimiter" />
           {current}
         </div>

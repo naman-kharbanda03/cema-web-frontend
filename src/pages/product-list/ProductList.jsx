@@ -156,6 +156,7 @@ const ProductList = () => {
         const hover = product?.thumbnail_path + '/' + product?.hover_thumbnail;
         const stock = product?.stock;
         const address = `/product-details?product_id=${product.id}`;
+        const price = product.price;
         const isInWishlist = localStorage.getItem('accessToken')
           ? product?.is_in_wishlist
           : wishListItems.Items?.findIndex(item => item.product_id === product?.id) === -1
@@ -168,19 +169,39 @@ const ProductList = () => {
             : 1;
 
         return {
-          ...product,
+          // ...product,
           stock: stock,
           address: address,
           image: [thumbnail, hover],
           desc: product?.product_detail.en,
           InWishlist: isInWishlist,
           InCart: InCart,
+          // price: price,
+
+          //Later properties
+          id: product.id,
+          variant_id: null,
+          product_name: { en: product?.product_name?.en },
+          image_path: product?.thumbnail_path,
+          product_image: [
+            `${product.thumbnail}`,
+          ],
+          stock: product?.stock,
+          max_order_limit: product?.max_order_qty,
+          price: product?.price,
+          type: "simple_product",
+          link: `/product-details?product_id=${product.id}`,
+          hot_product: product.hot_product,
+          reviews: product?.reviews,
+          product_rating: product?.product_rating
         }
       } else {
-        const thumbnail = product?.image_path + '/' + product?.subvariants?.[0].variantimages.main_image;
-        const hover = product?.image_path + '/' + product?.subvariants?.[0].variantimages.image1;
+        const thumbnail = product?.thumbnail_path;
+        const hover = product?.hover_thumbnail_path;
         const stock = product?.subvariants?.[0].stock;
         const address = `/product-details?product_id=${product?.id}&variant_id=${product?.subvariants?.[0].id}`;
+        const price = product.subvariants[0].price;
+
         const InWishlist = localStorage.getItem('accessToken')
           ? product?.is_in_wishlist
           : wishListItems.Items?.findIndex(item => (item.product_id === product?.id && item.type === 'variant')) === -1
@@ -194,18 +215,37 @@ const ProductList = () => {
             : 1;
         // console.log(address, InWishlist)
         return {
-          ...product,
+          // ...product,
           stock: stock,
           address: address,
           image: [thumbnail, hover],
           desc: product?.des.en,
           InWishlist: InWishlist,
-          InCart: InCart
+          InCart: InCart,
+          // price: price,
+
+          //Late properties
+          id: product.id,
+          variant_id: product.subvariants?.[0]?.id,
+          product_name: { en: product?.product_name?.en },
+          image_path: product?.image_path,
+          product_image: [
+            `${product.subvariants?.[0]?.variantimages?.image1}`,
+          ],
+          stock: product?.subvariants?.[0]?.stock,
+          max_order_limit: product?.subvariants?.[0]?.max_order_qty,
+          price: product?.subvariants?.[0]?.price,
+          type: "variant",
+          link: `/product-details?product_id=${product.id}&variant_id=${product.subvariants?.[0]?.id}`,
+          hot_product: product.hot_product,
+          reviews: product?.reviews,
+          product_rating: product?.product_rating
+
         }
 
       }
     })
-    console.log(products);
+    // console.log(products);
     setFilteredProductList(products);
     setProductsLoaded(true);
   }, [productList])
@@ -435,7 +475,7 @@ const ProductList = () => {
                           </li> : ""
                         }
                         {currentPage - 1 > 0 ? <li onClick={() => setCurrentPage(page => page - 1)}><a class="page-numbers" href="#">{currentPage - 1}</a></li> : ""}
-                        {currentPage !== lastPage ? <li><span aria-current="page" class="page-numbers current">{currentPage}</span></li> : ''}
+                        {currentPage <= lastPage ? <li><span aria-current="page" class="page-numbers current">{currentPage}</span></li> : ''}
                         {currentPage + 1 <= lastPage ? <li onClick={() => setCurrentPage(page => page + 1)}><a class="page-numbers" href="#">{currentPage + 1}</a></li> : ""}
 
                         {currentPage !== lastPage ?
