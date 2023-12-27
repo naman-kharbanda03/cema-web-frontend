@@ -391,7 +391,7 @@ export const ShoppingCartProvider = ({ children }) => {
     const increaseItemInLocalCart = async (amt, product) => {
         return new Promise((res, rej) => {
             setCartItems(currCart => {
-                const foundIndex = currCart.Items.findIndex(item => item?.product_id === product.id && item?.type === product.type);
+                const foundIndex = currCart.Items.findIndex(item => (item?.product_id === product.id && item?.variant_id === product.variant_id));
                 if (foundIndex === -1) {
                     const newItem = {
                         qty: amt,
@@ -487,17 +487,15 @@ export const ShoppingCartProvider = ({ children }) => {
         // If the item exists, update its quantity.
         return new Promise((res, rej) => {
             setCartItems(currCart => {
-                const foundIndex = currCart.Items.findIndex(item => item.product_id === product.id && item.type === product.type);
+                const foundIndex = currCart.Items.findIndex(item => (item.product_id === product.id && item.variant_id === product.variant_id));
                 if (foundIndex !== -1) {
                     const updatingItems = [...currCart.Items];
-                    console.log(updatingItems)
-                    const updatedItems = updatingItems.filter(item => !(item.product_id === product.id && item.type === product.type));
+                    const updatedItems = updatingItems.filter(item => !(item.product_id === product.id && item.variant_id === product.variant_id));
                     console.log(updatedItems)
 
                     const amt = updatingItems[foundIndex].qty;
                     const updatedCount = currCart.totalItems - 1;
                     showSuccessToastMessage("Item Removed in Local Cart");
-                    console.log(updatedItems);
                     res(true);
                     return {
                         ...currCart,

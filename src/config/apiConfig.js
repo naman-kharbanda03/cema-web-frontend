@@ -21,6 +21,7 @@ const apiConfig = {
   getUserApi: `${BASE_URL}/api/myprofile`,
   secretKey: secretKey,
   orderDetailsAPI: `${BASE_URL}/api/orders/2`,
+
   applyCouponAPI: `${BASE_URL}/api/apply-coupan`,
   getCartDataAPI: `${BASE_URL}/api/getCartData`,
   addToCartAPI: `${BASE_URL}/api/addToCart`,
@@ -28,16 +29,19 @@ const apiConfig = {
   loginAPI: `${BASE_URL}/api/login`,
   registerAPI: `${BASE_URL}/api/register`,
   removeFromCartAPI: `${BASE_URL}/api/removeFromCart`,
+  removeCoupanAPI: `${BASE_URL}/api/remove-coupan`,
   updateCartAPI: `${BASE_URL}/api/updateCartQuantity`,
   addToWishlistArrayAPI: `${BASE_URL}/api/add_remove_wishlist_array`,
 
   listingAPI: `${BASE_URL}/api/products`,
   slidersAPI: `${BASE_URL}/api/getSlider`,
   changePassword: `${BASE_URL}/api/password/change`,
+
   // top-menu
   topMenu: `${BASE_URL}/api/topmenus`,
   homeSecondCategory: `${BASE_URL}/api/homeSecondcategories`,
   homeFirstCategory: `${BASE_URL}/api/homeFirstcategories`,
+
   //rating
   addProductReview: `${BASE_URL}/api/add_review`,
 
@@ -50,6 +54,7 @@ const apiConfig = {
   getCountryStateAPI: `${BASE_URL}/api/states/101?secret=1dc7843e-e42c-4154-a02d-d80ab6d81095`,
   getCountriesAPI: `${BASE_URL}/api/countries?secret=1dc7843e-e42c-4154-a02d-d80ab6d81095`,
   getCitiesAPI: `${BASE_URL}/api/city`,
+  getStatesAPI: `${BASE_URL}/api/states`,
 
   getSocialLinks: `${BASE_URL}/api/footerSocialLinks`,
   getFooterLinks: `${BASE_URL}/api/footerlinks`,

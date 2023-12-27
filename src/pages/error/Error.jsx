@@ -1,9 +1,10 @@
 import React from "react";
+import PageTitle from "../../components/page-tittle/PageTitle";
 
 const Error = () => {
     return (
         <>
-            <h2>404 AccessDenied</h2>
+            <PageTitle current={'404 Not Found'} />
         </>
     );
 }

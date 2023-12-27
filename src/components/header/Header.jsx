@@ -172,16 +172,26 @@ const Header = ({ setOpenDrawer }) => {
 
               {/* Right Cart Icon */}
               <div className="col-xl-4 col-lg-4 col-md-4 col-sm-3 col-3 header-right">
-                <div className="user-box" style={{ width: '30px', fontSize: '19px' }}>
+                <div className="user-box" style={{ width: '30px', fontSize: '19px', marginRight: '8px' }}>
                   <Link to="/account">
                     <i class="fa-regular fa-user" />                  </Link>
 
                 </div>
-                <div className="wishlist-box" style={{ width: '30px', fontSize: '20px' }}>
+                <div className="wishlist-box" style={{ width: '30px', fontSize: '20px', marginRight: '8px' }}>
                   <Link to="/wishlist">
                     <i className="ti-heart" />
                   </Link>
-                  {/* <span className="count-wishlist">{wishListCount}</span> */}
+                  <span className="" style={{
+                    // border: '1px solid black',
+                    borderRadius: '50%',
+                    color: 'white',
+                    backgroundColor: 'black',
+                    position: 'relative',
+                    bottom: '16px',
+                    fontSize: '13.5px',
+                    // width: '100px',
+                    padding: '1px 6px 1px 6px'
+                  }}>{wishListCount}</span>
                 </div>
 
                 <div className="cema-topcart dropdown">

@@ -41,8 +41,8 @@ const SlidingDrawer = ({ OpenDrawer, setOpenDrawer }) => {
             <button className="menu-button"
                 onClick={() => setOpenDrawer(false)}
             >
-                <i class="fa-thin fa-xmark-large" />
-                <i class="fa-solid fa-xmark" style={{ fontFamily: 'FontAwesome', background: 'white', fontSize: '20px' }} />
+                {/* <i class="fa-thin fa-xmark-large" /> */}
+                <i class="fa-solid fa-xmark" style={{ fontFamily: 'FontAwesome', background: 'white', fontSize: '18px', fontWeight: '100' }} />
             </button>
             <div className="main-contentd">
                 <ul >

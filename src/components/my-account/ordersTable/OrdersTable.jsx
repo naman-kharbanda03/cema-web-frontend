@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import apiConfig from "../../../config/apiConfig";
 import { useShoppingCart } from "../../../context/ShoppingCartContext";
+import { Link } from "react-router-dom";
 
 
 
@@ -9,36 +10,19 @@ import { useShoppingCart } from "../../../context/ShoppingCartContext";
 const OrdersTable = ({ orderId }) => {
 
   const [orders, setOrders] = useState([]);
-
   const [orderDetails, setOrderDetails] = useState({});
 
   const authToken = localStorage.getItem("accessToken");
   const [showModal, setShowModal] = useState(false);
   const { showInfoToastMessage } = useShoppingCart();
+  // const history = useHistory();
 
 
-  const openModal = (id) => {
-    // const apiUrl = apiConfig.orderDetailsAPI;
-    const apiUrl = `https://www.demo609.amrithaa.com/backend-cema/public/api/orders/${id}`;
-
-    const token = localStorage.getItem('accessToken');
-    fetch(apiUrl, {
-      method: 'GET',
-      headers: {
-        Authorization: `Bearer ${token}`
-      }
-    }).then(response => response.json())
-      .then(data => {
-        // console.log("Order Deatils", data);
-        if (data.success === true) {
-          setOrderDetails(data.order);
-          setShowModal(true);
-        } else {
-          showInfoToastMessage('Error in loading details')
-        }
-
-      }).catch(error => console.error("Network Fetch Issue", error));
-  }
+  // const openModal = (id) => {
+  //   // const apiUrl = apiConfig.orderDetailsAPI;
+  //   // Navigate()
+  //   history.push(`/order-details?orderID=${id}`);
+  // }
   const closeModal = () => setShowModal(false);
 
   const fetchDetails = (apiUrl) => {
@@ -68,7 +52,7 @@ const OrdersTable = ({ orderId }) => {
   useEffect(() => {
     if (orderId && orders?.length > 0) {
       let prodId = orders.filter((order) => order?.order_id === orderId)[0]?.id
-      openModal(prodId)
+      // openModal(prodId)
       setShowModal(true)
     }
   }, [orders])
@@ -95,9 +79,9 @@ const OrdersTable = ({ orderId }) => {
                     <td>{order.order_status}</td>
                     <td>{order.currency}{' '}{order.grand_total} for {order.total_items} item</td>
                     <td>
-                      <a href="#" className="btn-small d-block" onClick={() => openModal(order.id)}>
+                      <Link to={`/order-details?orderID=${order.id}`} className="btn-small d-block" >
                         View
-                      </a>
+                      </Link>
                     </td>
                   </tr>
                 ))

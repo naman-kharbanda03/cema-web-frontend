@@ -398,22 +398,34 @@ const ShopDetails = (product) => {
 
                       <div className="product-info col-lg-5 col-md-12 col-12 ">
                         <h1 className="title">{data?.product_name?.en}</h1>
-                        <span className="price">
-                          <del
-                            aria-hidden="true"
-                          >
-                            <span>
-                              KD{' '}
-                              {combination?.mainprice}
-                            </span>
-                          </del>
-                          <ins>
-                            <span>
-                              KD {' '}
-                              {combination?.offerprice}
-                            </span>
-                          </ins>
-                        </span>
+
+                        {variant_id
+                          ? <span className="price">
+                            <ins>
+                              <span>
+                                KD {' '}
+                                {combination?.mainprice}
+                              </span>
+                            </ins>
+                          </span>
+                          : <span className="price">
+                            <del
+                              aria-hidden="true"
+                            >
+                              <span>
+                                KD{' '}
+                                {combination?.mainprice}
+                              </span>
+                            </del>
+                            <ins>
+                              <span>
+                                KD {' '}
+                                {combination?.offerprice}
+                              </span>
+                            </ins>
+                          </span>
+                        }
+
                         <div className="rating">
                           <StarRatings
                             rating={data?.rating}
@@ -556,7 +568,7 @@ const ShopDetails = (product) => {
                               onClick={() => {
                                 const prod = {
                                   id: data?.product_id,
-                                  price: combination?.offerprice,
+                                  price: data?.type !== 'simple_product' ? combination?.mainprice : combination.offerprice,
                                   image_path: data?.images_path,
                                   product_image: [
                                     `${combination?.images[0]?.image}`,

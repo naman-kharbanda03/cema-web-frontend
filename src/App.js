@@ -24,18 +24,22 @@ import CookieBanner from "./components/CookieBanner/cookie";
 import CookieConsent from "react-cookie-consent";
 import PreLoader from "./components/pre-loader/PreLoader";
 import Layout from "./layouts/Layout";
+import OrderDetails from "./pages/order-details/OrderDetails";
 
 function App() {
   // const [isLoggedIn, setIsLoggedIn] = useState(false);
   // useEffect(() => console.log(isLoggedIn), [isLoggedIn]);
-  const [loading, setLoading] = useState(false);
+  const [loading, setLoading] = useState(true);
   const [openDrawer, setOpenDrawer] = useState(false);
+  const url = new URL(window.location.href);
+  const params = new URLSearchParams(url.search);
 
   useEffect(() => {
+    setLoading(true);
     setTimeout(() => {
-      setLoading(true);
-    }, 2000);
-  });
+      setLoading(false);
+    }, 1500);
+  }, []);
   return (
     <div
       id="page"
@@ -97,8 +101,10 @@ function App() {
               <Route path="/wishlist" element={<ShopWishlist />} />
               <Route path="/product-details" element={<ShopDetails />} />
               <Route path="/edit-address" element={<CreateEditAddress />} />
+              <Route path="/order-details" element={<OrderDetails />} />
+              <Route component={<Error />} />
             </Routes>
-            {loading === true ? "" : <PreLoader />}
+            {!loading === true ? "" : <PreLoader />}
             <CookieConsent
               location="bottom"
               buttonText="I understand"

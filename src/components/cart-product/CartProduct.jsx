@@ -5,41 +5,69 @@ import { useShoppingCart } from "../../context/ShoppingCartContext";
 import apiConfig from "../../config/apiConfig";
 
 const CartProduct = (props) => {
-  const { ordersData: orderData, orderQtyChanged, setOrders, setTotal, getCartDetails } = props;
-  // const order = orderData;
+  const { ordersData: orderData, getCartDetails, coupanData, removeCoupon } = props;
   const [order, setOrder] = useState();
-  // const initialQty = order?.qty ? parseInt(order.qty) : 0;
-  // const [orderQnty, setOrderQnty] = useState(initialQty);
+  const [couponId, setCouponId] = useState();
   const { setCartToggle, removeFromLocalCart, increaseItemInLocalCart, setCartItemsCount, showInfoToastMessage, showSuccessToastMessage } = useShoppingCart();
+
 
   useEffect(() => {
     setOrder(orderData);
-  }, [orderData])
+    setCouponId(coupanData?.id);
+  }, [orderData, coupanData])
 
   const increaseQty = (id) => {
-    // setOrderQnty(orderQnty + 1);       //Front end Change
     increaseQtyUtils(order.qty + 1).then(result => {
       if (result) {
         getCartDetails();
       }
     });   // Api call
-    // orderQtyChanged && orderQtyChanged(orderQnty);   //idk
   };
 
+  // async function removeCoupan() {
+  //   const bearerToken = localStorage.getItem('accessToken');
+  //   var formdata = new FormData();
+  //   console.log(coupanId);
+  //   formdata.append("coupan_id", coupanId);
+  //   formdata.append("currency", "KD");
+
+  //   return fetch(apiConfig.removeCoupanAPI, {
+  //     method: 'POST',
+  //     headers: {
+  //       "Content-Type": "application/json",
+  //       Authorization: `Bearer ${bearerToken}`,
+  //     },
+  //     body: formdata
+  //   }).then(response => {
+  //     if (!response.ok) throw new Error('Network Error');
+  //     return response.json();
+  //   }).then(data => {
+  //     console.log(data);
+  //     if (data.status === 'success') {
+  //       showSuccessToastMessage(data.msg);
+  //     }
+  //     else {
+  //       showInfoToastMessage(data.msg);
+  //     }
+  //   }).catch(error => {
+  //     console.error('Network Issue', error);
+  //   })
+  // }
   const decreaseQty = (id) => {
-    // orderQnty !== 0 && setOrderQnty(orderQnty - 1);   // front end change
     increaseQtyUtils(order.qty - 1).then(result => {
       if (result) {
         getCartDetails();
       }
     });                 // api call
-    // orderQtyChanged && orderQtyChanged(orderQnty);    // idk
   };
 
   const removeProduct = (id) => {
     decreaseQtyUtils(id)
       .then(result => {
         if (result) {
+          if (couponId) {
+            removeCoupon();
+          }
           getCartDetails();
         }
       });
@@ -120,6 +148,7 @@ const CartProduct = (props) => {
     } else {
       const prod = {
         id: order?.product_id,
+        variant_id: order?.variant_id,
         type: order?.type,
       };
       return removeFromLocalCart(prod);

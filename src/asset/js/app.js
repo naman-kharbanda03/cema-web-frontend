@@ -25,6 +25,13 @@ $(window).on("scroll", function () {
     $(".header-desktop").removeClass("is-sticky");
   }
 });
+$(window).on("scroll", function () {
+  if ($(this).scrollTop() > 200) {
+    $(".header-mobile").addClass("is-sticky");
+  } else {
+    $(".header-mobile").removeClass("is-sticky");
+  }
+});
 
 // // ______________ Home Page Banner Slider
 // $(".block-sliders").slick({

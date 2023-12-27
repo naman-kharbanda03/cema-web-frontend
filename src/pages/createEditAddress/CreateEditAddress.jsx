@@ -12,7 +12,7 @@ const CreateEditAddress = (props) => {
     const [stateOptions, setStateOptions] = useState();
     const [citiesOptions, setCitiesOptions] = useState();
     const [address, setAddress] = useState({});
-    const setAddressData = (data) =>{
+    const setAddressData = (data) => {
         setAddress({
             name: data?.name || "",
             address: data?.address || "",
@@ -21,7 +21,7 @@ const CreateEditAddress = (props) => {
             pincode: data?.pincode || data?.pin_code || "",
             country_id: data?.country?.id || "",
             state_id: data?.state?.id || "",
-            city_id: data?.city?.id || "", 
+            city_id: 0,
             defaddress: 1,
             address_2: ""
         })
@@ -32,78 +32,78 @@ const CreateEditAddress = (props) => {
             ...prev,
             [e.target.name]: e.target.value,
         }));
-        if (e.target.name === 'state_id')  getCities(e.target.value);
+        if (e.target.name === 'country_id') getStates(e.target.value);
     }
-    const addOrUpdateBillingAddress = (e) =>{
+    const addOrUpdateBillingAddress = (e) => {
         e.preventDefault();
-        console.log(searchParams.get("addressType") === "Shipping"  ? apiConfig.createUpdateShipAddress:apiConfig.createUpdateBillAddress)
-        fetch( (searchParams.get("addressType") === "Shipping"  ? apiConfig.createUpdateShipAddress:apiConfig.createUpdateBillAddress), {
+        // console.log(searchParams.get("addressType") === "Shipping" ? apiConfig.createUpdateShipAddress : apiConfig.createUpdateBillAddress)
+        fetch((searchParams.get("addressType") === "Shipping" ? apiConfig.createUpdateShipAddress : apiConfig.createUpdateBillAddress), {
             method: "POST",
             headers: {
-              "Content-Type": "application/json",
-              Authorization: `Bearer ${authToken}`,
+                "Content-Type": "application/json",
+                Authorization: `Bearer ${authToken}`,
             },
             body: JSON.stringify(address),
-          })
+        })
             .then((response) => {
-              if (!response.ok) throw new Error("Network Issue");
-              return response.json();
+                if (!response.ok) throw new Error("Network Issue");
+                return response.json();
             })
             .then((data) => {
-              console.log("Updated -->", data);
-              if(!data?.status){
-                Object.keys(data["data"]).map(key =>{
-                    toast.warning(data?.data[key][0], {
+                console.log("Updated -->", data);
+                if (!data?.status) {
+                    Object.keys(data["data"]).map(key => {
+                        toast.warning(data?.data[key][0], {
+                            position: toast.POSITION.BOTTOM_LEFT,
+                        });
+                    })
+                } else {
+                    toast.success(data?.message, {
                         position: toast.POSITION.BOTTOM_LEFT,
-                      });
-                })
-              }else{
-                toast.success(data?.message, {
-                    position: toast.POSITION.BOTTOM_LEFT,
-                  });
-              }
-              return data;
+                    });
+                }
+                return data;
             })
             .catch((error) => console.error("Problem with fetch operations", error));
 
     }
-    const getAddressDetails = (url) =>{
+    const getAddressDetails = (url) => {
         searchParams.get("addressType") === "Shipping" &&
-        fetch(url, {
+            fetch(url, {
+                method: "GET",
+                headers: {
+                    "Content-Type": "application/json",
+                    Authorization: `Bearer ${authToken}`,
+                },
+            })
+                .then((response) => {
+                    if (!response.ok) throw new Error("Network Issue");
+                    return response.json();
+                })
+                .then((data) => {
+                    console.log(data);
+                    setAddressData(data.address)
+                    getStates(data?.address?.country?.id);
+                    return data;
+                })
+                .catch((error) => console.error("Problem with fetch operations", error));
+
+        searchParams.get("addressType") === "Billing" && fetch(url, {
             method: "GET",
             headers: {
-              "Content-Type": "application/json",
-              Authorization: `Bearer ${authToken}`,
+                "Content-Type": "application/json",
+                Authorization: `Bearer ${authToken}`,
             },
-          })
+        })
             .then((response) => {
-              if (!response.ok) throw new Error("Network Issue");
-              return response.json();
+                if (!response.ok) throw new Error("Network Issue");
+                return response.json();
             })
             .then((data) => {
-              console.log(data);
-              setAddressData(data.address)
-              getCities(data?.address?.state?.id);
-              return data;
-            })
-            .catch((error) => console.error("Problem with fetch operations", error));
-      
-            searchParams.get("addressType") === "Billing" && fetch(url, {
-            method: "GET",
-            headers: {
-              "Content-Type": "application/json",
-              Authorization: `Bearer ${authToken}`,
-            },
-          })
-            .then((response) => {
-              if (!response.ok) throw new Error("Network Issue");
-              return response.json();
-            })
-            .then((data) => {
-              console.log(data);
-              setAddressData(data.address)
-              getCities(data?.address?.state?.id);
-              return data;
+                console.log(data);
+                setAddressData(data.address)
+                getStates(data?.address?.country?.id);
+                return data;
             })
             .catch((error) => console.error("Problem with fetch operations", error));
     }
@@ -123,22 +123,22 @@ const CreateEditAddress = (props) => {
             })
             .catch((error) => console.log("error", error));
     }
-    function getCountryStates() {
-        var requestOptions = {
-            method: "GET",
-            redirect: "follow",
-        };
+    // function getCountryStates() {
+    //     var requestOptions = {
+    //         method: "GET",
+    //         redirect: "follow",
+    //     };
 
-        fetch(
-            "https://www.demo609.amrithaa.com/backend-cema/public/api/states/101?secret=1dc7843e-e42c-4154-a02d-d80ab6d81095",
-            requestOptions
-        )
-            .then((response) => response.json())
-            .then((result) => {
-                setStateOptions(result?.states);
-            })
-            .catch((error) => console.log("error", error));
-    }
+    //     fetch(
+    //         "https://www.demo609.amrithaa.com/backend-cema/public/api/states/101?secret=1dc7843e-e42c-4154-a02d-d80ab6d81095",
+    //         requestOptions
+    //     )
+    //         .then((response) => response.json())
+    //         .then((result) => {
+    //             setStateOptions(result?.states);
+    //         })
+    //         .catch((error) => console.log("error", error));
+    // }
     function getCities(id) {
         var requestOptions = {
             method: "GET",
@@ -155,14 +155,35 @@ const CreateEditAddress = (props) => {
             })
             .catch((error) => console.log("error", error));
     }
-  
+
+    function getStates(id) {
+        // console.log(id, type);
+        var requestOptions = {
+            method: "GET",
+            redirect: "follow",
+        };
+
+        fetch(
+            `${apiConfig.getStatesAPI}/${id}`,
+            requestOptions
+        )
+            .then((response) => response.json())
+            .then((result) => {
+                console.log("states", result);
+                setStateOptions(result?.states);
+            })
+            .catch((error) => console.log("error", error));
+    }
+
+
+
 
     useEffect(() => {
         const shippingAddress = apiConfig.getAddressAPI;
         const billingAddress = apiConfig.getBillingAddressAPI;
-        getAddressDetails( searchParams.get("addressType") === "Shipping" ? shippingAddress : billingAddress);
+        getAddressDetails(searchParams.get("addressType") === "Shipping" ? shippingAddress : billingAddress);
         getCountries();
-        getCountryStates();
+        // getCStates();
     }, [])
 
     const [searchParams, setSearchParams] = useSearchParams();
@@ -263,7 +284,7 @@ const CreateEditAddress = (props) => {
                                                                         />
                                                                     </span>
                                                                 </p>
-                                                                <p className="form-row address-field form-row-wide">
+                                                                {/* <p className="form-row address-field form-row-wide">
                                                                     <label>
                                                                         Apartment, suite, unit, etc.&nbsp;
                                                                         <span className="optional">(optional)</span>
@@ -277,7 +298,7 @@ const CreateEditAddress = (props) => {
                                                                             value={address?.address_2}
                                                                         />
                                                                     </span>
-                                                                </p>
+                                                                </p> */}
 
                                                                 <p className="form-row form-row-wide validate-required">
                                                                     <label>
@@ -323,7 +344,7 @@ const CreateEditAddress = (props) => {
                                                                         </select>
                                                                     </span>
                                                                 </p>
-                                                                <p className="form-row address-field validate-required form-row-wide">
+                                                                {/* <p className="form-row address-field validate-required form-row-wide">
                                                                     <label for="city" className="">
                                                                         Town / City{" "}
                                                                         <span className="required" title="required">
@@ -344,7 +365,7 @@ const CreateEditAddress = (props) => {
                                                                             ))}
                                                                         </select>
                                                                     </span>
-                                                                </p>
+                                                                </p> */}
 
                                                                 <p className="form-row address-field validate-required validate-postcode form-row-wide">
                                                                     <label>
@@ -376,7 +397,7 @@ const CreateEditAddress = (props) => {
                                                                 marginBottom: "10px",
                                                             }}
                                                             type="submit"
-                                                            // onClick={() => addOrUpdateBillingAddress()}
+                                                        // onClick={() => addOrUpdateBillingAddress()}
                                                         >
                                                             Update Address
                                                             {/* {billingData ? "Update Address" : "Add Address"} */}

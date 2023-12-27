@@ -9,7 +9,7 @@ const ShopCheckout = () => {
   const [orders, setOrders] = useState();
   const [total, setTotal] = useState();
   const [shipToDifferentAddress, setShipToDifferentAddress] = useState(false);
-  const [stateOptions, setStateOptions] = useState();
+  const [stateOptions, setStateOptions] = useState({});
   const [countriesOptions, setCountriesOptions] = useState();
   const [citiesOptions, setCitiesOptions] = useState({});
   const [datta, setDatta] = useState();
@@ -26,7 +26,8 @@ const ShopCheckout = () => {
       ...prev,
       [e.target.name]: e.target.value
     }))
-    if (e.target.name === 'state') getCities(e.target.value, 'billing');
+    if (e.target.name === 'country') getStates(e.target.value, 'billing');
+    // if (e.target.name === 'state') getCities(e.target.value, 'billing');
   }
   useEffect(() => console.log(state), [state]);
 
@@ -37,12 +38,13 @@ const ShopCheckout = () => {
       ...prev,
       [e.target.name]: e.target.value
     }))
-    if (e.target.name === 'state') getCities(e.target.value, 'shipping');
+    if (e.target.name === 'country') getStates(e.target.value, 'shipping');
+    // if (e.target.name === 'state') getCities(e.target.value, 'shipping');
   }
 
-  useEffect(() => {
-    console.log('shipState', shipState, citiesOptions);
-  }, [shipState, citiesOptions])
+  // useEffect(() => {
+  //   console.log('shipState', shipState, citiesOptions);
+  // }, [shipState, citiesOptions])
 
 
 
@@ -61,9 +63,9 @@ const ShopCheckout = () => {
       phone: state?.phone,
       type: state?.type || 'other',
       pincode: state?.postcode,
-      country_id: '101',
+      country_id: state?.country,
       state_id: state?.state,
-      city_id: state?.city,
+      city_id: 0,
       defaddress: "1",
     };
     const api = apiConfig.createBillingAddress;
@@ -104,7 +106,7 @@ const ShopCheckout = () => {
       pincode: shipState?.postcode,
       country_id: shipState?.country,
       state_id: shipState?.state,
-      city_id: shipState?.city,
+      city_id: 0,
       defaddress: "1",
     };
 
@@ -183,8 +185,8 @@ const ShopCheckout = () => {
               position: toast.POSITION.BOTTOM_LEFT,
             });
             setTimeout(() => {
-              window.location.href = `/account?activeTab=orders&orderId=${"EODD" + result?.order_id}`;
-              // navigate(`/account?activeTab=orders&orderId=${"EODD" + result?.order_id}`)
+              // window.location.href = `/account?activeTab=orders&orderId=${"EODD" + result?.order_id}`;
+              navigate(`/order-details?orderID=${result.inc_order_id}`)
             }, 1000)
           } else {
             setButtonClicked(false);
@@ -199,7 +201,7 @@ const ShopCheckout = () => {
 
   function getCartDetails() {
     const bearerToken = localStorage.getItem("accessToken");
-    console.log("bearerToken", orders);
+    // console.log("bearerToken", orders);
     const api = apiConfig.getCartDataAPI;
 
     fetch(api, {
@@ -211,12 +213,15 @@ const ShopCheckout = () => {
       .then((response) => response.json())
       .then((data) => {
         if (data) {
-          console.log("getCartData:", data.total);
+          if (data.data.length === 0) {
+            navigate('/products');
+          }
           setCosts({
             grand_total: data.grand_total,
-            sub_total: data.checkut_total,
+            sub_total: data.total,
             tax: data.total_tax_amount,
             discount: data.discount_amount,
+            shipping: data.shipping_charge,
           })
           setTotal(data.total);
           setDatta(data);
@@ -225,7 +230,7 @@ const ShopCheckout = () => {
             var prod = {};
             if (product.simple_product) {
               prod = {
-                price: product.price_total,
+                price: product.simple_product.offer_price,
                 qty: product.qty,
                 name: product.simple_product.product_name.en,
                 image_path: product.simple_product.image_path,
@@ -234,7 +239,7 @@ const ShopCheckout = () => {
               }
             } else if (product.product) {
               prod = {
-                price: product.product_price,
+                price: product.variant.price,
                 qty: product.qty,
                 name: product.product.product_name.en,
                 image_path: product.product.image_path,
@@ -255,7 +260,7 @@ const ShopCheckout = () => {
 
   function getBillingDetails() {
     const bearerToken = localStorage.getItem("accessToken");
-    console.log("bearerToken", orders);
+    // console.log("bearerToken", orders);
 
     const api = apiConfig.getBillingAdddress;
     fetch(api, {
@@ -267,7 +272,7 @@ const ShopCheckout = () => {
       .then((response) => response.json())
       .then((data) => {
         console.log("BillingDetails:", data);
-        getCities(data?.address?.state?.id, 'billing');
+        getStates(data?.address?.country?.id, 'billing');
         setState({
           id: data?.address?.id,
           name: data?.address.name,
@@ -276,7 +281,7 @@ const ShopCheckout = () => {
           phone: data.address?.mobile,
           country: data.address?.country?.id,
           state: data.address?.state.id,
-          city: data.address?.city.id,
+          // city: data.address?.city.id,
           postcode: data.address?.pincode,
           email: data.address?.email
         });
@@ -288,7 +293,7 @@ const ShopCheckout = () => {
   }
   function getShippingDetails() {
     const bearerToken = localStorage.getItem("accessToken");
-    console.log("bearerToken", orders);
+    // console.log("bearerToken", orders);
 
     const api = apiConfig.getAddressAPI;
     fetch(api, {
@@ -299,8 +304,8 @@ const ShopCheckout = () => {
     })
       .then((response) => response.json())
       .then((data) => {
-        console.log("ShippingDetails:", data);
-        getCities(data?.address.state.id, 'shipping');
+        // console.log("ShippingDetails:", data);
+        getStates(data?.address?.country?.id, 'shipping');
         setShipState({
           id: data?.address?.id,
           name: data?.address.name,
@@ -309,7 +314,7 @@ const ShopCheckout = () => {
           phone: data.address?.phone,
           country: data.address?.country?.id,
           state: data.address?.state.id,
-          city: data.address?.city.id,
+          // city: data.address?.city.id,
           postcode: data.address?.pin_code,
           email: data.address?.email
         });
@@ -349,36 +354,54 @@ const ShopCheckout = () => {
     )
       .then((response) => response.json())
       .then((result) => {
-        console.log("countries", result.countries);
+        // console.log("countries", result.countries);
         setCountriesOptions(result?.countries);
       })
       .catch((error) => console.log("error", error));
   }
-  function getCities(id, type) {
+  function getStates(id, type) {
+    // console.log(id, type);
     var requestOptions = {
       method: "GET",
       redirect: "follow",
     };
 
     fetch(
-      `${apiConfig.getCitiesAPI}/${id}?secret=1dc7843e-e42c-4154-a02d-d80ab6d81095`,
+      `${apiConfig.getStatesAPI}/${id}`,
       requestOptions
     )
       .then((response) => response.json())
       .then((result) => {
-        // console.log("city", result.cities);
-        setCitiesOptions(prev => ({ ...prev, [type]: result?.cities }));
+        console.log("states", result);
+        setStateOptions(prev => ({ ...prev, [type]: result?.states }));
       })
       .catch((error) => console.log("error", error));
   }
+  // function getCities(id, type) {
+  //   var requestOptions = {
+  //     method: "GET",
+  //     redirect: "follow",
+  //   };
 
-  useEffect(() => { console.log(citiesOptions) }, [citiesOptions])
+  //   fetch(
+  //     `${apiConfig.getCitiesAPI}/${id}?secret=1dc7843e-e42c-4154-a02d-d80ab6d81095`,
+  //     requestOptions
+  //   )
+  //     .then((response) => response.json())
+  //     .then((result) => {
+  //       // console.log("city", result.cities);
+  //       setCitiesOptions(prev => ({ ...prev, [type]: result?.cities }));
+  //     })
+  //     .catch((error) => console.log("error", error));
+  // }
+
+  // useEffect(() => { console.log(citiesOptions) }, [citiesOptions])
   useEffect(() => {
     getCartDetails();
     getBillingDetails();
     getShippingDetails();
     getCountries();
-    getCountryStates();
+    // getCountryStates();
     // getCities();
   }, []);
 
@@ -494,7 +517,7 @@ const ShopCheckout = () => {
                               </p> */}
                               <p className="form-row form-row-wide validate-required">
                                 <label>
-                                  Country / Region{" "}
+                                  Country {" "}
                                   <span className="required" title="required">
                                     *
                                   </span>
@@ -517,7 +540,7 @@ const ShopCheckout = () => {
                               </p>
                               <p className="form-row address-field validate-required validate-state form-row-wide">
                                 <label>
-                                  State / County{" "}
+                                  State {" "}
                                   <span className="required" title="required">
                                     *
                                   </span>
@@ -530,7 +553,7 @@ const ShopCheckout = () => {
                                     onChange={handleChange} // Add an onChange event handler
                                   >
                                     <option value="" key={0}> Select State</option>
-                                    {stateOptions?.map((option) => (
+                                    {stateOptions?.billing?.map((option) => (
                                       <option key={option.id} value={option.id}>
                                         {option.name}
                                       </option>
@@ -538,7 +561,7 @@ const ShopCheckout = () => {
                                   </select>
                                 </span>
                               </p>
-                              <p className="form-row address-field validate-required form-row-wide">
+                              {/* <p className="form-row address-field validate-required form-row-wide">
                                 <label for="city" className="">
                                   Town / City{" "}
                                   <span className="required" title="required">
@@ -560,7 +583,7 @@ const ShopCheckout = () => {
                                     ))}
                                   </select>
                                 </span>
-                              </p>
+                              </p> */}
                               <p className="form-row address-field validate-required validate-postcode form-row-wide">
                                 <label>
                                   Postcode / ZIP{" "}
@@ -795,7 +818,7 @@ const ShopCheckout = () => {
                                         onChange={handlesChange} // Add an onChange event handler
                                       >
                                         <option value="" key={0}>Select State</option>
-                                        {stateOptions?.map((option) => (
+                                        {stateOptions?.shipping?.map((option) => (
                                           <option
                                             key={option.id}
                                             value={option.id}
@@ -806,7 +829,7 @@ const ShopCheckout = () => {
                                       </select>
                                     </span>
                                   </p>
-                                  <p className="form-row address-field validate-required form-row-wide">
+                                  {/* <p className="form-row address-field validate-required form-row-wide">
                                     <label for="billing_city" className="">
                                       Town / City{" "}
                                       <span
@@ -834,7 +857,7 @@ const ShopCheckout = () => {
                                         ))}
                                       </select>
                                     </span>
-                                  </p>
+                                  </p> */}
 
                                   <p className="form-row address-field validate-required validate-postcode form-row-wide">
                                     <label>
@@ -945,16 +968,17 @@ const ShopCheckout = () => {
                                 <span>KD {Math.round(costs?.sub_total * 100) / 100}</span>
                               </div>
                             </div>
+
+                            <div className="cart-subtotal">
+                              <h2>Shipping Charge</h2>
+                              <div className="subtotal-price">
+                                <span>KD {Math.round(costs?.shipping * 100) / 100}</span>
+                              </div>
+                            </div>
                             <div className="cart-subtotal">
                               <h2>Discount</h2>
                               <div className="subtotal-price">
                                 <span>KD {Math.round(costs?.discount * 100) / 100}</span>
-                              </div>
-                            </div>
-                            <div className="cart-subtotal">
-                              <h2>Tax</h2>
-                              <div className="subtotal-price">
-                                <span>KD {Math.round(costs?.tax * 100) / 100}</span>
                               </div>
                             </div>
                             <div className="order-total">

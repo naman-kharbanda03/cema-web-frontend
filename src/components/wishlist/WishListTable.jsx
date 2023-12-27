@@ -73,7 +73,7 @@ const WishListTable = () => {
         }
     }, [wishListToggle]);
 
-
+    // useEffect(() => { console.log(orderData) }, [orderData]);
 
     return (
         <>
@@ -90,7 +90,12 @@ const WishListTable = () => {
                                                 variant_id: order?.type !== 'simple_product' ? order?.variant_id : null,
                                                 type: order?.type
                                             }
-                                            handleAddRemoveWishlist(e, prod);
+                                            handleAddRemoveWishlist(e, prod).then(result => {
+                                                if (result.result) {
+                                                    showSuccessToastMessage(result.message)
+                                                }
+                                            });
+                                            // handleAddRemoveWishlist(e, prod);
                                         }}>
                                             <span></span>
                                         </td>

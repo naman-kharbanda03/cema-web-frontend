@@ -6,6 +6,7 @@ import { Link } from "react-router-dom";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import apiConfig from "../../config/apiConfig";
+import { data } from "jquery";
 
 const Cart = () => {
   const [orderData, setOrderData] = useState([]);
@@ -22,8 +23,8 @@ const Cart = () => {
     setCouponCode(e.target.value);
     setCoupanSuccess(false);
   };
-  const showInfoToastMessage = () => {
-    toast.info("Invalid Coupon code !", {
+  const showInfoToastMessage = (msg) => {
+    toast.info(msg, {
       position: toast.POSITION.BOTTOM_LEFT,
     });
   };
@@ -37,14 +38,14 @@ const Cart = () => {
 
   const setQtyChange = (qty) => setQtyChanged(qty);
 
-  const applyCoupon = () => {
+  const applyCoupon = async () => {
     const bearerToken = localStorage.getItem("accessToken");
     const formdata = {
       code: couponCode,
       currency: "INR",
     };
     const apiUrl = apiConfig.applyCouponAPI;
-    fetch(apiUrl, {
+    return fetch(apiUrl, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
@@ -58,12 +59,50 @@ const Cart = () => {
         result.status === "fail" && showInfoToastMessage();
         if (result.status === "success") {
           showSuccessToastMessage(result?.msg);
+          getCartDetails();
           setCoupanSuccess(true);
-          setCouponData(result);
         }
       })
       .catch((error) => console.log("error", error));
   };
+  async function removeCoupan() {
+    const bearerToken = localStorage.getItem('accessToken');
+    const formdata = {
+      coupan_id: couponData.id,
+      currency: 'KD'
+    };
+    console.log(formdata);
+    return fetch(apiConfig.removeCoupanAPI, {
+      method: 'POST',
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${bearerToken}`,
+      },
+      body: JSON.stringify(formdata)
+    }).then(response => {
+      if (!response.ok) throw new Error('Network Error');
+      return response.json();
+    }).then(data => {
+      console.log(data);
+      if (data.status === 'success') {
+        showSuccessToastMessage(data.msg);
+        getCartDetails();
+      }
+      else {
+        console.log(data.msg)
+        showInfoToastMessage(data.msg);
+      }
+    }).catch(error => {
+      console.error('Network Issue', error);
+    })
+  }
+
+  function applyRemoveCoupon() {
+    if (couponData !== null) return removeCoupan();
+    return applyCoupon();
+  }
+
+
 
   function getCartDetails() {
     const bearerToken = localStorage.getItem("accessToken");
@@ -80,16 +119,15 @@ const Cart = () => {
         if (!response.ok) throw new Error("Network Issue");
         return response.json();
       }).then((datar) => {
-        console.log("Cart Data", datar);
+        // console.log("Cart Data", datar);
         setCost({
           total: datar?.grand_total,
-          subtotal: datar?.cart_sub_total,
+          subtotal: datar?.total,
           shipping: datar?.shipping_charge,
           tax: datar?.total_tax_amount,
           discount: datar?.discount_amount,
         })
-        setOrderData(datar);
-        // setTotal(datar?.total);
+        setCouponData(datar.coupon_detail);
         setCartItemsCount(parseInt(datar?.count_product));
         let order = {};
         setOrders([]);
@@ -97,7 +135,8 @@ const Cart = () => {
           if (order.simple_product) {
             order = {
               product_name: { en: order.simple_product.product_name.en },
-              price: order.ori_offer_price,
+              variant_id: null,
+              price: order.simple_product.offer_price,
               product_id: order.simple_product.id,
               product_image: order.simple_product.product_image[0],
               image_path: order.simple_product.image_path,
@@ -112,7 +151,8 @@ const Cart = () => {
           } else {
             order = {
               product_name: { en: order.product.name.en },
-              price: order.ori_offer_price,
+              variant_id: order.product.variant.id,
+              price: order.variant.price,
               product_id: order.pro_id,
               product_image: order.variant.variantimages.main_image,
               image_path: order.product.image_path,
@@ -147,63 +187,13 @@ const Cart = () => {
     }
   }
 
-  // useEffect(() => {
-  //   // When not Logged in ;
-  //   if (!localStorage.getItem('accessToken')) {
-  //     const orders = JSON.parse(localStorage.getItem('cart'));
-  //     setOrders(orders?.Items);
-  //     setTotal(() => {
-  //       return orders?.Items.reduce((acc, item) => {
-  //         return acc + (item.qty * item.price);
-  //       }, 0);
-  //     })
-  //   }
-  // }, [cartItemsCount])
 
   useEffect(() => {
     console.log(cartItems);
     getCartDetails();
   }, [cartItems, qtyChanged]);
 
-  // useEffect(() => {
-  //   console.log(orders);
-  // }, [orders]);
 
-  // useEffect(() => {
-  //   let order = {};
-  //   setOrders([]);
-  //   orderData?.forEach(order => {
-  //     if (order.simple_product) {
-  //       order = {
-  //         product_name: { en: order.simple_product.product_name.en },
-  //         price: order.simple_product.actual_selling_price,
-  //         product_id: order.simple_product.id,
-  //         product_image: order.simple_product.product_image[0],
-  //         image_path: order.simple_product.image_path,
-  //         qty: order.qty,
-  //         stock: order.simple_product.stock,
-  //         cart_id: order.id,
-  //         link: `/product-details?product_id=${order?.simple_product?.id}`
-  //       };
-  //       setOrders(prev => ([...prev, order]));
-
-  //     } else {
-  //       order = {
-  //         product_name: { en: order.product.name.en },
-  //         price: parseInt(order.price_total) + parseInt(order.product.price),
-  //         product_id: order.pro_id,
-  //         product_image: order.variant.variantimages.main_image,
-  //         image_path: order.product.image_path,
-  //         qty: order.qty,
-  //         stock: order?.product?.stock,
-  //         variant_id: order.variant_id,
-  //         cart_id: order.id,
-  //         link: `/product-details?product_id=${order?.pro_id}&variant_id=${order?.variant_id}`
-  //       }
-  //       setOrders(prev => ([...prev, order]));
-  //     }
-  //   })
-  // }, [orderData])
 
   return (
     <div>
@@ -245,11 +235,10 @@ const Cart = () => {
                                 {orders?.map((order) => (
                                   <tbody>
                                     <CartProduct
-                                      setOrders={setOrders}
-                                      orderQtyChanged={setQtyChange}
                                       ordersData={order}
-                                      setTotal={setTotal}
                                       getCartDetails={getCartDetails}
+                                      coupanData={couponData}
+                                      removeCoupon={removeCoupan}
                                     />
                                   </tbody>
                                 ))}
@@ -262,28 +251,31 @@ const Cart = () => {
                                       style={{ borderTopWidth: "0px" }}
                                     >
                                       <div className="bottom-cart">
-                                        <div className="coupon">
-                                          <input
-                                            type="text"
-                                            name="coupon_code"
-                                            className="input-text"
-                                            id="coupon-code"
-                                            placeholder="Coupon code"
-                                            value={couponCode}
-                                            onChange={handleCouponCodeChange}
-                                          />
-                                          <div
-                                            type="submit"
-                                            name="apply_coupon"
-                                            className="button"
-                                            value="Apply coupon"
-                                            onClick={() => applyCoupon()}
-                                          >
-                                            {isCouponSuccess
-                                              ? "Applied"
-                                              : "Apply coupon"}
+                                        {localStorage.getItem('accessToken') && (
+                                          <div className="coupon">
+                                            <input
+                                              type="text"
+                                              name="coupon_code"
+                                              className="input-text"
+                                              id="coupon-code"
+                                              placeholder="Coupon code"
+                                              value={couponCode}
+                                              onChange={handleCouponCodeChange}
+                                            />
+                                            <div
+                                              type="submit"
+                                              name="apply_coupon"
+                                              className="button"
+                                              value="Apply coupon"
+                                              onClick={() => applyRemoveCoupon()}
+                                            >
+                                              {couponData === null
+                                                ? "Apply coupon"
+                                                : "Remove Coupan"}
+                                            </div>
                                           </div>
-                                        </div>
+                                        )}
+
                                         <a href={"/products"}>
                                           <div
                                             type="submit"
@@ -313,32 +305,43 @@ const Cart = () => {
                                 </div>
                               </div>
 
-                              {isCouponSuccess && (
-                                <div className="cart-subtotal">
-                                  <div className="title">Discount</div>
-                                  <div>
-                                    <span>-KD {Math.round(couponData?.coupan_discount * 100) / 100}</span>
-                                  </div>
-                                </div>
-                              )}
+
                               {/* <div className="order-total">
                                 <div className="title">Shipping Charge</div>
                                 <div>
                                   <span>KD {Math.round(cost?.shipping * 100) / 100}</span>
                                 </div>
                               </div> */}
-                              {/* <div className="order-total">
-                                <div className="title">Tax</div>
-                                <div>
-                                  <span>KD {Math.round(cost?.tax * 100) / 100}</span>
+                              {localStorage.getItem('accessToken') ?
+                                (
+                                  <div className="order-total">
+                                    <div className="title">Shipping Charge</div>
+                                    <div>
+                                      <span>KD {Math.round(cost?.shipping * 100) / 100}</span>
+                                    </div>
+                                  </div>
+
+                                )
+                                :
+                                ''}
+
+                              {cost.discount > 0 && (
+                                <div className="cart-subtotal">
+                                  <div className="title">Discount</div>
+                                  <div>
+                                    <span>-KD {Math.round(cost?.discount * 100) / 100}</span>
+                                  </div>
                                 </div>
-                            </div>*/}
-                              <div className="order-total">
-                                <div className="title">Total</div>
-                                <div>
-                                  <span>KD {Math.round(cost?.subtotal * 100) / 100}</span>
+                              )}
+                              {localStorage.getItem('accessToken') && (
+                                <div className="order-total">
+                                  <div className="title">Total</div>
+                                  <div>
+                                    <span>KD {Math.round(cost?.total * 100) / 100}</span>
+                                  </div>
                                 </div>
-                              </div>
+                              )}
+
                             </div>
                             <div className="proceed-to-checkout">
                               <Link to="/shop-checkout">

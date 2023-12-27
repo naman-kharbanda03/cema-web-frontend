@@ -188,7 +188,7 @@ const ProductList = () => {
           ],
           stock: product?.stock,
           max_order_limit: product?.max_order_qty,
-          price: product?.price,
+          price: product?.offer_price > 0 ? product?.offer_price : product?.price,
           type: "simple_product",
           link: `/product-details?product_id=${product.id}`,
           hot_product: product.hot_product,
