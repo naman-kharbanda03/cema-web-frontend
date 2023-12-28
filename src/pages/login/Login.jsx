@@ -78,6 +78,7 @@ const Login = (props) => {
     const wishlist = JSON.parse(localStorage.getItem("wishlist"));
     AddToCart2(cart);
     addToWishlist2(wishlist);
+
   };
 
   const handleRegister = function (e) {

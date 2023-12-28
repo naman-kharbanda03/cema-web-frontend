@@ -15,7 +15,7 @@ import ShopWishlist from "./pages/shop-wishlist/ShopWishlist";
 import ShopDetails from "./pages/shop-details/ShopDetails";
 import { ShoppingCartProvider } from "./context/ShoppingCartContext";
 import Error from "./pages/error/Error";
-import { useEffect, useState } from "react";
+import { useEffect, useLayoutEffect, useRef, useState } from "react";
 import CreateEditAddress from "./pages/createEditAddress/CreateEditAddress";
 import { UserContextWrapper } from "./context/UserContext";
 import HiddenPostLogin from "./routeHandlers/HiddenPostLogin/HiddenPostLogin";
@@ -29,17 +29,10 @@ import OrderDetails from "./pages/order-details/OrderDetails";
 function App() {
   // const [isLoggedIn, setIsLoggedIn] = useState(false);
   // useEffect(() => console.log(isLoggedIn), [isLoggedIn]);
-  const [loading, setLoading] = useState(true);
   const [openDrawer, setOpenDrawer] = useState(false);
   const url = new URL(window.location.href);
   const params = new URLSearchParams(url.search);
 
-  useEffect(() => {
-    setLoading(true);
-    setTimeout(() => {
-      setLoading(false);
-    }, 1500);
-  }, []);
   return (
     <div
       id="page"
@@ -47,76 +40,78 @@ function App() {
     >
       <UserContextWrapper>
         <ShoppingCartProvider>
-          <Layout OpenDrawer={openDrawer} setOpenDrawer={setOpenDrawer}>
-            <Header setOpenDrawer={setOpenDrawer} />
-            <Routes>
-              {/* Home */}
-              <Route path="/" element={<Home />} />
+          <>
+            <Layout OpenDrawer={openDrawer} setOpenDrawer={setOpenDrawer}>
+              <Header setOpenDrawer={setOpenDrawer} />
 
-              {/* login */}
-              <Route
-                path="/login"
-                element={
-                  <HiddenPostLogin>
-                    <Login />
-                  </HiddenPostLogin>
-                }
-              />
-              {/* forgot-password */}
-              <Route
-                path="/forgot-password"
-                element={
-                  <HiddenPostLogin>
-                    <ForgotPassword />
-                  </HiddenPostLogin>
-                }
-              />
-              {/* cart */}
-              <Route path="/cart" element={<Cart />} />
+              <Routes>
+                {/* Home */}
+                <Route path="/" element={<Home />} />
 
-              {/* contact */}
-              <Route path="/contact" element={<Contact />} />
+                {/* login */}
+                <Route
+                  path="/login"
+                  element={
+                    <HiddenPostLogin>
+                      <Login />
+                    </HiddenPostLogin>
+                  }
+                />
+                {/* forgot-password */}
+                <Route
+                  path="/forgot-password"
+                  element={
+                    <HiddenPostLogin>
+                      <ForgotPassword />
+                    </HiddenPostLogin>
+                  }
+                />
+                {/* cart */}
+                <Route path="/cart" element={<Cart />} />
 
-              {/* listings */}
-              <Route path="/listings" element={<Listing />} />
+                {/* contact */}
+                <Route path="/contact" element={<Contact />} />
 
-              {/* account */}
-              <Route
-                path="/account"
-                element={
-                  <Protected>
-                    <MyAccount />
-                  </Protected>
-                }
-              />
-              <Route path="/products" element={<ProductList />} />
-              <Route
-                path="/shop-checkout"
-                element={
-                  <Protected>
-                    <ShopCheckout />
-                  </Protected>
-                }
-              />
-              <Route path="/wishlist" element={<ShopWishlist />} />
-              <Route path="/product-details" element={<ShopDetails />} />
-              <Route path="/edit-address" element={<CreateEditAddress />} />
-              <Route path="/order-details" element={<OrderDetails />} />
-              <Route component={<Error />} />
-            </Routes>
-            {!loading === true ? "" : <PreLoader />}
-            <CookieConsent
-              location="bottom"
-              buttonText="I understand"
-              cookieName="myCookieConsent"
-              style={{ background: "#333" }}
-              buttonStyle={{ background: "#007BFF" }}
-            >
-              This website uses cookies to ensure you get the best experience on
-              our website.
-            </CookieConsent>
-            <Footer />
-          </Layout>
+                {/* listings */}
+                <Route path="/listings" element={<Listing />} />
+
+                {/* account */}
+                <Route
+                  path="/account"
+                  element={
+                    <Protected>
+                      <MyAccount />
+                    </Protected>
+                  }
+                />
+                <Route path="/products" element={<ProductList />} />
+                <Route
+                  path="/shop-checkout"
+                  element={
+                    <Protected>
+                      <ShopCheckout />
+                    </Protected>
+                  }
+                />
+                <Route path="/wishlist" element={<ShopWishlist />} />
+                <Route path="/product-details" element={<ShopDetails />} />
+                <Route path="/edit-address" element={<CreateEditAddress />} />
+                <Route path="/order-details" element={<OrderDetails />} />
+                <Route component={<Error />} />
+              </Routes>
+              <CookieConsent
+                location="bottom"
+                buttonText="I understand"
+                cookieName="myCookieConsent"
+                style={{ background: "#333" }}
+                buttonStyle={{ background: "#007BFF" }}
+              >
+                This website uses cookies to ensure you get the best experience
+                on our website.
+              </CookieConsent>
+              <Footer />
+            </Layout>
+          </>
 
           {/* <PreLoader /> */}
           {/* <BackToTop /> */}

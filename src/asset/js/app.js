@@ -14,9 +14,9 @@ var $ = jQuery;
 // import "./jquery.min.js";
 
 // ______________ Page Loader
-$(window).on("load", function () {
-  $(".page-preloader").delay(200).fadeOut(500);
-});
+// $(window).on("load", function () {
+//   $(".page-preloader").delay(200).fadeOut(500);
+// });
 
 $(window).on("scroll", function () {
   if ($(this).scrollTop() > 200) {

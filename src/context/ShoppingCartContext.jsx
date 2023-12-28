@@ -25,6 +25,8 @@ export const ShoppingCartProvider = ({ children }) => {
     const [wishListToggle, setWishListToggle] = useState(false);
     const [cartToggle, setCartToggle] = useState(false);
 
+    // const [loading, setLoading] = useState(true);
+
 
     const showInfoToastMessage = (msg) => {
         toast.info(<div >

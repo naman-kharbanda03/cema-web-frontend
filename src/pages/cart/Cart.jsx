@@ -134,32 +134,32 @@ const Cart = () => {
         datar.data?.forEach(order => {
           if (order.simple_product) {
             order = {
-              product_name: { en: order.simple_product.product_name.en },
+              product_name: { en: order?.simple_product?.product_name?.en },
               variant_id: null,
-              price: order.simple_product.offer_price,
-              product_id: order.simple_product.id,
-              product_image: order.simple_product.product_image[0],
-              image_path: order.simple_product.image_path,
-              qty: order.qty,
-              stock: order.simple_product.stock,
-              cart_id: order.id,
+              price: order?.simple_product?.offer_price,
+              product_id: order?.simple_product?.id,
+              product_image: order?.simple_product.product_image[0],
+              image_path: order?.simple_product.image_path,
+              qty: order?.qty,
+              stock: order?.simple_product.stock,
+              cart_id: order?.id,
               link: `/product-details?product_id=${order?.simple_product?.id}`,
-              max_order_limit: order.simple_product.max_order_qty,
+              max_order_limit: order?.simple_product.max_order_qty,
             };
             setOrders(prev => ([...prev, order]));
 
           } else {
             order = {
-              product_name: { en: order.product.name.en },
-              variant_id: order.product.variant.id,
-              price: order.variant.price,
-              product_id: order.pro_id,
-              product_image: order.variant.variantimages.main_image,
-              image_path: order.product.image_path,
-              qty: order.qty,
+              product_name: { en: order?.product?.name?.en },
+              // variant_id: order?.variant?.id,
+              price: order?.variant?.price,
+              product_id: order?.pro_id,
+              product_image: order?.variant?.variantimages?.main_image,
+              image_path: order?.product?.image_path,
+              qty: order?.qty,
               stock: order?.product?.stock,
-              variant_id: order.variant_id,
-              cart_id: order.id,
+              variant_id: order?.variant_id,
+              cart_id: order?.id,
               link: `/product-details?product_id=${order?.pro_id}&variant_id=${order?.variant_id}`,
               max_order_limit: order?.variant?.max_order_qty,
             }
@@ -191,7 +191,11 @@ const Cart = () => {
   useEffect(() => {
     console.log(cartItems);
     getCartDetails();
-  }, [cartItems, qtyChanged]);
+  }, [cartItems]);
+  // useEffect(() => {
+  //   console.log(cartItems);
+  //   getCartDetails();
+  // }, []);
 
 
 

@@ -203,7 +203,7 @@ const CartProduct = (props) => {
             autoComplete="off"
           />
           <button type="button" className="plus" onClick={() => {
-            if (order.qty < order.max_order_limit) increaseQty(order.cart_id);
+            if (order.qty < Math.min(order.max_order_limit, order.stock)) increaseQty(order.cart_id);
             else showInfoToastMessage('Product Maximum Quantity Reached');
           }
           }>

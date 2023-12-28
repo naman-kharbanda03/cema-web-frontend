@@ -171,9 +171,6 @@ const OrderDetails = () => {
                                                         <h6><strong style={{ fontWeight: '400' }}>Order Quantity:</strong> {orderDetails?.total_qty}</h6>
                                                     </li>
                                                     <li>
-                                                        <h6><strong style={{ fontWeight: '400' }}>Tax:</strong> KD {orderDetails?.tax}</h6>{' '}
-                                                    </li>
-                                                    <li>
                                                         <h6><strong style={{ fontWeight: '400' }}>Total:</strong> KD {orderDetails?.subtotal}</h6>{' '}
                                                     </li>
                                                 </ul>

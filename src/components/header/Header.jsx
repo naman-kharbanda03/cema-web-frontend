@@ -197,9 +197,9 @@ const Header = ({ setOpenDrawer }) => {
                 <div className="cema-topcart dropdown">
                   <div className="dropdown mini-cart top-cart">
                     <div className="remove-cart-shadow" />
-                    <Link
+                    <a
                       className="dropdown-toggle cart-icon"
-                      to="/cart"
+                      href="/cart"
                       role="button"
                       data-toggle="dropdown"
                       aria-haspopup="true"
@@ -210,7 +210,7 @@ const Header = ({ setOpenDrawer }) => {
                         <span className="cart-count">{cartItemsCount}</span>
                       </div>
 
-                    </Link>
+                    </a>
                     {/* <div className="dropdown-menu cart-popup mmenu">
                       <div className="cart-empty-wrap">
                         <ul className="cart-list">
@@ -413,7 +413,7 @@ const Header = ({ setOpenDrawer }) => {
                           </div>
                         </li>
                         <li className="level-0 menu-item menu-item-has-children mega-menu level-menu-fullwidth" key='4'>
-                          <a href="/products">
+                          <a href={`/products`}>
                             <span className="menu-item-text">Products</span>
                           </a>
                           <div className="sub-menu">
@@ -574,9 +574,9 @@ const Header = ({ setOpenDrawer }) => {
                     <div className="cema-topcart dropdown light">
                       <div className="dropdown mini-cart top-cart">
                         <div className="remove-cart-shadow" />
-                        <Link
+                        <a
                           className="dropdown-toggle cart-icon"
-                          to="/cart"
+                          href="/cart"
                           role="button"
                           data-toggle="dropdown"
                           aria-haspopup="true"
@@ -586,7 +586,7 @@ const Header = ({ setOpenDrawer }) => {
                             <i className="ti-bag" />
                             <span className="cart-count">{cartItemsCount}</span>
                           </div>
-                        </Link>
+                        </a>
                         {/* <div className="dropdown-menu cart-popup">
                           <div className="cart-empty-wrap">
                             <ul className="cart-list">

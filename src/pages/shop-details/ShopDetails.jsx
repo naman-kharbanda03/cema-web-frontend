@@ -530,7 +530,7 @@ const ShopDetails = (product) => {
                                 type="button"
                                 className="plus"
                                 onClick={() => {
-                                  if (quant < combination.maxorderlimit)
+                                  if (quant < Math.min(combination.maxorderlimit, combination.stock))
                                     setQuant((count) => count + 1);
                                   else showInfoToastMessage('Max order limit');
                                 }}
