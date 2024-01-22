@@ -65,7 +65,7 @@ const OrdersTable = ({ orderId }) => {
               <tr>
                 <th>Order</th>
                 <th>Date</th>
-                <th>Status</th>
+                {/* <th>Status</th> */}
                 <th>Total</th>
                 <th>Actions</th>
               </tr>
@@ -76,7 +76,7 @@ const OrdersTable = ({ orderId }) => {
                   <tr>
                     <td>#{order.order_id}</td>
                     <td>{order.order_date}</td>
-                    <td>{order.order_status}</td>
+                    {/* <td>{order.order_status}</td> */}
                     <td>{order.currency}{' '}{order.grand_total} for {order.total_items} item</td>
                     <td>
                       <Link to={`/order-details?orderID=${order.id}`} className="btn-small d-block" >

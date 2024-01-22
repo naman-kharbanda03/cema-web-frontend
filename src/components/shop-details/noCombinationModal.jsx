@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import { Button, Modal } from "react-bootstrap";
 
 
 const NoCombinationModal = ({ showModal, setShowModal }) => {
@@ -6,7 +7,7 @@ const NoCombinationModal = ({ showModal, setShowModal }) => {
     // const [showModal, setShowModal] = useState(true);
 
     return (<>
-        <div
+        {/* <div
             className={`modal fade ${showModal ? 'show' : ''}`}
             style={{ display: showModal ? 'block' : 'none', zIndex: 1000, position: 'absolute', top: '30%' }}
             tabIndex=""
@@ -28,7 +29,23 @@ const NoCombinationModal = ({ showModal, setShowModal }) => {
 
                 </div>
             </div>
-        </div>
+        </div> */}
+        <Modal show={showModal} onHide={() => setShowModal(false)}>
+            <Modal.Header closeButton>
+                {/* <Modal.Title>Return Product</Modal.Title> */}
+            </Modal.Header>
+            <Modal.Body style={{ textAlign: 'center' }}>
+                Product Combination Not Available!
+            </Modal.Body>
+            <Modal.Footer>
+                <Button variant="secondary" onClick={() => setShowModal(false)}>
+                    Close
+                </Button>
+                {/* <Button variant="primary" onClick={() => setShowModal(false)}>
+                    Submit
+                </Button> */}
+            </Modal.Footer>
+        </Modal>
     </>);
 }
 

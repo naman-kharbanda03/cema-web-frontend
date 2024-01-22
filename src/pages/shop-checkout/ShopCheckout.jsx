@@ -4,6 +4,7 @@ import { Link, useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
 import { useShoppingCart } from "../../context/ShoppingCartContext";
 import apiConfig from "../../config/apiConfig";
+import { Button } from "react-bootstrap";
 
 const ShopCheckout = () => {
   const [orders, setOrders] = useState();
@@ -230,7 +231,7 @@ const ShopCheckout = () => {
             var prod = {};
             if (product.simple_product) {
               prod = {
-                price: product.simple_product.offer_price,
+                price: product?.simple_product?.offer_price === null ? product.simple_product.price : product.simple_product.offer_price,
                 qty: product.qty,
                 name: product.simple_product.product_name.en,
                 image_path: product.simple_product.image_path,
@@ -239,7 +240,7 @@ const ShopCheckout = () => {
               }
             } else if (product.product) {
               prod = {
-                price: product.variant.price,
+                price: product?.variant?.offer ? product.variant.offer : product.variant.price,
                 qty: product.qty,
                 name: product.product.product_name.en,
                 image_path: product.product.image_path,
@@ -1063,7 +1064,7 @@ const ShopCheckout = () => {
                               <div className="terms-and-conditions-wrapper">
                                 <div className="privacy-policy-text"></div>
                               </div>
-                              <button
+                              <Button
                                 type="submit"
                                 className="button alt"
                                 name="checkout_place_order"
@@ -1071,8 +1072,8 @@ const ShopCheckout = () => {
                                 onClick={(e) => placeOrder(e)}
                                 disabled={buttonClicked}
                               >
-                                Place order
-                              </button>
+                                {buttonClicked ? 'Please wait' : 'Place Order'}
+                              </Button>
                             </div>
                           </div>
                         </div>

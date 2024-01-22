@@ -200,7 +200,6 @@ const ProductList = () => {
         const hover = product?.hover_thumbnail_path;
         const stock = product?.subvariants?.[0].stock;
         const address = `/product-details?product_id=${product?.id}&variant_id=${product?.subvariants?.[0].id}`;
-        const price = product.subvariants[0].price;
 
         const InWishlist = localStorage.getItem('accessToken')
           ? product?.is_in_wishlist
@@ -234,7 +233,7 @@ const ProductList = () => {
           ],
           stock: product?.subvariants?.[0]?.stock,
           max_order_limit: product?.subvariants?.[0]?.max_order_qty,
-          price: product?.subvariants?.[0]?.price,
+          price: product?.subvariants?.[0]?.offer ? product?.subvariants?.[0]?.offer : product?.subvariants?.[0]?.price,
           type: "variant",
           link: `/product-details?product_id=${product.id}&variant_id=${product.subvariants?.[0]?.id}`,
           hot_product: product.hot_product,
@@ -398,6 +397,13 @@ const ProductList = () => {
 
                   <div className="col-xl-9 col-lg-9 col-md-12 col-12">
                     <div className="products-topbar clearfix">
+
+                      <div className="products-topbar-left" style={{ display: 'flex' }}>
+                        <div>
+                          <input placeholder="Search products" style={{ border: '1px solid #e1e1e1', paddingLeft: '10px' }} />
+                        </div>
+
+                      </div>
                       <div className="products-topbar-left">
                         <div className="products-count">
                           Showing all {filteredProductList.length} results

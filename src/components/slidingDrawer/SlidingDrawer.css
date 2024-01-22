@@ -43,3 +43,12 @@
 .main-content.open {
   margin-left: 0px;
 }
+.custom {
+  text-align: center;
+  font-size: 100px;
+}
+.hi {
+  text-align: center;
+
+  font-size: 900px !important;
+}

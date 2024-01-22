@@ -29349,8 +29349,9 @@ body i[class~="slick-arrow"][class~="fa-angle-right"] {
   float: right;
 }
 .products-topbar .products-count {
-  margin-top: 5px;
+  margin-top: 0px;
   font-size: 16px;
+  margin-left: 10px;
 }
 .products-topbar .products-sort {
   color: #000;

@@ -66,10 +66,11 @@ const Listing = () => {
               desc: product?.product_detail.en,
               InWishlist: isInWishlist,
               InCart: InCart,
-
               id: product.id,
               variant_id: null,
-              product_name: { en: product?.product_name?.en },
+              product_name: {
+                en: product?.product_name?.en
+              },
               image_path: product?.thumbnail_path,
               product_image: [
                 `${product.thumbnail}`,
@@ -82,7 +83,6 @@ const Listing = () => {
               hot_product: product.hot_product,
               reviews: product?.reviews,
               product_rating: product?.product_rating
-
             }
           }
 
@@ -109,8 +109,6 @@ const Listing = () => {
               desc: product?.des.en,
               InWishlist: isInWishlist,
               InCart: InCart,
-
-
               id: product.id,
               variant_id: product.subvariants?.[0]?.id,
               product_name: { en: product?.product_name?.en },
@@ -120,13 +118,12 @@ const Listing = () => {
               ],
               stock: product?.subvariants?.[0]?.stock,
               max_order_limit: product?.subvariants?.[0]?.max_order_qty,
-              price: product?.subvariants?.[0]?.price,
+              price: product?.subvariants?.[0]?.offer ? product?.subvariants?.[0]?.offer : product?.subvariants?.[0]?.price,
               type: "variant",
               link: `/product-details?product_id=${product.id}&variant_id=${product.subvariants?.[0]?.id}`,
               hot_product: product.hot_product,
               reviews: product?.reviews,
               product_rating: product?.product_rating
-
             }
           }
 

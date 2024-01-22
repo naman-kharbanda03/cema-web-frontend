@@ -20,7 +20,10 @@ const apiConfig = {
   updateProfileAPI: `${BASE_URL}/api/update/profile`,
   getUserApi: `${BASE_URL}/api/myprofile`,
   secretKey: secretKey,
+
   orderDetailsAPI: `${BASE_URL}/api/orders/2`,
+  returnReasonsAPI: `${BASE_URL}/api/returnReason`,
+  returnOrderAPI: `${BASE_URL}/api/returnOrders`,
 
   applyCouponAPI: `${BASE_URL}/api/apply-coupan`,
   getCartDataAPI: `${BASE_URL}/api/getCartData`,

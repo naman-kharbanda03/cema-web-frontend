@@ -136,7 +136,7 @@ const Cart = () => {
             order = {
               product_name: { en: order?.simple_product?.product_name?.en },
               variant_id: null,
-              price: order?.simple_product?.offer_price,
+              price: order?.simple_product?.offer_price === null ? order?.simple_product.price : order?.simple_product?.offer_price,
               product_id: order?.simple_product?.id,
               product_image: order?.simple_product.product_image[0],
               image_path: order?.simple_product.image_path,
@@ -152,7 +152,7 @@ const Cart = () => {
             order = {
               product_name: { en: order?.product?.name?.en },
               // variant_id: order?.variant?.id,
-              price: order?.variant?.price,
+              price: order?.variant?.offer ? order.variant.offer : order.variant.price,
               product_id: order?.pro_id,
               product_image: order?.variant?.variantimages?.main_image,
               image_path: order?.product?.image_path,
