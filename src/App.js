@@ -15,7 +15,7 @@ import ShopWishlist from "./pages/shop-wishlist/ShopWishlist";
 import ShopDetails from "./pages/shop-details/ShopDetails";
 import { ShoppingCartProvider } from "./context/ShoppingCartContext";
 import Error from "./pages/error/Error";
-import { useEffect, useLayoutEffect, useRef, useState } from "react";
+import { Suspense, useEffect, useLayoutEffect, useRef, useState } from "react";
 import CreateEditAddress from "./pages/createEditAddress/CreateEditAddress";
 import { UserContextWrapper } from "./context/UserContext";
 import HiddenPostLogin from "./routeHandlers/HiddenPostLogin/HiddenPostLogin";
@@ -38,85 +38,76 @@ function App() {
       id="page"
       className="min-vh-100 d-flex flex-column border-danger hfeed page-wrapper"
     >
-      <UserContextWrapper>
-        <ShoppingCartProvider>
-          <>
-            <Layout OpenDrawer={openDrawer} setOpenDrawer={setOpenDrawer}>
-              <Header setOpenDrawer={setOpenDrawer} />
+      <Suspense>
+        <UserContextWrapper>
+          <ShoppingCartProvider>
+            <>
+              <Layout OpenDrawer={openDrawer} setOpenDrawer={setOpenDrawer}>
+                <Header setOpenDrawer={setOpenDrawer} />
 
-              <Routes>
-                {/* Home */}
-                <Route path="/" element={<Home />} />
+                <Routes>
+                  <Route path="/" element={<Home />} />
+                  <Route
+                    path="/login"
+                    element={
+                      <HiddenPostLogin>
+                        <Login />
+                      </HiddenPostLogin>
+                    }
+                  />
+                  <Route
+                    path="/forgot-password"
+                    element={
+                      <HiddenPostLogin>
+                        <ForgotPassword />
+                      </HiddenPostLogin>
+                    }
+                  />
+                  <Route path="/cart" element={<Cart />} />
+                  <Route path="/contact" element={<Contact />} />
+                  <Route path="/listings" element={<Listing />} />
+                  <Route
+                    path="/account"
+                    element={
+                      <Protected>
+                        <MyAccount />
+                      </Protected>
+                    }
+                  />
+                  <Route path="/products" element={<ProductList />} />
+                  <Route
+                    path="/shop-checkout"
+                    element={
+                      <Protected>
+                        <ShopCheckout />
+                      </Protected>
+                    }
+                  />
+                  <Route path="/wishlist" element={<ShopWishlist />} />
+                  <Route path="/product-details" element={<ShopDetails />} />
+                  <Route path="/edit-address" element={<CreateEditAddress />} />
+                  <Route path="/order-details" element={<OrderDetails />} />
+                  <Route component={<Error />} />
+                </Routes>
+                <CookieConsent
+                  location="bottom"
+                  buttonText="I understand"
+                  cookieName="myCookieConsent"
+                  style={{ background: "#333" }}
+                  buttonStyle={{ background: "#007BFF" }}
+                >
+                  This website uses cookies to ensure you get the best
+                  experience on our website.
+                </CookieConsent>
+                <Footer />
+              </Layout>
+            </>
 
-                {/* login */}
-                <Route
-                  path="/login"
-                  element={
-                    <HiddenPostLogin>
-                      <Login />
-                    </HiddenPostLogin>
-                  }
-                />
-                {/* forgot-password */}
-                <Route
-                  path="/forgot-password"
-                  element={
-                    <HiddenPostLogin>
-                      <ForgotPassword />
-                    </HiddenPostLogin>
-                  }
-                />
-                {/* cart */}
-                <Route path="/cart" element={<Cart />} />
-
-                {/* contact */}
-                <Route path="/contact" element={<Contact />} />
-
-                {/* listings */}
-                <Route path="/listings" element={<Listing />} />
-
-                {/* account */}
-                <Route
-                  path="/account"
-                  element={
-                    <Protected>
-                      <MyAccount />
-                    </Protected>
-                  }
-                />
-                <Route path="/products" element={<ProductList />} />
-                <Route
-                  path="/shop-checkout"
-                  element={
-                    <Protected>
-                      <ShopCheckout />
-                    </Protected>
-                  }
-                />
-                <Route path="/wishlist" element={<ShopWishlist />} />
-                <Route path="/product-details" element={<ShopDetails />} />
-                <Route path="/edit-address" element={<CreateEditAddress />} />
-                <Route path="/order-details" element={<OrderDetails />} />
-                <Route component={<Error />} />
-              </Routes>
-              <CookieConsent
-                location="bottom"
-                buttonText="I understand"
-                cookieName="myCookieConsent"
-                style={{ background: "#333" }}
-                buttonStyle={{ background: "#007BFF" }}
-              >
-                This website uses cookies to ensure you get the best experience
-                on our website.
-              </CookieConsent>
-              <Footer />
-            </Layout>
-          </>
-
-          {/* <PreLoader /> */}
-          {/* <BackToTop /> */}
-        </ShoppingCartProvider>
-      </UserContextWrapper>
+            {/* <PreLoader /> */}
+            {/* <BackToTop /> */}
+          </ShoppingCartProvider>
+        </UserContextWrapper>
+      </Suspense>
     </div>
   );
 }

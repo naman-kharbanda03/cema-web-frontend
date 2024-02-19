@@ -5,6 +5,7 @@ import { useNavigate } from 'react-router-dom';
 import { Button, Dropdown, DropdownButton, Form, Modal } from 'react-bootstrap';
 import { FacebookShareCount } from 'react-share';
 import apiConfig from '../../config/apiConfig';
+import { useTranslation } from 'react-i18next';
 
 const OrderDetails = () => {
 
@@ -16,6 +17,7 @@ const OrderDetails = () => {
     const [showModal, setShowModal] = useState(false);
     const [closeModal, setCloseModal] = useState(false);
     const [orderData, setOrderData] = useState();
+    const { t } = useTranslation();
 
 
     const [show, setShow] = useState(false);
@@ -248,7 +250,7 @@ const OrderDetails = () => {
             <div id="site-main" className="site-main">
                 <div id="main-content" className="main-content">
                     <div id="primary" className="content-area">
-                        <PageTitle current={'Order Details'} />
+                        <PageTitle current={`${t(`Details.Order Details`)} (${orderID})`} />
 
                     </div>
                     <div
@@ -263,46 +265,49 @@ const OrderDetails = () => {
                                 <div className="" style={{ height: 'fit-content' }}>
                                     <div style={{ height: '30%', display: 'flex' }}>
                                         <div style={{ width: '50%', padding: '30px' }}>
-                                            <div style={{ height: '30%', backgroundColor: '#f5f5f5', display: 'flex', justifyContent: 'center', alignItems: 'center', border: '1px solid' }}>
-                                                <h6 ><strong style={{ fontWeight: '400' }} > Shipping Address</strong></h6>
+                                            <div style={{ border: '1px solid' }}>
+                                                <div style={{ height: '40%', padding: '25px', backgroundColor: '#f5f5f5', display: 'flex', justifyContent: 'center', alignItems: 'center', borderBottom: '1px solid' }}>
+                                                    <h6 ><strong style={{ fontWeight: '500' }} >{t("Details.Shipping Address")}</strong></h6>
+                                                </div>
+                                                <div style={{ margin: '4%', height: '50%', textAlign: 'center', fontSize: '1.1rem' }}>
+                                                    <h6><strong style={{ fontWeight: '400' }}>{orderDetails?.shipping_address?.name},{' '}{orderDetails?.shipping_address?.phone}</strong></h6>
+                                                    {orderDetails?.shipping_address?.address},
+                                                    <br />{orderDetails?.shipping_address?.state},{orderDetails?.shipping_address?.country}
+                                                    <br />
+                                                    {orderDetails?.shipping_address?.pin_code}
+                                                </div>
                                             </div>
-                                            <div style={{ margin: '4%', height: '50%', textAlign: 'center', fontSize: '1.1rem' }}>
-                                                <h6><strong style={{ fontWeight: '400' }}>{orderDetails?.shipping_address?.name},{' '}{orderDetails?.shipping_address?.phone}</strong></h6>
-                                                {orderDetails?.shipping_address?.address},
-                                                <br />{orderDetails?.shipping_address?.state},{orderDetails?.shipping_address?.country}
-                                                <br />
-                                                {orderDetails?.shipping_address?.pin_code}
-                                            </div>
+
                                         </div>
                                         <div style={{ width: '50%', padding: '30px' }}>
-                                            <div style={{ height: '30%', backgroundColor: '#f5f5f5', display: 'flex', justifyContent: 'center', alignItems: 'center', border: '1px solid' }}>
-                                                <h6><strong style={{ fontWeight: '400' }} >Billing Address</strong></h6>
+                                            <div style={{ border: '1px solid' }}>
+                                                <div style={{ height: '30%', padding: '25px', backgroundColor: '#f5f5f5', display: 'flex', justifyContent: 'center', alignItems: 'center', borderBottom: '1px solid' }}>
+                                                    <h6><strong style={{ fontWeight: '500' }} >{t("Details.Billing Address")}</strong></h6>
+                                                </div>
+                                                <div style={{ margin: '4%', height: '50%', textAlign: 'center', fontSize: '1.1rem' }}>
+                                                    <h6><strong style={{ fontWeight: '400' }}>{orderDetails?.billing_address?.name},{' '}{orderDetails?.billing_address?.phone}</strong></h6>
+                                                    {orderDetails?.billing_address?.address},
+                                                    <br />{orderDetails?.billing_address?.state},{orderDetails?.billing_address?.country}
+                                                    <br />
+                                                    {orderDetails?.billing_address?.pin_code}
+                                                </div>
                                             </div>
-                                            <div style={{ margin: '4%', height: '50%', textAlign: 'center', fontSize: '1.1rem' }}>
-                                                <h6><strong style={{ fontWeight: '400' }}>{orderDetails?.billing_address?.name},{' '}{orderDetails?.billing_address?.phone}</strong></h6>
-                                                {orderDetails?.billing_address?.address},
-                                                <br />{orderDetails?.billing_address?.state},{orderDetails?.billing_address?.country}
-                                                <br />
-                                                {orderDetails?.billing_address?.pin_code}
-                                            </div>
+
                                         </div>
                                     </div>
                                     <div style={{ height: '10%', display: 'flex', textAlign: 'center', justifyContent: 'center' }}>
-                                        <div style={{ width: '31%', padding: '15px 0 ', backgroundColor: '#f5f5f5', margin: '10px', border: '1px solid' }}>
-                                            <h6><strong style={{ fontWeight: '400' }}>Transaction Id</strong></h6><div style={{ wordBreak: 'break-word' }}>{orderDetails?.transaction_id}</div>
+                                        <div style={{ width: '31%', padding: '30px 0 ', backgroundColor: '#f5f5f5', margin: '10px', border: '1px solid' }}>
+                                            <h6><strong style={{ fontWeight: '500' }}>{t("Details.Transaction Id")}</strong></h6><div style={{ wordBreak: 'break-word' }}>{orderDetails?.transaction_id}</div>
                                         </div>
-                                        <div style={{ width: '31%', padding: '15px 0 ', backgroundColor: '#f5f5f5', margin: '10px', border: '1px solid' }}>
-                                            <h6><strong style={{ fontWeight: '400' }}>Payment Method</strong></h6>{orderDetails?.payment_method}
+                                        <div style={{ width: '31%', padding: '30px 0 ', backgroundColor: '#f5f5f5', margin: '10px', border: '1px solid' }}>
+                                            <h6><strong style={{ fontWeight: '500' }}>{t("Details.Payment Method")}</strong></h6>{orderDetails?.payment_method}
 
                                         </div>
-                                        <div style={{ width: '31%', padding: '15px 0 ', backgroundColor: '#f5f5f5', margin: '10px', border: '1px solid' }}>
-                                            <h6><strong style={{ fontWeight: '400' }}>Date</strong></h6>{orderDetails?.order_date}
+                                        <div style={{ width: '31%', padding: '30px 0 ', backgroundColor: '#f5f5f5', margin: '10px', border: '1px solid' }}>
+                                            <h6><strong style={{ fontWeight: '500' }}>{t("Details.Date")}</strong></h6>{orderDetails?.order_date}
 
                                         </div>
-                                        {/* <div style={{ width: '33%' }}> */}
-                                        {/* <button style={{ height: '100%' }}>Cancel Order</button> */}
-                                        {/* <h6><strong style={{ fontWeight: '400' }}> Order Status</strong></h6>{orderDetails?.order_status?.charAt(0)?.toUpperCase() + orderDetails?.order_status?.slice(1)} */}
-                                        {/* </div> */}
+
                                     </div>
                                     <br />
                                     <div className='row' style={{ display: 'flex', justifyContent: 'center' }}>
@@ -317,20 +322,21 @@ const OrderDetails = () => {
                                                                 <div style={{ width: 'fit-content', color: '#f5f5f5' }}>
                                                                     <img
                                                                         src={item?.thumb_path + '/' + item?.product_thumb}
-                                                                        style={{ border: '1px solid', width: '100px', height: '100px', objectFit: 'contain' }}
+                                                                        style={{ border: '1px solid', width: '120px', height: '100px', objectFit: 'contain' }}
                                                                     />
                                                                 </div>
                                                                 <div style={{ marginLeft: '5px', display: 'flex', flexDirection: 'column', justifyContent: 'center' }}>
-                                                                    <h6>{item?.product_name?.en}{' '}{item?.variant ? fetchVariant(item?.item_id, item?.variant) : ''}</h6>
+                                                                    <h6>{item?.product_name?.en}</h6>
 
-                                                                    Qty: {item?.qty}
+                                                                    {t("Details.Qty")}: {item?.qty}
                                                                 </div>
                                                             </div>
                                                             <div style={{
                                                                 // border: '1px solid',
                                                                 width: '30%',
                                                                 marginLeft: '10px',
-                                                                display: 'flex'
+                                                                display: 'flex',
+                                                                // border: '1px solid'
                                                             }}>
                                                                 <div style={{
                                                                     display: 'flex',
@@ -341,6 +347,9 @@ const OrderDetails = () => {
                                                                     <h6>KD {item?.price}</h6>
                                                                     {item.status}
                                                                 </div>
+
+                                                            </div>
+                                                            <div style={{ display: 'flex', alignItems: 'center' }}>
                                                                 {
                                                                     item.status === 'Shipped' ?
                                                                         <div style={{}}>
@@ -353,21 +362,21 @@ const OrderDetails = () => {
                                                                             <div>
                                                                                 <button style={{
                                                                                     position: 'relative',
-                                                                                    top: '25%',
-                                                                                    left: '100%'
+                                                                                    // top: '25%',
+                                                                                    // left: '100%'
                                                                                 }}
                                                                                     onClick={() => handleShow(item.item_id, item.item_type, 0)}
-                                                                                >Cancel Item</button>
+                                                                                >{t("Details.Cancel Item")}</button>
                                                                             </div> :
                                                                             item?.eligible_return ?
                                                                                 <div>
                                                                                     <button style={{
                                                                                         position: 'relative',
-                                                                                        top: '25%',
-                                                                                        left: '100%'
+                                                                                        // top: '25%',
+                                                                                        // left: '100%'
                                                                                     }}
                                                                                         onClick={() => handleShowR(item.item_id, item.item_type, 0)}
-                                                                                    >Return Item</button>
+                                                                                    >{t("Details.Return Item")}</button>
                                                                                 </div> : ''
                                                                 }
                                                             </div>
@@ -384,10 +393,10 @@ const OrderDetails = () => {
                                             <div style={{ flexGrow: '1' }}>
                                                 <ul>
                                                     <li>
-                                                        <h6><strong style={{ fontWeight: '400' }}>Order Quantity:</strong> {orderDetails?.total_qty}</h6>
+                                                        <h6><strong style={{ fontWeight: '400' }}>{t("Details.Order Quantity")}:</strong> {orderDetails?.total_qty}</h6>
                                                     </li>
                                                     <li>
-                                                        <h6><strong style={{ fontWeight: '400' }}>Total:</strong> KD {orderDetails?.subtotal}</h6>{' '}
+                                                        <h6><strong style={{ fontWeight: '400' }}>{t("Details.Total")}:</strong> KD {orderDetails?.subtotal}</h6>{' '}
                                                     </li>
                                                 </ul>
                                             </div>
@@ -395,11 +404,11 @@ const OrderDetails = () => {
                                                 {orderDetails?.eligible_cancel ?
                                                     <button
                                                         onClick={() => handleShow(0, 0, 1)}
-                                                    >Cancel Order</button> :
+                                                    >{t("Details.Cancel Order")}</button> :
                                                     orderDetails?.eligible_return ?
                                                         <button
                                                             onClick={() => handleShowR(0, 0, 1)}
-                                                        >Return Order</button> : ''
+                                                        >{t("Details.Return Order")}</button> : ''
                                                 }
                                                 {/* <button
                                                     onClick={() => handleShowR()}

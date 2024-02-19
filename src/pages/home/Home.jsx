@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useTransition } from "react";
 
 import Sliders from "../../components/slider/Slider";
 import Banner from "../../components/banner/Banner";
@@ -9,8 +9,10 @@ import BestSellerSlider from "../../components/slider/BestSellerSlider";
 import { Link } from "react-router-dom";
 import apiConfig from "../../config/apiConfig";
 import PreLoader from "../../components/pre-loader/PreLoader";
+import { useTranslation } from "react-i18next";
 
 const Home = () => {
+  const { t } = useTranslation();
   useEffect(() => {
     const categoryListAPI = apiConfig.categoryListAPI;
     fetch(categoryListAPI, {
@@ -37,7 +39,6 @@ const Home = () => {
               <section class="section m-b-0">
                 <Sliders />
               </section>
-
               <section className="section m-b-50">
                 <Banner />
               </section>
@@ -48,7 +49,7 @@ const Home = () => {
                   <div className="block block-products loadmore">
                     <div className="block-widget-wrap">
                       <div className="block-title">
-                        <h2>New Arrivals</h2>
+                        <h2>{t('Home.New Arrivals')}</h2>
                       </div>
                       <div className="block-content">
                         <div class="products-list grid">
@@ -65,7 +66,7 @@ const Home = () => {
                                 <div />
                                 <div />
                               </div>
-                              <span >View more</span>
+                              <span >{t('Home.View more')}</span>
                               <i className="icon-arrow-down" aria-hidden="true" />
                             </div>
                           </Link>
@@ -82,7 +83,7 @@ const Home = () => {
                   <div className="block block-product-cats slider">
                     <div className="block-widget-wrap">
                       <div className="block-title">
-                        <h2>Shop by Category</h2>
+                        <h2>{t('Home.Shop by Category')}</h2>
                       </div>
                       <div className="block-content">
                         <div className="product-cats-list slick-wrap">
@@ -102,50 +103,13 @@ const Home = () => {
                 </div>
               </section>
 
-              {/* <section className="section section-padding m-b-50">
-                <div className="section-container large">
-                  <div className="block block-products loadmore">
-                    <div className="block-widget-wrap">
-                      <div className="block-title">
-                        <h2>Best Sellers</h2>
-                      </div>
-                      <div className="block-content">
-                        <div className="content-product-list slick-wrap">
-                          <div class="products-list grid">
-                            <div class="row">
-                              <BestSellerSlider />
-                            </div>
-                          </div>
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-                  <br />
-
-                  <div className="products-loadmore">
-                    <Link to={"/listings?products=best_sellers"} >
-                      <div className="btn button-outline loadmore">
-                        <div className="lds-ellipsis">
-                          <div />
-                          <div />
-                          <div />
-                          <div />
-                        </div>
-                        <span >View more</span>
-                        <i className="icon-arrow-down" aria-hidden="true" />
-                      </div>
-                    </Link>
-                  </div>
-                </div>
-              </section> */}
-
               <section className="section section-padding m-b-50">
                 <div className="section-container large">
                   {/* Block Products */}
                   <div className="block block-products loadmore">
                     <div className="block-widget-wrap">
                       <div className="block-title">
-                        <h2>Best Sellers</h2>
+                        <h2>{t('Home.Best Sellers')}</h2>
                       </div>
                       <div className="block-content">
                         <div class="products-list grid">
@@ -162,7 +126,7 @@ const Home = () => {
                                 <div />
                                 <div />
                               </div>
-                              <span >View more</span>
+                              <span >{t('Home.View more')}</span>
                               <i className="icon-arrow-down" aria-hidden="true" />
                             </div>
                           </Link>
@@ -172,7 +136,6 @@ const Home = () => {
                   </div>
                 </div>
               </section>
-              {/* <PreLoader /> */}
             </div>
           </div>
         </div >

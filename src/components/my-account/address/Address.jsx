@@ -1,11 +1,13 @@
 import React, { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import apiConfig from "../../../config/apiConfig";
+import { useTranslation } from "react-i18next";
 
 const Address = (props) => {
   // const [address, setAddress] = useState();
   console.log(props);
-  const {address, type} = props;
+  const { t } = useTranslation()
+  const { address, type } = props;
   return (
     <>
       <div className="addresses-col">
@@ -13,18 +15,18 @@ const Address = (props) => {
           <h3> {props.type}</h3>
           {address === null ?
             <Link to={`/edit-address?addressType=${type.split(' ')[0]}`} className="add">
-              Add
+              {t("Account.Add")}
             </Link>
             :
             <Link to={`/edit-address?addressType=${type.split(' ')[0]}`} className="edit">
-              Edit
+              {t("Account.Edit")}
             </Link>
           }
         </header>
         <address>
           {address != {} ? <>
             {address?.address}
-            <br/>
+            <br />
             {address?.state?.name}
             <br />
             {address?.country?.name}
@@ -32,7 +34,7 @@ const Address = (props) => {
             {/* {address?.city}, {address?.state} {address?.pincode} */}
           </>
             :
-            "Please Add Address"
+            t("Account.Please Add Address")
           }
 
         </address>

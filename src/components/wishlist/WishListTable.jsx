@@ -3,6 +3,7 @@ import React, { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import apiConfig from "../../config/apiConfig";
 import { useShoppingCart } from "../../context/ShoppingCartContext";
+import { useTranslation } from "react-i18next";
 
 
 
@@ -11,7 +12,7 @@ const WishListTable = () => {
     const [orderData, setOrderData] = useState([]);
     const [toggle, setToggle] = useState(false);
     const { AddToCart, wishListToggle, handleAddRemoveWishlist, showSuccessToastMessage } = useShoppingCart();
-
+    const { t } = useTranslation();
     useEffect(() => {
         const token = localStorage.getItem('accessToken');
 
@@ -95,7 +96,6 @@ const WishListTable = () => {
                                                     showSuccessToastMessage(result.message)
                                                 }
                                             });
-                                            // handleAddRemoveWishlist(e, prod);
                                         }}>
                                             <span></span>
                                         </td>
@@ -122,7 +122,7 @@ const WishListTable = () => {
                                             {/* <div className="wishlist-item-time">June 6, 2022</div> */}
                                         </td>
                                         <td className="wishlist-item-actions">
-                                            <div className="wishlist-item-stock">{order?.stock > 0 ? "In Stock" : "Out of Stock"}</div>
+                                            <div className="wishlist-item-stock">{order?.stock > 0 ? t('Wishlist.In Stock') : t('Wishlist.Out of Stock')}</div>
 
                                             <div className="wishlist-item-add">
                                                 <div
@@ -161,7 +161,7 @@ const WishListTable = () => {
                                                                 // handleAddRemoveWishlist(e, prod);
                                                             }}
                                                         >
-                                                            Move to cart
+                                                            {t('Wishlist.Move to cart')}
                                                         </button>
                                                         : ''}
                                                     {" "}
@@ -183,7 +183,7 @@ const WishListTable = () => {
                                                             });
                                                         }}
                                                     >
-                                                        Remove
+                                                        {t('Wishlist.Remove')}
                                                     </a>
                                                 </div>
                                             </div>
@@ -197,12 +197,12 @@ const WishListTable = () => {
                     <div className="shop-cart-empty">
                         <div className="notices-wrapper">
                             <p className="cart-empty">
-                                Your Wishlist is currently empty.
+                                {t('Wishlist.Your Wishlist is currently empty.')}
                             </p>
                         </div>
                         <div className="return-to-shop">
                             <a className="button" href="/products" >
-                                Return to shop
+                                {t('Wishlist.Return to shop')}
                             </a>
                         </div>
                     </div>}

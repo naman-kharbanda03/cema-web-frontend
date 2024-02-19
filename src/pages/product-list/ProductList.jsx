@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useTransition } from "react";
 import { Link, useLocation } from "react-router-dom";
 import Button from "../../components/Button";
 import PageTitle from "../../components/page-tittle/PageTitle";
@@ -12,6 +12,7 @@ import { ToastContainer, toast } from "react-toastify";
 import Dropdown from 'react-bootstrap/Dropdown';
 import { useShoppingCart } from "../../context/ShoppingCartContext";
 import ProductGrid from "../../components/product-list/product-grid/ProductGrid";
+import { useTranslation } from "react-i18next";
 
 
 
@@ -34,6 +35,7 @@ const ProductList = () => {
   const [p, setP] = useState([]);
   const { AddToCart, handleAddRemoveWishlist, wishListItems, cartItems } = useShoppingCart();
   const [categoryName, setCategoryName] = useState();
+  const { t } = useTranslation();
 
   const [categoryDetails, setCategoryDetails] = useState({
     category: {},
@@ -260,7 +262,7 @@ const ProductList = () => {
       <div id="main-content" className="main-content">
         <div id="primary" className="content-area">
 
-          <PageTitle current={categoryName ? categoryName : 'Products'} />
+          <PageTitle current={categoryName ? categoryName : t('List.Products')} />
 
           <div id="content" className="site-content" role="main">
             <div className="section-padding">
@@ -273,7 +275,7 @@ const ProductList = () => {
                     {/* Categories */}
                     <div class="block block-product-cats">
                       <div class="block-title">
-                        <h2>Categories</h2>
+                        <h2>{t('List.Categories')}</h2>
                       </div>
                       <div class="block-content">
                         <div className="product-cats-list">
@@ -299,7 +301,7 @@ const ProductList = () => {
                           style={{ width: '30%' }}
                           onClick={() => clearFilter()}
                         >
-                          Reset Filter
+                          {t('List.Reset Filter')}
                         </button>
                       </div>
                     </div>
@@ -319,7 +321,7 @@ const ProductList = () => {
                                 style={{ width: '20%', textAlign: 'center' }}
                                 onChange={(e) => handleFilter(e)}
                                 value={filter.minPrice === 0 ? '' : filter.minPrice}
-                                placeholder='Min'
+                                placeholder={t('List.Min')}
                               />
                               <br />
                               <input
@@ -328,13 +330,13 @@ const ProductList = () => {
                                 style={{ marginLeft: '3%', width: '20%', textAlign: 'center' }}
                                 onChange={(e) => handleFilter(e)}
                                 value={filter.maxPrice === 1000000 ? '' : filter.maxPrice}
-                                placeholder='Max'
+                                placeholder={t('List.Max')}
                               />
                               <button
                                 style={{ marginLeft: '5%', width: '20%' }}
                                 onClick={() => setFilterToggle(prev => !prev)}
                               >
-                                Go
+                                {t('List.Go')}
                               </button>
                             </div>
                             <div className="layout-slider-settings"></div>
@@ -343,49 +345,10 @@ const ProductList = () => {
                       </div>
                     </div>
 
-                    {/* <div className="block block-product-filter">
-                      <div className="block-title">
-                        <h2>Price</h2>
-                      </div>
-                      <div className="block-content">
-                        <div id="slider-range" className="price-filter-wrap">
-                          <div className="filter-item price-filter">
-                            <div className="layout-slider">
-                              <input
-                                id="price-filter"
-                                name="price"
-                              />
-                            </div>
-                            <div className="layout-slider-settings"></div>
-                          </div>
-                        </div>
-                      </div>
-                    </div> */}
-
-                    {/* Size  */}
-                    {/* <div className="block block-product-filter clearfix">
-                      <div className="block-title">
-                        <h2>Size</h2>
-                      </div>
-                      <div className="block-content" >
-                        <ul className="filter-items text" onClick={(e) => handleSizeChange(e)}>
-                          <li>
-                            <span value="l" >L</span>
-                          </li>
-                          <li>
-                            <span value="m" >M</span>
-                          </li>
-                          <li>
-                            <span value="s" >S</span>
-                          </li>
-                        </ul>
-                      </div>
-                    </div> */}
-
                     {/* Brands  */}
                     <div className="block block-product-filter clearfix">
                       <div className="block-title">
-                        <h2>Brands</h2>
+                        <h2>{t('List.Brands')}</h2>
                       </div>
                       <div className="block-content">
                         <ul className="filter-items image">
@@ -406,7 +369,7 @@ const ProductList = () => {
                       </div>
                       <div className="products-topbar-left">
                         <div className="products-count">
-                          Showing all {filteredProductList.length} results
+                          {t('List.Showing all')}{" "} {filteredProductList.length}{" "}{t('List.results')}
                         </div>
                       </div>
                       <div className="products-topbar-right">
@@ -427,8 +390,7 @@ const ProductList = () => {
                       ?
                       <>
                         <div className="no-products" style={{ display: 'flex', margin: "auto", justifyContent: 'center' }}>
-                          No Products Available
-
+                          {t('List.No Products Available')}
                         </div>
                       </>
                       :

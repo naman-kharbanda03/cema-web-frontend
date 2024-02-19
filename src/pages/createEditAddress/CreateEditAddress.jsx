@@ -4,6 +4,7 @@ import { useSearchParams } from "react-router-dom";
 import apiConfig from "../../config/apiConfig";
 import { Button } from "react-bootstrap";
 import { toast } from "react-toastify";
+import { useTranslation } from "react-i18next";
 
 
 const CreateEditAddress = (props) => {
@@ -12,6 +13,7 @@ const CreateEditAddress = (props) => {
     const [stateOptions, setStateOptions] = useState();
     const [citiesOptions, setCitiesOptions] = useState();
     const [address, setAddress] = useState({});
+    const { t } = useTranslation();
     const setAddressData = (data) => {
         setAddress({
             name: data?.name || "",
@@ -193,7 +195,7 @@ const CreateEditAddress = (props) => {
                 <div id="main-content" className="main-content">
                     <div id="primary" className="content-area">
                         {/* Page Title */}
-                        <PageTitle current={`${searchParams.get("addressType") || ""} Address `} />
+                        <PageTitle current={t(`Check.${searchParams.get("addressType") || ""} Address`)} />
 
                         <div id="content" className="site-content " role="main"  >
                             <div className="section-padding" >
@@ -215,7 +217,7 @@ const CreateEditAddress = (props) => {
                                                             <div className="billing-fields-wrapper">
                                                                 <p className="form-row form-row-first validate-required">
                                                                     <label>
-                                                                        Full Name{" "}
+                                                                        {t("Check.Full Name")}{" "}
                                                                         <span className="required" title="required">
                                                                             *
                                                                         </span>
@@ -230,9 +232,9 @@ const CreateEditAddress = (props) => {
                                                                         />
                                                                     </span>
                                                                 </p>
-                                                                <p className="form-row form-row-wide validate-required validate-phone">
+                                                                <p className="form-row my-5 form-row-wide validate-required validate-phone">
                                                                     <label>
-                                                                        Phone{" "}
+                                                                        {t("Check.Phone")}{" "}
                                                                         <span className="required" title="required">
                                                                             *
                                                                         </span>
@@ -247,9 +249,9 @@ const CreateEditAddress = (props) => {
                                                                         />
                                                                     </span>
                                                                 </p>
-                                                                <p className="form-row form-row-wide validate-required validate-email">
+                                                                <p className="form-row my-5 form-row-wide validate-required validate-email">
                                                                     <label>
-                                                                        Email address{" "}
+                                                                        {t("Check.Email address")}{" "}
                                                                         <span className="required" title="required">
                                                                             *
                                                                         </span>
@@ -266,9 +268,9 @@ const CreateEditAddress = (props) => {
                                                                     </span>
                                                                 </p>
 
-                                                                <p className="form-row address-field validate-required form-row-wide">
+                                                                <p className="form-row my-5 address-field validate-required form-row-wide">
                                                                     <label>
-                                                                        Street address{" "}
+                                                                        {t("Check.Street address")}{" "}
                                                                         <span className="required" title="required">
                                                                             *
                                                                         </span>
@@ -278,7 +280,7 @@ const CreateEditAddress = (props) => {
                                                                             type="text"
                                                                             className="input-text"
                                                                             name="address"
-                                                                            placeholder="House number and street name"
+                                                                            placeholder={t("Check.House number and street name")}
                                                                             value={address?.address}
                                                                             onChange={(e) => handleChange(e)}
                                                                         />
@@ -300,9 +302,9 @@ const CreateEditAddress = (props) => {
                                                                     </span>
                                                                 </p> */}
 
-                                                                <p className="form-row form-row-wide validate-required">
+                                                                <p className="form-row my-5 form-row-wide validate-required">
                                                                     <label>
-                                                                        Country / Region{" "}
+                                                                        {t("Check.Country")}{" "}
                                                                         <span className="required" title="required">
                                                                             *
                                                                         </span>
@@ -310,10 +312,12 @@ const CreateEditAddress = (props) => {
                                                                     <span className="input-wrapper">
                                                                         <select
                                                                             name="country_id"
-                                                                            className="country-select custom-select"
+                                                                            className="country-select custom-select w-100"
                                                                             value={address?.country_id} // Set the selected option based on state
                                                                             onChange={(e) => handleChange(e)}
                                                                         >
+                                                                            <option value="" key={0}>{t("Check.Select Country")}</option>
+
                                                                             {countriesOptions?.map((option) => (
                                                                                 <option key={option.id} value={option.id}>
                                                                                     {option.name}
@@ -322,9 +326,9 @@ const CreateEditAddress = (props) => {
                                                                         </select>
                                                                     </span>
                                                                 </p>
-                                                                <p className="form-row address-field validate-required validate-state form-row-wide">
+                                                                <p className="form-row my-5 address-field validate-required validate-state form-row-wide">
                                                                     <label>
-                                                                        State / County{" "}
+                                                                        {t("Check.State")}{" "}
                                                                         <span className="required" title="required">
                                                                             *
                                                                         </span>
@@ -332,10 +336,12 @@ const CreateEditAddress = (props) => {
                                                                     <span className="input-wrapper">
                                                                         <select
                                                                             name="state_id"
-                                                                            className="state-select custom-select"
+                                                                            className="state-select custom-select w-100"
                                                                             value={address?.state_id} // Set the selected option based on state
                                                                             onChange={(e) => handleChange(e)}
                                                                         >
+                                                                            <option value="" key={0}>{t("Check.Select State")}</option>
+
                                                                             {stateOptions?.map((option) => (
                                                                                 <option key={option.id} value={option.id}>
                                                                                     {option.name}
@@ -367,9 +373,9 @@ const CreateEditAddress = (props) => {
                                                                     </span>
                                                                 </p> */}
 
-                                                                <p className="form-row address-field validate-required validate-postcode form-row-wide">
+                                                                <p className="form-row my-5 address-field validate-required validate-postcode form-row-wide">
                                                                     <label>
-                                                                        Postcode / ZIP{" "}
+                                                                        {t("Check.Postcode / ZIP")}{" "}
                                                                         <span className="required" title="required">
                                                                             *
                                                                         </span>
@@ -386,6 +392,7 @@ const CreateEditAddress = (props) => {
                                                                 </p>
                                                             </div>
                                                         </div>
+                                                        <br />
                                                         <Button
                                                             style={{
                                                                 background: "black",
@@ -399,8 +406,7 @@ const CreateEditAddress = (props) => {
                                                             type="submit"
                                                         // onClick={() => addOrUpdateBillingAddress()}
                                                         >
-                                                            Update Address
-                                                            {/* {billingData ? "Update Address" : "Add Address"} */}
+                                                            {t("Check.Update Address")}
                                                         </Button>
                                                     </div>
                                                 </div>

@@ -2238,9 +2238,9 @@ input[type="text"] {
 [class~="p-l-r"] {
   padding-right: 7.5px;
 }
-[class~="slick-sliders"] [class~="slick-list"] {
+/* [class~="slick-sliders"] [class~="slick-list"] {
   margin-left: -0.15625in;
-}
+} */
 [class~="pagination"] ul li a:hover,
 [class~="page-preloader"] [class~="loader"] div {
   border-top-color: #000;
@@ -2271,9 +2271,9 @@ input[type="text"] {
 [class~="price"] {
   letter-spacing: 1.125pt;
 }
-[class~="slick-sliders"] [class~="slick-list"] {
+/* [class~="slick-sliders"] [class~="slick-list"] {
   margin-right: -0.15625in;
-}
+} */
 [class~="pagination"] ul li span {
   padding-top: 0;
 }
@@ -31644,7 +31644,7 @@ body i[class~="slick-arrow"][class~="fa-angle-right"] {
 .shop-checkout .checkout .form-row label {
   color: #000;
   font-weight: 500;
-  float: left;
+  /* float: left; */
   margin-bottom: 0;
   display: block;
 }

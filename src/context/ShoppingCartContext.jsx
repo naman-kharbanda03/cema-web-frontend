@@ -2,6 +2,7 @@ import React, { createContext, useContext, useEffect, useState } from "react";
 import { ToastContainer, toast } from "react-toastify";
 import apiConfig from "../config/apiConfig";
 import useLocalStorage from "../hooks/useLocalStorage";
+import { useTranslation } from "react-i18next";
 
 const ShoppingCartContext = createContext({});
 
@@ -24,8 +25,8 @@ export const ShoppingCartProvider = ({ children }) => {
     const [wishListCount, setWishListCount] = useState(0);
     const [wishListToggle, setWishListToggle] = useState(false);
     const [cartToggle, setCartToggle] = useState(false);
+    const { t } = useTranslation();
 
-    // const [loading, setLoading] = useState(true);
 
 
     const showInfoToastMessage = (msg) => {
@@ -53,17 +54,14 @@ export const ShoppingCartProvider = ({ children }) => {
                 method: 'GET',
                 headers: {
                     'Authorization': `Bearer ${token}`,
-                    // Add other headers as needed
                 },
             }).then((response) => {
                 if (!response.ok) throw new Error("Network Issue");
                 return response.json();
             }).then((datar) => {
                 if (datar.success) {
-                    // console.log(datar);
                     setWishListCount(datar.count);
                     setWishlistData(datar);
-                    // showInfoToastMessage();
                     return datar;
                 } else {
                     alert("Fetch error");
@@ -98,8 +96,6 @@ export const ShoppingCartProvider = ({ children }) => {
                 method: "POST",
                 headers: {
                     'Authorization': `Bearer ${token}`,
-                    // "Content-Type": "application/json",
-                    // Add any other headers your API requires
                 },
                 body: formData,
             })
@@ -108,7 +104,6 @@ export const ShoppingCartProvider = ({ children }) => {
                     console.log(data);
                     setWishListCount(data.count);
                     setWishListToggle(prev => !prev);
-                    // showSuccessToastMessage(data.msg);
                     return {
                         result: true,
                         message: data.msg
@@ -150,9 +145,8 @@ export const ShoppingCartProvider = ({ children }) => {
                     const updatedCount = currList.totalItems + 1;
                     res({
                         result: true,
-                        message: 'Item added in wishList'
+                        message: t("Context.Item added in wishList")
                     });
-                    // showSuccessToastMessage("Item Added in WishList");
                     return {
                         ...currList,
                         Items: updatedItems,
@@ -166,7 +160,7 @@ export const ShoppingCartProvider = ({ children }) => {
                     // showSuccessToastMessage("Item Removed in WishList");
                     res({
                         result: true,
-                        message: 'Item removed in wishList'
+                        message: t("Context.Item removed in wishList")
                     });
                     return {
                         ...currList,
@@ -174,79 +168,7 @@ export const ShoppingCartProvider = ({ children }) => {
                         totalItems: updatedCount,
                     }
                 }
-                // if (product?.type === "simple_product") {
-                //     foundIndex = currList.Items.findIndex(item => item?.simple_product?.id === product?.id);
-                //     if (foundIndex === -1) {
-                //         const newItem = {
-                //             simple_product: {
-                //                 id: product?.id,
-                //                 variant_id: "NA",
-                //                 product_name: {
-                //                     en: product?.product_name.en
-                //                 },
-                //                 image_path: product?.image_path,
-                //                 product_image: [`${product.product_image?.[0]}`],
-                //                 stock: product?.stock,
-                //                 price: product?.price,
-                //                 type: product?.type
-                //             }
-                //         };
-                //         const updatedItems = [...currList.Items, newItem];
-                //         const updatedCount = currList.totalItems + 1;
-                //         showSuccessToastMessage("Item Added in Local WishList");
-                //         return {
-                //             ...currList,
-                //             Items: updatedItems,
-                //             totalItems: updatedCount,
-                //         }
-                //     } else {
-                //         const updatingItems = [...currList.Items];
-                //         const updatedItems = updatingItems.filter(item => item?.simple_product?.id !== product?.id);
-                //         const updatedCount = currList.totalItems - 1;
-                //         showSuccessToastMessage("Item Removed in Local WishList");
-                //         return {
-                //             ...currList,
-                //             Items: updatedItems,
-                //             totalItems: updatedCount,
-                //         }
-                //     }
-                // } else {
-                //     foundIndex = currList.Items.findIndex(item => item?.variant?.id === product?.id);
-                //     if (foundIndex === -1) {
-                //         const newItem = {
-                //             variant: {
-                //                 id: product?.id,
-                //                 variant_id: product?.variant_id,
-                //                 product_name: {
-                //                     en: product?.product_name?.en
-                //                 },
-                //                 image_path: product?.image_path,
-                //                 product_image: [`${product.product_image?.[0]}`],
-                //                 stock: product?.stock,
-                //                 price: product?.price,
-                //                 type: "variant_product"
-                //             }
-                //         };
-                //         const updatedItems = [...currList.Items, newItem];
-                //         const updatedCount = currList.totalItems + 1;
-                //         showSuccessToastMessage("Item Added in Local WishList");
-                //         return {
-                //             ...currList,
-                //             Items: updatedItems,
-                //             totalItems: updatedCount,
-                //         }
-                //     } else {
-                //         const updatingItems = [...currList.Items];
-                //         const updatedItems = updatingItems.filter(item => item?.variant?.id !== product?.id);
-                //         const updatedCount = currList.totalItems - 1;
-                //         showSuccessToastMessage("Item Removed in Local WishList");
-                //         return {
-                //             ...currList,
-                //             Items: updatedItems,
-                //             totalItems: updatedCount,
-                //         }
-                //     }
-                // }
+
             });
         })
 
@@ -413,7 +335,7 @@ export const ShoppingCartProvider = ({ children }) => {
                     // showSuccessToastMessage('Item Added In Cart');
                     res({
                         result: true,
-                        message: 'Item added in cart'
+                        message: t("Context.Item added in cart")
                     });
                     return {
                         ...currCart,
@@ -438,10 +360,10 @@ export const ShoppingCartProvider = ({ children }) => {
                             // totalItems: updatedCount,
                         }
                     } else {
-                        showInfoToastMessage(`Max qty reached `);
+                        showInfoToastMessage(t("Context.Max qty reached"));
                         res({
                             result: false,
-                            message: `Max qty reached `
+                            message: t("Context.Max qty reached")
                         });
                         return { ...currCart }
                     }
@@ -470,10 +392,7 @@ export const ShoppingCartProvider = ({ children }) => {
                 // console.log("Cart Data", datar);
                 setCartData(datar);
                 setCartItemsCount(datar.count_product)
-                // setCartItemsCount(datar.data.reduce((accumalator, item) => {
-                //     return accumalator + parseInt(item.qty);
-                // }, 0));
-                // showInfoToastMessage();
+
                 return datar;
 
             }).catch((error) => console.error("Problem with fetch", error));
@@ -497,7 +416,7 @@ export const ShoppingCartProvider = ({ children }) => {
 
                     const amt = updatingItems[foundIndex].qty;
                     const updatedCount = currCart.totalItems - 1;
-                    showSuccessToastMessage("Item Removed in Local Cart");
+                    showSuccessToastMessage(t("Context.Item Removed in Cart"));
                     res(true);
                     return {
                         ...currCart,

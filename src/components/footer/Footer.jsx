@@ -1,7 +1,8 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useTransition } from "react";
 import payment_image from "../../asset/images/payments.png";
 import logo from "../../asset/images/logo.png";
 import apiConfig from "../../config/apiConfig";
+import { useTranslation } from "react-i18next";
 
 const Footer = () => {
   const [links, setLinks] = useState([]);
@@ -16,6 +17,7 @@ const Footer = () => {
     googleplus: 'google',
     rss: 'rss'
   })
+  const { t } = useTranslation();
 
   useEffect(() => {
     fetch(apiConfig.getSocialLinks, {
@@ -96,18 +98,17 @@ const Footer = () => {
                 <div className="col-lg-4 column-right">
                   <div className="column-wrap">
                     <div className="block block-newsletter">
-                      <h2 className="block-title">Newsletter</h2>
+                      <h2 className="block-title">{t('Footer.Newsletter')}</h2>
                       <div className="block-content">
                         <div className="newsletter-text">
-                          Enter your email below to be the first to know about
-                          new collections and product launches.
+                          {t('Footer.Enter your email below to be the first to know about new collections and product launches.')}
                         </div>
                         <form action method="post" className="newsletter-form">
                           <input
                             type="email"
                             name="your-email"
                             size={40}
-                            placeholder="Email address"
+                            placeholder={t("Footer.Email address")}
                           />
                           <span className="btn-submit">
                             <input type="submit" defaultValue="Subscribe" />
@@ -132,7 +133,7 @@ const Footer = () => {
           <div className="section-container">
             <div className="block-widget-wrap">
               <p className="copyright text-center">
-                Copyright © 2023. All Right Reserved
+                {t('Footer.Copyright © 2023. All Right Reserved')}
               </p>
             </div>
           </div>

@@ -44,9 +44,6 @@ const ShopDetails = (product) => {
   const { LOGGEDIN } = useContext(UserData);
 
   const [quant, setQuant] = useState(1);
-
-
-
   const [selectedCombination, setSelectedCombination] = useState();
   const [attrributes, setAttrributes] = useState();
   const [noCombination, setNoCombination] = useState(false);
@@ -142,7 +139,7 @@ const ShopDetails = (product) => {
     })
 
     setAttrributes(attributes);
-    // console.log(attributes);
+    console.log(attributes);
   }, [location.search, data])
 
   const giveReview = (e) => {
@@ -582,6 +579,7 @@ const ShopDetails = (product) => {
                                   type: data?.type || "variant",
                                   variant_id: data?.type !== 'simple_product' ? combination?.id : null,
                                   max_order_limit: combination?.maxorderlimit,
+                                  stock: combination?.stock
                                 };
                                 console.log(prod);
                                 if (combination?.stock > 0)

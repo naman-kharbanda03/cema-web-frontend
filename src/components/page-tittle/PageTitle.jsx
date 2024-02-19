@@ -1,7 +1,9 @@
 import React from "react";
+import { useTranslation } from "react-i18next";
 import { Link } from "react-router-dom";
 
 const PageTitle = ({ current }) => {
+  const { t } = useTranslation();
   return (
     <div id="title" className="page-title">
       <div className="section-container">
@@ -9,7 +11,7 @@ const PageTitle = ({ current }) => {
           <h1 className="text-title-heading">{current}</h1>
         </div>
         <div className="breadcrumbs">
-          <a href="/">Home</a>
+          <a href="/">{t("Home.Home")}</a>
           <span className="delimiter" />
           {current}
         </div>

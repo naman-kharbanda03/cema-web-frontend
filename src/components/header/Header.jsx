@@ -1,4 +1,4 @@
-import React, { useContext, useEffect, useState } from "react";
+import React, { useContext, useEffect, useState, useTransition } from "react";
 import logo from "../../asset/images/logo.png";
 import product_1 from "../../asset/images/product/1.jpg";
 import product_3 from "../../asset/images/product/3.jpg";
@@ -7,6 +7,7 @@ import apiConfig from "../../config/apiConfig";
 import { useShoppingCart } from "../../context/ShoppingCartContext";
 import { UserData } from "../../context/UserContext";
 import styles from './Header.module.css'
+import { useTranslation } from "react-i18next";
 
 const Header = ({ setOpenDrawer }) => {
   const navigate = useNavigate();
@@ -19,6 +20,8 @@ const Header = ({ setOpenDrawer }) => {
   const [categories, setCategories] = useState();
   const [categoryList, setCategoryList] = useState([]);
   const { wishListCount, cartItemsCount } = useShoppingCart(); // Imported Functions from Global Variables or States or Context
+  const { t, i18n } = useTranslation();
+  const { language } = i18n;
 
   const fetchDetails = () => {
     const apiUrl = apiConfig.navCategoriesAPI;
@@ -68,11 +71,14 @@ const Header = ({ setOpenDrawer }) => {
   }, []);
 
   const fetchCategoryById = (id) => {
-    // console.log(categoryList, id);
     const category = categoryList.filter(category => category.id === id);
-    // console.log(category);
     return category[0]?.title?.en;
   };
+  function onLangChange(e) {
+
+    i18n.changeLanguage(e.target.value);
+
+  }
 
   return (
     <header
@@ -99,38 +105,18 @@ const Header = ({ setOpenDrawer }) => {
                         <option value="USD">USD</option>
                       </select>
                     </div> */}
-                    {/* <div className="language has-n-select d-inline-block">
-                      <select name="language" id="language">
-                        <option value="english">English</option>
-                        <option value="arabic">Arabic</option>
+                    <div className="language has-n-select d-inline-block">
+                      <select name="language" id="language" onChange={onLangChange}>
+                        <option value="en">English</option>
+                        <option value="ar">Arabic</option>
                       </select>
-                    </div> */}
+                    </div>
                   </div>
                 </div>
                 <div className="col-md-6 topbar-right">
                   <ul id="topbar-menu" className="menu">
-                    {/* <li>
-                      <div className="input-group">
-                        <input
-                          type="text"
-                          className="form-control"
-                          placeholder="Delivery Location"
-                          aria-label="Recipient's username"
-                          aria-describedby="basic-addon2"
-                        />
-                        <span className="input-group-text" id="basic-addon2">
-                          <i className="fa-solid fa-magnifying-glass" />
-                        </span>
-                      </div>
-                    </li> */}
-                    {/* <li className="menu-item">
-                      <a href="#">Gift Cards</a>
-                    </li> */}
-                    {/* <li className="menu-item">
-                      <a href="#">FAQs</a>
-                    </li> */}
                     <li className="menu-item">
-                      <Link to="/contact">Contact</Link>
+                      <Link to="/contact">{t('Header.Contact')}</Link>
                     </li>
                   </ul>
                 </div>
@@ -209,130 +195,11 @@ const Header = ({ setOpenDrawer }) => {
                         <i className="ti-bag" />
                         <span className="cart-count">{cartItemsCount}</span>
                       </div>
-
                     </a>
-                    {/* <div className="dropdown-menu cart-popup mmenu">
-                      <div className="cart-empty-wrap">
-                        <ul className="cart-list">
-                          <li className="empty">
-                            <span>No products in the cart.</span>
-                            <a className="go-shop" href="javascript:;">
-                              GO TO SHOP
-                              <i aria-hidden="true" className="arrow_right" />
-                            </a>
-                          </li>
-                        </ul>
-                      </div>
-                      <div className="cart-list-wrap">
-                        <ul className="cart-list">
-                          <li className="mini-cart-item">
-                            <a
-                              href="#"
-                              className="remove"
-                              title="Remove this item"
-                            >
-                              <i className="icon_close" />
-                            </a>
-                            <a href="#" className="product-image">
-                              <img
-                                width={600}
-                                height={600}
-                                src={product_3}
-                                alt
-                              />
-                            </a>
-                            <a href="#" className="product-name">
-                              Chair Oak Matt Lacquered
-                            </a>
-                            <div className="quantity">Qty: 1</div>
-                            <div className="price">KD150.00</div>
-                          </li>
-                          <li className="mini-cart-item">
-                            <a
-                              href="#"
-                              className="remove"
-                              title="Remove this item"
-                            >
-                              <i className="icon_close" />
-                            </a>
-                            <a href="#" className="product-image">
-                              <img
-                                width={600}
-                                height={600}
-                                src={product_1}
-                                alt
-                              />
-                            </a>
-                            <a href="#" className="product-name">
-                              Zunkel Schwarz
-                            </a>
-                            <div className="quantity">Qty: 1</div>
-                            <div className="price">KD100.00</div>
-                          </li>
-                        </ul>
-                        <div className="total-cart">
-                          <div className="title-total">Total:</div>
-                          <div className="total-price">
-                            <span>KD100.00</span>
-                          </div>
-                        </div>
-                        <div className="free-ship">
-                          <div className="title-ship">
-                            Buy <strong>KD400</strong> more to enjoy{" "}
-                            <strong>FREE Shipping</strong>
-                          </div>
-                          <div className="total-percent">
-                            <div className="percent" style={{ width: "20%" }} />
-                          </div>
-                        </div>
-                        <div className="buttons">
-                          <a
-                            href="shop-cart.html"
-                            className="button btn view-cart btn-primary"
-                          >
-                            View cart
-                          </a>
-                          <a
-                            href="shop-checkout.html"
-                            className="button btn checkout btn-default"
-                          >
-                            Check out
-                          </a>
-                        </div>
-                      </div>
-                    </div> */}
                   </div>
                 </div>
               </div>
             </div>
-          </div>
-        </div>
-        <div className="header-mobile-fixed">
-          {/* Shop */}
-          <div className="shop-page">
-            <a href="javascript:;">
-              <i className="wpb-icon-shop" />
-            </a>
-          </div>
-          {/* Login */}
-          <div className="my-account">
-            <div className="login-header">
-              <a href="page-my-account.html">
-                <i className="wpb-icon-user" />
-              </a>
-            </div>
-          </div>
-          {/* Search */}
-          <div className="search-box">
-            <div className="search-toggle">
-              <i className="wpb-icon-magnifying-glass" />
-            </div>
-          </div>
-          {/* Wishlist */}
-          <div className="wishlist-box">
-            <a href="#">
-              <i className="wpb-icon-heart" />
-            </a>
           </div>
         </div>
       </div>
@@ -350,7 +217,7 @@ const Header = ({ setOpenDrawer }) => {
                           key='1'
                         >
                           <a href={`/listings?products=new_arrival`}>
-                            <span className="menu-item-text">New Arrivals</span>
+                            <span className="menu-item-text">{t('Header.New Arrivals')}</span>
                           </a>
                         </li>
                         <li
@@ -358,12 +225,12 @@ const Header = ({ setOpenDrawer }) => {
                           key='2'
                         >
                           <a href={`/listings?products=best_sellers`}>
-                            <span className="menu-item-text">Best Sellers</span>
+                            <span className="menu-item-text">{t('Header.Best Sellers')}</span>
                           </a>
                         </li>
                         <li className="level-0 menu-item menu-item-has-children mega-menu level-menu-fullwidth" key='3'>
                           <a href={`/`}>
-                            <span className="menu-item-text">More</span>
+                            <span className="menu-item-text">{t('Header.More')}</span>
                           </a>
                           <div className={`sub-menu`}>
                             <div className="row">
@@ -414,7 +281,7 @@ const Header = ({ setOpenDrawer }) => {
                         </li>
                         <li className="level-0 menu-item menu-item-has-children mega-menu level-menu-fullwidth" key='4'>
                           <a href={`/products`}>
-                            <span className="menu-item-text">Products</span>
+                            <span className="menu-item-text">{t('Header.Products')}</span>
                           </a>
                           <div className="sub-menu">
                             <div className="row">
@@ -454,78 +321,11 @@ const Header = ({ setOpenDrawer }) => {
                         </li>
 
 
-                        {
-                          // menuItems.map((items, key) => {
-                          //   if (items.link_by === "url")
-                          //     return (
-                          //       <li className="level-0 menu-item" key={key}>
-                          //         <Link to={items.url}>
-                          //           <span className="menu-item-text">
-                          //             {items.title.en}
-                          //           </span>
-                          //         </Link>
-                          //       </li>
-                          //     );
-                          //   return (
-                          //     <li className="level-0 menu-item menu-item-has-children mega-menu mega-menu-fullwidth">
-                          //       <a href="javascript:;">
-                          //         <Link to="">
-                          //           <span className="menu-item-text">
-                          //             {items.title.en}
-                          //           </span>
-                          //         </Link>
-                          //       </a>
-                          //       <div className="sub-menu">
-                          //         <div className="row">
-                          //           {items.linked_parent?.map((cat) => (
-                          //             <div className="col-md-4">
-                          //               <div className="menu-section">
-                          //                 {/* <Link
-                          //                   to={{
-                          //                     pathname: "/products",
-                          //                     search: `?category=${category.title?.en}&id=${category.id}`,
-                          //                   }}
-                          //                 > */}
-                          //                 <Link
-                          //                   className="sub-menu-title"
-                          //                   to={fetchCategoryById(cat).link}
-                          //                 >
-                          //                   {fetchCategoryById(cat).name}
-                          //                 </Link>
-                          //                 {/* </Link> */}
-                          //                 {/* <ul className="menu-list">
-                          //                   {category?.subcategory.map(
-                          //                     (subCategory) => (
-                          //                       <Link
-                          //                         to={{
-                          //                           pathname: "/products",
-                          //                           search: `?category=${subCategory.title.en}&id=${subCategory.id}`,
-                          //                         }}
-                          //                       >
-                          //                         <li>
-                          //                           <a href="javascript:;">
-                          //                             <span className="menu-item-text">
-                          //                               {subCategory?.title?.en}
-                          //                             </span>
-                          //                           </a>
-                          //                         </li>
-                          //                       </Link>
-                          //                     )
-                          //                   )}
-                          //                 </ul> */}
-                          //               </div>
-                          //             </div>
-                          //           ))}
-                          //         </div>
-                          //       </div>
-                          //     </li>
-                          //   );
-                          // })
-                        }
+
 
                         <li className="level-0 menu-item" key='5'>
                           <Link to="/contact">
-                            <span className="menu-item-text">Contact</span>
+                            <span className="menu-item-text">{t('Header.Contact')}</span>
                           </Link>
                         </li>
                       </ul>
@@ -549,21 +349,15 @@ const Header = ({ setOpenDrawer }) => {
                     {/* Login */}
                     <div className="login-header">
                       {LOGGEDIN ? (
-                        <Link to="/account"> Account</Link>
+                        <Link to="/account"> {t('Header.Account')}</Link>
                       ) : (
                         <Link className="active-login" to="/login">
-                          Login
+                          {t('Header.Login')}
                         </Link>
                       )}
 
                     </div>
-                    {/* Search */}
-                    {/* <div className="search-box">
-                      <div className="search-toggle">
-                        <i className="ti-search" />
-                      </div>
-                    </div> */}
-                    {/* Wishlist */}
+
                     <div className="wishlist-box">
                       <Link to="/wishlist">
                         <i className="ti-heart" />

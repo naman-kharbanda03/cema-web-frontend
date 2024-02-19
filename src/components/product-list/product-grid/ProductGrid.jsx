@@ -2,10 +2,11 @@ import React, { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import { useShoppingCart } from "../../../context/ShoppingCartContext";
 import './productGrid.css'
+import { useTranslation } from "react-i18next";
 const ProductGrid = (props) => {
     const { AddToCart, handleAddRemoveWishlist, showInfoToastMessage, showSuccessToastMessage } = useShoppingCart();
     const product = props.current;
-
+    const { t } = useTranslation();
     const [productAddress, setProductAddress] = useState();
     const [image, setImage] = useState([]);
     const [stock, setStock] = useState(0);
@@ -37,7 +38,7 @@ const ProductGrid = (props) => {
                             {
                                 product?.hot_product === 1 ?
                                     <div className="product-lable">
-                                        <div className="hot">Hot</div>
+                                        <div className="hot">{t("Product.Hot")}</div>
                                     </div>
                                     : ''
                             }
@@ -47,13 +48,11 @@ const ProductGrid = (props) => {
                                         // width={600}
                                         style={{ width: '300px', height: '328px', objectFit: 'contain' }}
                                         src={product.image?.[0]}
-                                        // src={product.image_path?.replace('gallery', `${product?.thumbnail}`)}
                                         className="post-image "
                                         alt="image not available"
                                     />
                                     <img
-                                        // width="600"
-                                        // height="600"
+
                                         style={{ width: '300px', height: '328px', objectFit: 'contain' }}
                                         src={product.image?.[1]}
                                         // src={product.image_path?.replace('gallery', `${product?.hover_thumbnail}`)}
@@ -65,7 +64,7 @@ const ProductGrid = (props) => {
                             <div className="product-button">
                                 <div
                                     className="btn-add-to-cart"
-                                    data-title={product.stock <= 0 ? 'Out of stock' : InCart ? 'Added to Cart' : 'Add to Cart'}
+                                    data-title={product.stock <= 0 ? t("Product.Out of stock") : InCart ? t("Product.Added to Cart") : t("Product.Add to Cart")}
                                     aria-disabled
                                 >
 
@@ -86,12 +85,11 @@ const ProductGrid = (props) => {
                                                         ],
                                                         stock: product?.stock,
                                                         max_order_limit: product?.max_order_qty,
-                                                        price: product?.offer_price,
                                                         type: "simple_product",
                                                         link: `/product-details?product_id=${product.id}`,
                                                     }
                                                     if (InCart) {
-                                                        showInfoToastMessage(`Already in cart, you can change it's quantity in cart`);
+                                                        showInfoToastMessage(t("Product.Already in cart"));
                                                     } else {
                                                         AddToCart(product, 1).then(result => {
                                                             if (result.result) {
@@ -105,7 +103,7 @@ const ProductGrid = (props) => {
 
                                                 }
 
-                                                else showInfoToastMessage('Out Of Stock')
+                                                else showInfoToastMessage(t("Product.Out Of Stock"))
                                             }
                                             else {
                                                 if (product?.stock > 0) {
@@ -124,10 +122,11 @@ const ProductGrid = (props) => {
                                                         link: `/product-details?product_id=${product.id}&variant_id=${product.subvariants?.[0]?.id}`,
                                                     }
                                                     if (InCart) {
-                                                        showInfoToastMessage(`Already in cart, you can it's change quantity in cart`);
+                                                        showInfoToastMessage(t("Product.Already in cart"));
 
                                                     } else {
                                                         AddToCart(product, 1).then(result => {
+                                                            console.log(product);
                                                             if (result.result) {
                                                                 showSuccessToastMessage(result.message)
                                                                 setInCart(prev => !prev);
@@ -137,7 +136,7 @@ const ProductGrid = (props) => {
                                                         });
                                                     }
 
-                                                } else showInfoToastMessage('Out Of Stock')
+                                                } else showInfoToastMessage(t("Product.Out Of Stock"))
                                             }
                                         }
                                         }
@@ -147,7 +146,7 @@ const ProductGrid = (props) => {
                                 </div>
                                 <div
                                     className="btn-wishlist"
-                                    data-title="Wishlist"
+                                    data-title={t("Product.Wishlist")}
                                 >
                                     <button className={InWishlist ? `product-btn-active` : `product-btn`}
                                         onClick={(e) => {
@@ -176,8 +175,6 @@ const ProductGrid = (props) => {
                                                 if (result.result) {
                                                     showSuccessToastMessage(result.message);
                                                 }
-                                                // if (result === true) showSuccessToastMessage('Product added in wishlist');
-                                                // else if (result === -1) showSuccessToastMessage('Product removed from wishlist')
                                             })
                                         }}
                                     >
@@ -194,7 +191,7 @@ const ProductGrid = (props) => {
                                     </a>
                                 </h3>
                                 <span className="price">
-                                    {product.stock > 0 ? `KD ${product.price}` : `Out Of Stock`}
+                                    {product.stock > 0 ? `KD ${product.price}` : t("Product.Out Of Stock")}
                                 </span>
                             </div>
                         </div>

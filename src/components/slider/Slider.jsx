@@ -34,10 +34,10 @@ const Sliders = () => {
     fetchSliders();
   }, []);
   return (
-    <div className="block block-sliders layout-9 diff-col nav-left auto-height m-b-0">
+    <div className="block block-sliders layout-9 diff-col auto-height nav-left m-b-0 p-1 " >
       <Slider {...settings}>
         {sliderData.map((slider) => (
-          <div className="item slick-slide" >
+          <div className="item slick-slide"  >
             <div className="item-content" style={{ position: 'relative', right: '20px' }}>
               <div className="item-info" >
                 <div className="content background-1">
@@ -64,7 +64,7 @@ const Sliders = () => {
                 <img
                   // width={1000}
                   // height={963}
-                  style={{ objectFit: 'contain', width: '' }}
+                  style={{ objectFit: '', width: '' }}
                   src={slider.image}
                   alt="Image Slider"
                 />
@@ -72,35 +72,6 @@ const Sliders = () => {
             </div>
           </div>
         ))}
-
-        {/* <div className="item slick-slide" >
-          <div className="item-content" >
-            <div className="item-info" style={{ position: 'relative', right: '15px' }}>
-              <div className="content background-2">
-                <div className="content-wrap">
-                  <h2 className="title-slider">
-                    Home
-                    <br />
-                    Best decor
-                  </h2>
-                  <div className="description-slider">
-                    Make your home bright
-                  </div>
-                  <a className="button-slider button-black" href="#">
-                    SHOP NOW
-                  </a>
-                </div>
-              </div>
-            </div>
-            <div className="content-image">
-              <img
-                className="demo-img-1 img-fluid"
-                src={''}
-                alt="Image Slider"
-              />
-            </div>
-          </div>
-        </div> */}
       </Slider>
     </div>
   );

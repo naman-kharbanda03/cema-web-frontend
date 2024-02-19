@@ -1,10 +1,10 @@
-.slick-dots{
-  padding-bottom: 40px !important; 
+.slick-dots {
+  padding-bottom: 40px !important;
 }
 
-.slick-list{
+/* .slick-list{
   padding: 0px 20px;
-}
+} */
 
 .slick-prev {
   left: 0% !important;

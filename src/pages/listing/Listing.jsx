@@ -7,6 +7,7 @@ import Category from "../../components/product-list/Category";
 import { useShoppingCart } from "../../context/ShoppingCartContext";
 import Product from "../../components/product-list/product/Product";
 import ProductGrid from "../../components/product-list/product-grid/ProductGrid";
+import { useTranslation } from "react-i18next";
 
 const Listing = () => {
   const [data, setData] = useState();
@@ -19,6 +20,7 @@ const Listing = () => {
   const products = params.get("products");
   const location = useLocation();
   const name = products.split('_').join(' ');
+  const { t } = useTranslation();
 
   const token = localStorage.getItem("accessToken");
   const categoryListAPI = apiConfig.categoryListAPI;
@@ -167,7 +169,7 @@ const Listing = () => {
                     <div className="col-xl-3 col-lg-3 col-md-12 col-12 sidebar left-sidebar md-b-50">
                       <div className="block block-product-cats">
                         <div className="block-title">
-                          <h2>Categories</h2>
+                          <h2>{t("List.Categories")}</h2>
                         </div>
                         <div className="block-content">
                           <div className="product-cats-list">
@@ -179,153 +181,15 @@ const Listing = () => {
                           </div>
                         </div>
                       </div>
-
-                      {/* <div className="block block-product-filter">
-                        <div className="block-title">
-                          <h2>Price</h2>
-                        </div>
-                        <div className="block-content">
-                          <div id="slider-range" className="price-filter-wrap">
-                            <div className="filter-item price-filter">
-                              <div className="layout-slider">
-                                <input
-                                  id="price-filter"
-                                  name="price"
-                                  value="0;100"
-                                  style={{ display: "none" }}
-                                />
-                                <span className="jslider jslider_plastic">
-                                  <table>
-                                    <tbody>
-                                      <tr>
-                                        <td>
-                                          <div className="jslider-bg">
-                                            <i className="l"></i>
-                                            <i className="f"></i>
-                                            <i className="r"></i>
-                                            <i
-                                              className="v"
-                                              style={{
-                                                left: "0%",
-                                                width: "100%",
-                                              }}
-                                            ></i>
-                                          </div>
-                                          <div
-                                            className="jslider-pointer"
-                                            style={{ left: "0%" }}
-                                          ></div>
-                                          <div
-                                            className="jslider-pointer jslider-pointer-to"
-                                            style={{ left: "100%" }}
-                                          ></div>
-                                          <div
-                                            className="jslider-label"
-                                            style={{ display: "none" }}
-                                          >
-                                            <span>0</span>
-                                          </div>
-                                          <div
-                                            className="jslider-label jslider-label-to"
-                                            style={{ display: "none" }}
-                                          >
-                                            <span>100</span>&nbsp;KD
-                                          </div>
-                                          <div
-                                            className="jslider-value"
-                                            style={{
-                                              left: "0%",
-                                              marginLeft: "0px",
-                                              right: "auto",
-                                              visibility: "visible",
-                                            }}
-                                          >
-                                            <span>0</span>&nbsp;KD
-                                          </div>
-                                          <div
-                                            className="jslider-value jslider-value-to"
-                                            style={{
-                                              visibility: "visible",
-                                              left: "auto",
-                                              marginLeft: "0px",
-                                              right: "0px",
-                                            }}
-                                          >
-                                            <span>100</span>&nbsp;KD
-                                          </div>
-                                          <div className="jslider-scale"></div>
-                                        </td>
-                                      </tr>
-                                    </tbody>
-                                  </table>
-                                </span>
-                              </div>
-                              <div className="layout-slider-settings"></div>
-                            </div>
-                          </div>
-                        </div>
-                      </div> */}
-
-                      {/* <div className="block block-product-filter clearfix">
-                        <div className="block-title">
-                          <h2>Size</h2>
-                        </div>
-                        <div className="block-content">
-                          <ul className="filter-items text">
-                            <li>
-                              <span>L</span>
-                            </li>
-                            <li>
-                              <span>M</span>
-                            </li>
-                            <li>
-                              <span>S</span>
-                            </li>
-                          </ul>
-                        </div>
-                      </div> */}
                     </div>
-
                     <div className="col-xl-9 col-lg-9 col-md-12 col-12">
                       <div className="products-topbar clearfix">
                         <div className="products-topbar-left">
                           <div className="products-count">
-                            Showing all {data?.length} results
+                            {t("List.Showing all")} {data?.length} {t("List.results")}
                           </div>
                         </div>
                         <div className="products-topbar-right">
-                          {/* <div className="products-sort dropdown">
-                            <span
-                              className="sort-toggle dropdown-toggle"
-                              data-toggle="dropdown"
-                              aria-expanded="true"
-                            >
-                              Default sorting
-                            </span>
-                            <ul
-                              className="sort-list dropdown-menu"
-                              x-placement="bottom-start"
-                            >
-                              <li className="active">
-                                <a href="#">Default sorting</a>
-                              </li>
-                              <li>
-                                <a href="#">Sort by popularity</a>
-                              </li>
-                              <li>
-                                <a href="#">Sort by average rating</a>
-                              </li>
-                              <li>
-                                <a href="#">Sort by latest</a>
-                              </li>
-                              <li>
-                                <a href="#">Sort by price: low to high</a>
-                              </li>
-                              <li>
-                                <a href="#">Sort by price: high to low</a>
-                              </li>
-                            </ul>
-                          </div> */}
                           <ul className="layout-toggle nav nav-tabs">
                             <li
                               className="nav-item"

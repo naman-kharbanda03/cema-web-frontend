@@ -10,6 +10,7 @@ import PageTitle from "../../components/page-tittle/PageTitle";
 import { useContext } from "react";
 import { UserData } from "../../context/UserContext";
 import { Navigate, useSearchParams } from "react-router-dom";
+import { useTranslation } from "react-i18next";
 
 const MyAccount = (props) => {
   const [searchParams, setSearchParams] = useSearchParams();
@@ -17,6 +18,7 @@ const MyAccount = (props) => {
   const [activeTab, setActiveTab] = useState(searchParams.get("activeTab") || "dashboard");
   const [ordersLoaded, setOrdersLoaded] = useState(false);
   const { SETLOGGEDIN } = useContext(UserData);
+  const { t } = useTranslation();
 
   const logoutHandler = () => {
     SETLOGGEDIN(false);
@@ -67,7 +69,7 @@ const MyAccount = (props) => {
         <div id="main-content" className="main-content">
           <div id="primary" className="content-area">
             {/* Page Title */}
-            <PageTitle current={"My Account"} />
+            <PageTitle current={t("Account.My Account")} />
 
             {/* Page Content */}
             <div id="content" className="site-content" role="main">
@@ -86,7 +88,7 @@ const MyAccount = (props) => {
                               role="tab"
                               onClick={() => handleTabChange("dashboard")}
                             >
-                              Dashboard
+                              {t("Account.Dashboard")}
                             </a>
                           </li>
                           <li className="nav-item">
@@ -101,7 +103,7 @@ const MyAccount = (props) => {
                                 // handleOrdersDetails();
                               }}
                             >
-                              Orders
+                              {t("Account.Orders")}
                             </a>
                           </li>
                           <li className="nav-item">
@@ -116,7 +118,7 @@ const MyAccount = (props) => {
                                 handleAddress();
                               }}
                             >
-                              Addresses
+                              {t("Account.Addresses")}
                             </a>
                           </li>
                           <li className="nav-item">
@@ -128,7 +130,7 @@ const MyAccount = (props) => {
                               role="tab"
                               onClick={() => handleTabChange("account-details")}
                             >
-                              Account details
+                              {t("Account.Account details")}
                             </a>
                           </li>
                           <li className="nav-item">
@@ -140,7 +142,7 @@ const MyAccount = (props) => {
                               role="tab"
                               onClick={() => handleTabChange("change-password")}
                             >
-                              Change Password
+                              {t("Account.Change Password")}
                             </a>
                           </li>
                           <li className="nav-item">
@@ -149,7 +151,7 @@ const MyAccount = (props) => {
                               href="javascript:void(0)"
                               onClick={logoutHandler}
                             >
-                              <a href="javascript:void(0)">Log out</a>
+                              <a href="javascript:void(0)">{t("Account.Log out")}</a>
                             </a>
                           </li>
                         </ul>

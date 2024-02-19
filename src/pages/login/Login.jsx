@@ -5,6 +5,7 @@ import WishListTable from "../../components/wishlist/WishListTable";
 import apiConfig from "../../config/apiConfig";
 import { useShoppingCart } from "../../context/ShoppingCartContext";
 import { UserData } from "../../context/UserContext";
+import { useTranslation } from "react-i18next";
 
 const Login = (props) => {
   const [loginData, setLoginData] = useState({
@@ -119,6 +120,7 @@ const Login = (props) => {
         console.error("Error:", error);
       });
   };
+  const { t } = useTranslation();
 
   return (
     <>
@@ -126,7 +128,7 @@ const Login = (props) => {
         <div id="main-content" className="main-content">
           <div id="primary" className="content-area">
             {/* page info */}
-            <PageTitle current={"Login / Register"} />
+            <PageTitle current={t("Login.Login")} />
             {/* form */}
             <div id="content" className="site-content" role="main">
               <div className="section-padding">
@@ -135,13 +137,13 @@ const Login = (props) => {
                     <div className="row">
                       <div className="col-lg-6 col-md-6 col-sm-12 sm-m-b-50">
                         <div className="box-form-login">
-                          <h2>Login</h2>
-                          <div className="box-content">
+                          <h2>{t('Login.Login')}</h2>
+                          < div className="box-content" >
                             <div className="form-login">
                               <form method="post" className="login">
                                 <div className="email">
                                   <label>
-                                    E-mail address{" "}
+                                    {t('Login.E-mail address')}{" "}
                                     <span className="required">*</span>
                                   </label>
                                   <input
@@ -154,7 +156,7 @@ const Login = (props) => {
                                 </div>
                                 <div className="password">
                                   <label htmlFor="password">
-                                    Password <span className="required">*</span>
+                                    {t('Login.Password')} <span className="required">*</span>
                                   </label>
                                   <input
                                     className="input-text"
@@ -176,18 +178,19 @@ const Login = (props) => {
                                   </div> */}
                                   <div className="lost-password">
                                     <Link to="/forgot-password">
-                                      Lost your password?
+                                      {t('Login.Lost your password?')}
                                     </Link>
                                   </div>
                                 </div>
                                 <div className="button-login">
-                                  <input
+                                  <button
                                     type="submit"
                                     className="button"
                                     name="login"
+                                    style={{ backgroundColor: 'black', color: 'white', textTransform: 'uppercase', letterSpacing: '0.010416667in', fontWeight: '500', height: '3.4375pc', width: '100%', fontSize: '9.75pt' }}
                                     defaultValue="Login"
                                     onClick={(e) => handleLogin(e)}
-                                  />
+                                  >{t('Login.Submit')}</button>
                                 </div>
                               </form>
                             </div>
@@ -196,13 +199,13 @@ const Login = (props) => {
                       </div>
                       <div className="col-lg-6 col-md-6 col-sm-12">
                         <div className="box-form-login">
-                          <h2 className="register">Register</h2>
+                          <h2 className="register">{t('Login.Register')}</h2>
                           <div className="box-content">
                             <div className="form-register">
                               <form method="post" className="register">
                                 <div className="name">
                                   <label>
-                                    Name <span className="required">*</span>
+                                    {t('Login.Name')} <span className="required">*</span>
                                   </label>
                                   <input
                                     type="text"
@@ -216,7 +219,7 @@ const Login = (props) => {
                                 <br />
                                 <div className="mobile-phone">
                                   <label>
-                                    Mobile Number{" "}
+                                    {t('Login.Mobile Number')}{" "}
                                     <span className="required">*</span>
                                   </label>
                                   <input
@@ -231,7 +234,7 @@ const Login = (props) => {
                                 <br />
                                 <div className="email">
                                   <label>
-                                    Email address{" "}
+                                    {t('Login.Email address')}{" "}
                                     <span className="required">*</span>
                                   </label>
                                   <input
@@ -245,7 +248,7 @@ const Login = (props) => {
                                 </div>
                                 <div className="password">
                                   <label>
-                                    Password <span className="required">*</span>
+                                    {t('Login.Password')} <span className="required">*</span>
                                   </label>
                                   <input
                                     type="password"
@@ -257,13 +260,14 @@ const Login = (props) => {
                                   />
                                 </div>
                                 <div className="button-register">
-                                  <input
+                                  <button
                                     type="submit"
+                                    style={{ backgroundColor: 'black', color: 'white', textTransform: 'uppercase', letterSpacing: '0.010416667in', fontWeight: '500', height: '3.4375pc', width: '100%', fontSize: '9.75pt' }}
                                     className="button"
                                     name="register"
                                     defaultValue="Register"
                                     onClick={(e) => handleRegister(e)}
-                                  />
+                                  >{t('Login.Submit')}</button>
                                 </div>
                               </form>
                             </div>
@@ -277,7 +281,7 @@ const Login = (props) => {
             </div>
           </div>
         </div>
-      </div>
+      </div >
     </>
   );
 };

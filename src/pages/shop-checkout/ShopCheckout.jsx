@@ -5,6 +5,7 @@ import { toast } from "react-toastify";
 import { useShoppingCart } from "../../context/ShoppingCartContext";
 import apiConfig from "../../config/apiConfig";
 import { Button } from "react-bootstrap";
+import { useTranslation } from "react-i18next";
 
 const ShopCheckout = () => {
   const [orders, setOrders] = useState();
@@ -15,11 +16,10 @@ const ShopCheckout = () => {
   const [citiesOptions, setCitiesOptions] = useState({});
   const [datta, setDatta] = useState();
   const [buttonClicked, setButtonClicked] = useState(false);
-  // billing fields
   const { showSuccessToastMessage, showInfoToastMessage } = useShoppingCart();
   const [costs, setCosts] = useState({});
 
-
+  const { t } = useTranslation();
   const [state, setState] = useState({});
 
   const handleChange = (e) => {
@@ -28,7 +28,6 @@ const ShopCheckout = () => {
       [e.target.name]: e.target.value
     }))
     if (e.target.name === 'country') getStates(e.target.value, 'billing');
-    // if (e.target.name === 'state') getCities(e.target.value, 'billing');
   }
   useEffect(() => console.log(state), [state]);
 
@@ -43,9 +42,6 @@ const ShopCheckout = () => {
     // if (e.target.name === 'state') getCities(e.target.value, 'shipping');
   }
 
-  // useEffect(() => {
-  //   console.log('shipState', shipState, citiesOptions);
-  // }, [shipState, citiesOptions])
 
 
 
@@ -378,32 +374,12 @@ const ShopCheckout = () => {
       })
       .catch((error) => console.log("error", error));
   }
-  // function getCities(id, type) {
-  //   var requestOptions = {
-  //     method: "GET",
-  //     redirect: "follow",
-  //   };
 
-  //   fetch(
-  //     `${apiConfig.getCitiesAPI}/${id}?secret=1dc7843e-e42c-4154-a02d-d80ab6d81095`,
-  //     requestOptions
-  //   )
-  //     .then((response) => response.json())
-  //     .then((result) => {
-  //       // console.log("city", result.cities);
-  //       setCitiesOptions(prev => ({ ...prev, [type]: result?.cities }));
-  //     })
-  //     .catch((error) => console.log("error", error));
-  // }
-
-  // useEffect(() => { console.log(citiesOptions) }, [citiesOptions])
   useEffect(() => {
     getCartDetails();
     getBillingDetails();
     getShippingDetails();
     getCountries();
-    // getCountryStates();
-    // getCities();
   }, []);
 
   return (
@@ -411,7 +387,7 @@ const ShopCheckout = () => {
       <div id="main-content" className="main-content">
         <div id="primary" className="content-area">
           {/* Page Title */}
-          <PageTitle current={"Shop Checkout"} />
+          <PageTitle current={t("Check.Shop Checkout")} />
 
           <div id="content" className="site-content" role="main">
             <div className="section-padding">
@@ -425,14 +401,14 @@ const ShopCheckout = () => {
                     autocomplete="off"
                   >
                     <div className="row">
-                      <div className="col-xl-8 col-lg-7 col-md-12 col-12">
+                      <div className="d-grid col-xl-8 col-lg-7 col-md-12 col-12">
                         <div className="customer-details">
                           <div className="billing-fields">
-                            <h3>Billing details</h3>
+                            <h3>{t("Check.Billing details")}</h3>
                             <div className="billing-fields-wrapper">
                               <p className="form-row form-row-first validate-required">
                                 <label>
-                                  Full Name{" "}
+                                  {t("Check.Full Name")}{" "}
                                   <span className="required" title="required">
                                     *
                                   </span>
@@ -447,9 +423,9 @@ const ShopCheckout = () => {
                                   />
                                 </span>
                               </p>
-                              <p className="form-row form-row-wide validate-required validate-phone">
+                              <p className="form-row my-5 form-row-wide validate-required validate-phone">
                                 <label>
-                                  Phone{" "}
+                                  {t("Check.Phone")}{" "}
                                   <span className="required" title="required">
                                     *
                                   </span>
@@ -464,9 +440,9 @@ const ShopCheckout = () => {
                                   />
                                 </span>
                               </p>
-                              <p className="form-row form-row-wide validate-required validate-email">
+                              <p className="form-row my-5 form-row-wide validate-required validate-email">
                                 <label>
-                                  Email address{" "}
+                                  {t("Check.Email address")}{" "}
                                   <span className="required" title="required">
                                     *
                                   </span>
@@ -482,9 +458,9 @@ const ShopCheckout = () => {
                                   />
                                 </span>
                               </p>
-                              <p className="form-row address-field validate-required form-row-wide">
+                              <p className="form-row my-5 address-field validate-required form-row-wide">
                                 <label>
-                                  Street address{" "}
+                                  {t("Check.Street address")}{" "}
                                   <span className="required" title="required">
                                     *
                                   </span>
@@ -500,25 +476,9 @@ const ShopCheckout = () => {
                                   />
                                 </span>
                               </p>
-                              {/* <p className="form-row address-field form-row-wide">
+                              <p className="form-row my-5 form-row-wide validate-required">
                                 <label>
-                                  Apartment, suite, unit, etc.&nbsp;
-                                  <span className="optional">(optional)</span>
-                                </label>
-                                <span className="input-wrapper">
-                                  <input
-                                    type="text"
-                                    className="input-text"
-                                    name="address_2"
-                                    placeholder="Apartment, suite, unit, etc. (optional)"
-                                    value={state?.address2}
-                                    onChange={handleChange}
-                                  />
-                                </span>
-                              </p> */}
-                              <p className="form-row form-row-wide validate-required">
-                                <label>
-                                  Country {" "}
+                                  {t("Check.Country")} {" "}
                                   <span className="required" title="required">
                                     *
                                   </span>
@@ -526,7 +486,7 @@ const ShopCheckout = () => {
                                 <span className="input-wrapper">
                                   <select
                                     name="country"
-                                    className="country-select custom-select"
+                                    className="country-select custom-select w-100"
                                     value={state?.country} // Set the selected option based on state
                                     onChange={handleChange}
                                   >
@@ -539,9 +499,9 @@ const ShopCheckout = () => {
                                   </select>
                                 </span>
                               </p>
-                              <p className="form-row address-field validate-required validate-state form-row-wide">
+                              <p className="form-row my-5 address-field validate-required validate-state form-row-wide">
                                 <label>
-                                  State {" "}
+                                  {t("Check.State")} {" "}
                                   <span className="required" title="required">
                                     *
                                   </span>
@@ -549,7 +509,7 @@ const ShopCheckout = () => {
                                 <span className="input-wrapper">
                                   <select
                                     name="state"
-                                    className="state-select custom-select"
+                                    className="state-select custom-select w-100"
                                     value={state.state} // Set the selected option based on state
                                     onChange={handleChange} // Add an onChange event handler
                                   >
@@ -562,32 +522,9 @@ const ShopCheckout = () => {
                                   </select>
                                 </span>
                               </p>
-                              {/* <p className="form-row address-field validate-required form-row-wide">
-                                <label for="city" className="">
-                                  Town / City{" "}
-                                  <span className="required" title="required">
-                                    *
-                                  </span>
-                                </label>
-                                <span className="input-wrapper">
-                                  <select
-                                    name="city"
-                                    className="country-select custom-select"
-                                    value={state.city} // Set the selected option based on state
-                                    onChange={handleChange}
-                                  >
-                                    <option value={''} key={0}>Select City</option>
-                                    {citiesOptions?.billing?.map((option) => (
-                                      <option key={option.id} value={option.id}>
-                                        {option.name}
-                                      </option>
-                                    ))}
-                                  </select>
-                                </span>
-                              </p> */}
-                              <p className="form-row address-field validate-required validate-postcode form-row-wide">
+                              <p className="form-row my-5 address-field validate-required validate-postcode form-row-wide">
                                 <label>
-                                  Postcode / ZIP{" "}
+                                  {t("Check.Postcode / ZIP")}{" "}
                                   <span className="required" title="required">
                                     *
                                   </span>
@@ -603,47 +540,53 @@ const ShopCheckout = () => {
                                 </span>
                               </p>
                             </div>
+                            <br />
+                            <div
+                              style={{
+                                background: "black",
+                                color: "white",
+                                display: "flex",
+                                justifyContent: "center",
+                                width: "140px",
+                                cursor: "pointer",
+                                marginBottom: "10px",
+                                height: '40px',
+                                lineHeight: '37px',
+                                textTransform: 'uppercase',
+                                fontWeight: '400',
+                                letterSpacing: '0.05rem',
+                                fontSize: '14px'
+                              }}
+                              onClick={addOrUpdateBillingAddress}
+                            >
+                              {state ? t("Check.Update Address") : t("Check.Add Address")}
+                            </div>
+                            <br />
                           </div>
-                          <div
-                            style={{
-                              background: "black",
-                              color: "white",
-                              display: "flex",
-                              justifyContent: "center",
-                              width: "140px",
-                              cursor: "pointer",
-                              marginBottom: "10px",
-                            }}
-                            onClick={addOrUpdateBillingAddress}
-                          >
-                            {state ? "Update Address" : "Add Address"}
-                          </div>
+                          <p className="form-row form-row-wide ship-to-different-address">
+                            <label className="checkbox">
+                              <input
+                                className="input-checkbox"
+                                type="checkbox"
+                                name="ship_to_different_address"
+                                value="1"
+                                checked={shipToDifferentAddress} // Set the checkbox's checked state from the state
+                                onChange={handleCheckboxChange} // Add an onChange event handler
+                              />
+                              <span>{t("Check.Same as Billing Address")}</span>
+                            </label>
+                          </p>
                         </div>
-                        <br />
-                        <br />
+
                         <div className="customer-details">
                           <div className="billing-fields">
-                            <p className="form-row form-row-wide ship-to-different-address">
-                              <label className="checkbox">
-                                <input
-                                  className="input-checkbox"
-                                  type="checkbox"
-                                  name="ship_to_different_address"
-                                  value="1"
-                                  checked={shipToDifferentAddress} // Set the checkbox's checked state from the state
-                                  onChange={handleCheckboxChange} // Add an onChange event handler
-                                />
-                                <span>Same as Billing Address</span>
-                              </label>
-                            </p>
-
                             {!shipToDifferentAddress && (
                               <>
-                                <h3>Shipping details</h3>
+                                <h3>{t("Check.Shipping details")}</h3>
                                 <div className="billing-fields-wrapper">
-                                  <p className="form-row form-row-first validate-required">
+                                  <p className="form-row  form-row-first validate-required">
                                     <label>
-                                      Full Name{" "}
+                                      {t("Check.Full Name")}{" "}
                                       <span
                                         className="required"
                                         title="required"
@@ -661,39 +604,9 @@ const ShopCheckout = () => {
                                       />
                                     </span>
                                   </p>
-                                  {/* <p className="form-row form-row-last validate-required">
-                                <label>
-                                  Last name{" "}
-                                  <span className="required" title="required">
-                                    *
-                                  </span>
-                                </label>
-                                <span className="input-wrapper">
-                                  <input
-                                    type="text"
-                                    className="input-text"
-                                    name="billing_last_name"
-                                    value={"Amit Please send"}
-                                  />
-                                </span>
-                              </p> */}
-                                  {/* <p className="form-row form-row-wide">
-                                <label>
-                                  Company name{" "}
-                                  <span className="optional">(optional)</span>
-                                </label>
-                                <span className="input-wrapper">
-                                  <input
-                                    type="text"
-                                    className="input-text"
-                                    name="billing_company"
-                                    value={"Amit Please send"}
-                                  />
-                                </span>
-                              </p> */}
-                                  <p className="form-row form-row-wide validate-required validate-phone">
+                                  <p className="form-row my-5 form-row-wide validate-required validate-phone">
                                     <label>
-                                      Phone{" "}
+                                      {t("Check.Phone")}{" "}
                                       <span
                                         className="required"
                                         title="required"
@@ -711,9 +624,9 @@ const ShopCheckout = () => {
                                       />
                                     </span>
                                   </p>
-                                  <p className="form-row form-row-wide validate-required validate-email">
+                                  <p className="form-row my-5 form-row-wide validate-required validate-email">
                                     <label>
-                                      Email address{" "}
+                                      {t("Check.Email address")}{" "}
                                       <span
                                         className="required"
                                         title="required"
@@ -732,10 +645,9 @@ const ShopCheckout = () => {
                                       />
                                     </span>
                                   </p>
-
-                                  <p className="form-row address-field validate-required form-row-wide">
+                                  <p className="form-row my-5 address-field validate-required form-row-wide">
                                     <label>
-                                      Street address{" "}
+                                      {t("Check.Street address")}{" "}
                                       <span
                                         className="required"
                                         title="required"
@@ -754,27 +666,9 @@ const ShopCheckout = () => {
                                       />
                                     </span>
                                   </p>
-                                  {/* <p className="form-row address-field form-row-wide">
+                                  <p className="form-row  my-5 form-row-wide validate-required">
                                     <label>
-                                      Apartment, suite, unit, etc.&nbsp;
-                                      <span className="optional">
-                                        (optional)
-                                      </span>
-                                    </label>
-                                    <span className="input-wrapper">
-                                      <input
-                                        type="text"
-                                        className="input-text"
-                                        name="billing_address_2"
-                                        placeholder="Apartment, suite, unit, etc. (optional)"
-                                        value=""
-                                      />
-                                    </span>
-                                  </p> */}
-
-                                  <p className="form-row form-row-wide validate-required">
-                                    <label>
-                                      Country / Region{" "}
+                                      {t("Check.Country")}{" "}
                                       <span
                                         className="required"
                                         title="required"
@@ -785,7 +679,7 @@ const ShopCheckout = () => {
                                     <span className="input-wrapper">
                                       <select
                                         name="country"
-                                        className="country-select custom-select"
+                                        className="country-select custom-select w-100"
                                         value={shipState?.country} // Set the selected option based on state
                                         onChange={handlesChange}
                                       >
@@ -801,9 +695,9 @@ const ShopCheckout = () => {
                                       </select>
                                     </span>
                                   </p>
-                                  <p className="form-row address-field validate-required validate-state form-row-wide">
+                                  <p className="form-row my-5 address-field validate-required validate-state form-row-wide">
                                     <label>
-                                      State / County{" "}
+                                      {t("Check.State")}{" "}
                                       <span
                                         className="required"
                                         title="required"
@@ -814,7 +708,7 @@ const ShopCheckout = () => {
                                     <span className="input-wrapper">
                                       <select
                                         name="state"
-                                        className="state-select custom-select"
+                                        className="state-select custom-select w-100"
                                         value={shipState?.state} // Set the selected option based on state
                                         onChange={handlesChange} // Add an onChange event handler
                                       >
@@ -830,39 +724,9 @@ const ShopCheckout = () => {
                                       </select>
                                     </span>
                                   </p>
-                                  {/* <p className="form-row address-field validate-required form-row-wide">
-                                    <label for="billing_city" className="">
-                                      Town / City{" "}
-                                      <span
-                                        className="required"
-                                        title="required"
-                                      >
-                                        *
-                                      </span>
-                                    </label>
-                                    <span className="input-wrapper">
-                                      <select
-                                        name="city"
-                                        className="country-select custom-select"
-                                        value={shipState?.city} // Set the selected option based on state
-                                        onChange={handlesChange}
-                                      >
-                                        <option value="" key={0}>Select City</option>
-                                        {citiesOptions?.shipping?.map((option) => (
-                                          <option
-                                            key={option.id}
-                                            value={option.id}
-                                          >
-                                            {option.name}
-                                          </option>
-                                        ))}
-                                      </select>
-                                    </span>
-                                  </p> */}
-
-                                  <p className="form-row address-field validate-required validate-postcode form-row-wide">
+                                  <p className="form-row my-5 address-field validate-required validate-postcode form-row-wide">
                                     <label>
-                                      Postcode / ZIP{" "}
+                                      {t("Check.Postcode / ZIP")}{" "}
                                       <span
                                         className="required"
                                         title="required"
@@ -881,6 +745,7 @@ const ShopCheckout = () => {
                                     </span>
                                   </p>
                                 </div>
+                                <br />
                                 <div
                                   style={{
                                     background: "black",
@@ -890,39 +755,27 @@ const ShopCheckout = () => {
                                     width: "140px",
                                     cursor: "pointer",
                                     marginBottom: "10px",
+                                    height: '40px',
+                                    lineHeight: '37px',
+                                    textTransform: 'uppercase',
+                                    fontWeight: '400',
+                                    letterSpacing: '0.05rem',
+                                    fontSize: '14px'
+
                                   }}
                                   onClick={addOrUpdateAddress}
                                 >
-                                  {shipState ? 'Update Address' : 'Add Address'}
+                                  {shipState ? t("Check.Update Address") : t("Check.Add Address")}
                                 </div>
                               </>
                             )}
-
-
                           </div>
                         </div>
-                        {/* <div className="additional-fields">
-                          <p className="form-row notes">
-                            <label>
-                              Order notes{" "}
-                              <span className="optional">(optional)</span>
-                            </label>
-                            <span className="input-wrapper">
-                              <textarea
-                                name="order_comments"
-                                className="input-text"
-                                placeholder="Notes about your order, e.g. special notes for delivery."
-                                rows="2"
-                                cols="5"
-                              ></textarea>
-                            </span>
-                          </p>
-                        </div> */}
                       </div>
                       <div className="col-xl-4 col-lg-5 col-md-12 col-12">
                         <div className="checkout-review-order">
                           <div className="checkout-review-order-table">
-                            <div className="review-order-title">Products</div>
+                            <div className="review-order-title">{t("Check.Products")}</div>
                             {orders?.map((order) => (
                               <div className="cart-items">
                                 <div className="cart-item">
@@ -946,7 +799,7 @@ const ShopCheckout = () => {
                                         }
                                       </Link>
                                       <strong className="product-quantity">
-                                        {"QTY: "}
+                                        {t("Check.QTY")}{" :"}
                                         {parseInt(order?.qty)}
                                       </strong>
                                     </div>
@@ -964,26 +817,26 @@ const ShopCheckout = () => {
                               </div>
                             ))}
                             <div className="cart-subtotal">
-                              <h2>Subtotal</h2>
+                              <h2>{t("Check.Subtotal")}</h2>
                               <div className="subtotal-price">
                                 <span>KD {Math.round(costs?.sub_total * 100) / 100}</span>
                               </div>
                             </div>
 
                             <div className="cart-subtotal">
-                              <h2>Shipping Charge</h2>
+                              <h2>{t("Check.Shipping Charge")}</h2>
                               <div className="subtotal-price">
                                 <span>KD {Math.round(costs?.shipping * 100) / 100}</span>
                               </div>
                             </div>
                             <div className="cart-subtotal">
-                              <h2>Discount</h2>
+                              <h2>{t("Check.Discount")}</h2>
                               <div className="subtotal-price">
                                 <span>KD {Math.round(costs?.discount * 100) / 100}</span>
                               </div>
                             </div>
                             <div className="order-total">
-                              <h2>Total</h2>
+                              <h2>{t("Check.Total")}</h2>
                               <div className="total-price">
                                 <strong>
                                   <span>KD {Math.round(costs?.grand_total * 100) / 100}</span>
@@ -1038,9 +891,9 @@ const ShopCheckout = () => {
                                   value="cod"
                                   checked="checked"
                                 />
-                                <label>Cash on delivery</label>
+                                <label>{t("Check.Cash on delivery")}</label>
                                 <div className="payment-box">
-                                  <p>Pay with cash upon delivery.</p>
+                                  <p>{t("Check.Pay with cash upon delivery.")}</p>
                                 </div>
                               </li>
                               {/* <li className="payment-method">
@@ -1072,7 +925,7 @@ const ShopCheckout = () => {
                                 onClick={(e) => placeOrder(e)}
                                 disabled={buttonClicked}
                               >
-                                {buttonClicked ? 'Please wait' : 'Place Order'}
+                                {buttonClicked ? t("Check.Please wait") : t("Check.Place Order")}
                               </Button>
                             </div>
                           </div>

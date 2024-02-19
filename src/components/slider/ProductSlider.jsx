@@ -75,9 +75,6 @@ const ProductSlider = () => {
                 >
                   <div className="item-image">
                     <img
-                      width={258}
-                      height={258}
-                      style={{ height: "330px", width: '250px', objectFit: "contain" }}
                       src={
                         cat?.image
                           ? `https://www.demo609.amrithaa.com/backend-cema/public/media/category/${cat?.image}`

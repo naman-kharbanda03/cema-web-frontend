@@ -118,6 +118,7 @@ const CartProduct = (props) => {
       const prod = {
         id: order?.product_id,
         type: order?.type,
+        variant_id: order?.variant_id,
       };
       return increaseItemInLocalCart(qty - order?.qty, prod);
     }
@@ -203,6 +204,7 @@ const CartProduct = (props) => {
             autoComplete="off"
           />
           <button type="button" className="plus" onClick={() => {
+            console.log(order.qty, order.stock, order.max_order_limit)
             if (order.qty < Math.min(order.max_order_limit, order.stock)) increaseQty(order.cart_id);
             else showInfoToastMessage('Product Maximum Quantity Reached');
           }

@@ -1,12 +1,13 @@
 import React, { useEffect, useState } from "react";
 import apiConfig from "../../../config/apiConfig";
 import Address from "../address/Address";
+import { useTranslation } from "react-i18next";
 
 const Addresses = () => {
   const [billingAddress, setBillingAddress] = useState({});
   const [shippingAddress, setShippingAddress] = useState({});
   const [addressLoaded, setAddressLoaded] = useState(false);
-
+  const { t } = useTranslation();
   const authToken = localStorage.getItem('accessToken');
 
   const fetchAddresses = async (shipApiUrl, billApiUrl) => {
@@ -52,20 +53,20 @@ const Addresses = () => {
     const billingAddress = apiConfig.getBillingAddressAPI;
     fetchAddresses(shippingAddress, billingAddress);
   }, []);
-  
+
   return (
     <>
       <div className="my-account-addresses">
         <p>
-          The following addresses will be used on the checkout page by default.
+          {t("Account.The following addresses will be used on the checkout page by default.")}
         </p>
         <div className="addresses">
           <Address
-            type="Billing Address"
+            type={t("Account.Billing Address")}
             address={billingAddress}
           />
           <Address
-            type="Shipping Address"
+            type={t("Account.Shipping Address")}
             address={shippingAddress}
 
           />

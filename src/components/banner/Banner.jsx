@@ -28,18 +28,18 @@ const Banner = () => {
   return (
     <div className="block block-banners layout-6 banners-effect no-space">
       <div className="row" >
-        <div className="col-md-6 left" style={{ width: '50%' }} >
-          <div className="block-widget-banner layout-8" style={{ maxWidth: '100%', maxHeight: '100%', height: '86.5%' }}>
-            <div className="bg-banner" style={{ height: '100%', maxWidth: '100%', maxHeight: '100%' }}>
-              <div className="" style={{ height: '100%', maxWidth: '100%', maxHeight: '100%', marginTop: '3px' }} >
-                <div className="" style={{ maxWidth: '100%', height: '100%' }} >
+        <div className="col-md-6 left"  >
+          <div className="block-widget-banner layout-8">
+            <div className="bg-banner" >
+              <div className="" >
+                <div className=""  >
                   <a href={`/products?id=${categories[0]?.category_id}`}>
                     <img
                       // width={959}
                       // height :100%
                       // src={banner_11}
                       src={`https://www.demo609.amrithaa.com/backend-cema/public/images/category/${categories[0]?.image}`}
-                      style={{ maxHeight: '100%', maxWidth: '100%', width: '100%', objectFit: 'fill' }}
+                      style={{ maxHeight: '100%', maxWidth: '100%', width: '100%', objectFit: 'contain' }}
                       alt="Banner Image"
                     />
                   </a>

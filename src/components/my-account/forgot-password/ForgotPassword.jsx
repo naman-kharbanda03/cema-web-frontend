@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import apiConfig from "../../../config/apiConfig";
 import { toast } from "react-toastify";
+import { useTranslation } from "react-i18next";
 
 const ForgotPassword = () => {
     const [passwords, setPassword] = useState({
@@ -9,6 +10,7 @@ const ForgotPassword = () => {
         password_confirmation: ""
     })
     const token = localStorage.getItem('accessToken');
+    const { t } = useTranslation();
     const onChangeHandler = (e) => {
         setPassword(prev => ({
             ...prev,
@@ -62,7 +64,7 @@ const ForgotPassword = () => {
                     {/* <fieldset> */}
                     {/* <legend>Password change</legend> */}
                     <p className="form-row">
-                        <label>Current password (leave blank to leave unchanged)</label>
+                        <label>{t("Account.Current password (leave blank to leave unchanged)")}</label>
                         <input
                             type="password"
                             className="input-text"
@@ -73,7 +75,7 @@ const ForgotPassword = () => {
                         />
                     </p>
                     <p className="form-row">
-                        <label>New password (leave blank to leave unchanged)</label>
+                        <label>{t("Account.New password (leave blank to leave unchanged)")}</label>
                         <input
                             type="password"
                             className="input-text"
@@ -85,7 +87,7 @@ const ForgotPassword = () => {
                         />
                     </p>
                     <p className="form-row">
-                        <label>Confirm new password</label>
+                        <label>{t("Account.Confirm new password")}</label>
                         <input
                             type="password"
                             className="input-text"
@@ -104,7 +106,7 @@ const ForgotPassword = () => {
                             name="save_account_details"
                             value="Save changes"
                         >
-                            Save changes
+                            {t("Account.Save changes")}
                         </button>
                     </p>
                 </form>

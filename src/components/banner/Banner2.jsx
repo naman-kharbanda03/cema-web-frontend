@@ -1,10 +1,12 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useTransition } from "react";
 import { Link } from "react-router-dom";
 import apiConfig from "../../config/apiConfig";
+import { useTranslation } from "react-i18next";
 // import { Link } from "react-router-dom";
 
 const Banner2 = () => {
   const [categories, setCategories] = useState([]);
+  const { t } = useTranslation();
   useEffect(() => {
     (() => {
       fetch(apiConfig.homeSecondCategory)
@@ -50,11 +52,9 @@ const Banner2 = () => {
                           <div className="banner-image-description">
                             {category.description}
                           </div>
-                          {/* <Link to="/products"> */}
                           <a className="button button-outline white" href={`/products?id=${category.category_id}`}>
-                            SHOP NOW
+                            {t('Home.Slider.SHOP NOW')}
                           </a>
-                          {/* </Link> */}
 
                         </div>
                       </div>

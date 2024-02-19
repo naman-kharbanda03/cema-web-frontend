@@ -7,8 +7,10 @@ import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import apiConfig from "../../config/apiConfig";
 import { data } from "jquery";
+import { useTranslation } from "react-i18next";
 
 const Cart = () => {
+
   const [orderData, setOrderData] = useState([]);
   const [orders, setOrders] = useState([]);
   const [total, setTotal] = useState();
@@ -18,7 +20,7 @@ const Cart = () => {
   const [couponData, setCouponData] = useState();
   const { cartItemsCount, cartItems, setCartItemsCount } = useShoppingCart();
   const [cost, setCost] = useState({});
-
+  const { t } = useTranslation();
   const handleCouponCodeChange = (e) => {
     setCouponCode(e.target.value);
     setCoupanSuccess(false);
@@ -151,13 +153,12 @@ const Cart = () => {
           } else {
             order = {
               product_name: { en: order?.product?.name?.en },
-              // variant_id: order?.variant?.id,
               price: order?.variant?.offer ? order.variant.offer : order.variant.price,
               product_id: order?.pro_id,
               product_image: order?.variant?.variantimages?.main_image,
               image_path: order?.product?.image_path,
               qty: order?.qty,
-              stock: order?.product?.stock,
+              stock: order?.variant?.stock,
               variant_id: order?.variant_id,
               cart_id: order?.id,
               link: `/product-details?product_id=${order?.pro_id}&variant_id=${order?.variant_id}`,
@@ -192,10 +193,7 @@ const Cart = () => {
     console.log(cartItems);
     getCartDetails();
   }, [cartItems]);
-  // useEffect(() => {
-  //   console.log(cartItems);
-  //   getCartDetails();
-  // }, []);
+
 
 
 
@@ -205,7 +203,7 @@ const Cart = () => {
         <div id="main-content" className="main-content">
           <div id="primary" className="content-area">
             {/* Page Info */}
-            <PageTitle current={"Shopping Cart"} />
+            <PageTitle current={t("Cart.Shopping Cart")} />
 
             {/* page body */}
             <div id="content" className="site-content" role="main">
@@ -224,14 +222,14 @@ const Cart = () => {
                                 <thead>
                                   <tr>
                                     <th className="product-thumbnail">
-                                      Product
+                                      {t('Cart.Product')}
                                     </th>
-                                    <th className="product-price">Price</th>
+                                    <th className="product-price"> {t('Cart.Price')}</th>
                                     <th className="product-quantity">
-                                      Quantity
+                                      {t('Cart.Quantity')}
                                     </th>
                                     <th className="product-subtotal">
-                                      Subtotal
+                                      {t('Cart.Subtotal')}
                                     </th>
                                     <th className="product-remove">&nbsp;</th>
                                   </tr>
@@ -274,8 +272,8 @@ const Cart = () => {
                                               onClick={() => applyRemoveCoupon()}
                                             >
                                               {couponData === null
-                                                ? "Apply coupon"
-                                                : "Remove Coupan"}
+                                                ? t('Cart.Apply coupon')
+                                                : t('Cart.Remove Coupan')}
                                             </div>
                                           </div>
                                         )}
@@ -287,7 +285,7 @@ const Cart = () => {
                                             className="button"
                                             value="Update cart"
                                           >
-                                            Continue Shopping
+                                            {t('Cart.Continue Shopping')}
                                           </div>
                                         </a>
                                       </div>
@@ -300,10 +298,10 @@ const Cart = () => {
                         </div>
                         <div className="col-xl-4 col-lg-12 col-md-12 col-12">
                           <div className="cart-totals">
-                            <h2>Cart totals</h2>
+                            <h2> {t('Cart.Cart totals')}</h2>
                             <div>
                               <div className="cart-subtotal">
-                                <div className="title">Subtotal</div>
+                                <div className="title"> {t('Cart.Subtotal')}</div>
                                 <div>
                                   <span>KD {Math.round((cost?.subtotal) * 100) / 100}</span>
                                 </div>
@@ -319,7 +317,7 @@ const Cart = () => {
                               {localStorage.getItem('accessToken') ?
                                 (
                                   <div className="order-total">
-                                    <div className="title">Shipping Charge</div>
+                                    <div className="title"> {t('Cart.Shipping Charge')}</div>
                                     <div>
                                       <span>KD {Math.round(cost?.shipping * 100) / 100}</span>
                                     </div>
@@ -331,7 +329,7 @@ const Cart = () => {
 
                               {cost.discount > 0 && (
                                 <div className="cart-subtotal">
-                                  <div className="title">Discount</div>
+                                  <div className="title"> {t('Cart.Discount')}</div>
                                   <div>
                                     <span>-KD {Math.round(cost?.discount * 100) / 100}</span>
                                   </div>
@@ -339,7 +337,7 @@ const Cart = () => {
                               )}
                               {localStorage.getItem('accessToken') && (
                                 <div className="order-total">
-                                  <div className="title">Total</div>
+                                  <div className="title"> {t('Cart.Total')}</div>
                                   <div>
                                     <span>KD {Math.round(cost?.total * 100) / 100}</span>
                                   </div>
@@ -352,7 +350,7 @@ const Cart = () => {
                                 <div
                                   className="checkout-button button"
                                 >
-                                  Proceed to checkout
+                                  {t('Cart.Proceed to checkout')}
                                 </div>
                               </Link>
                             </div>
@@ -364,12 +362,12 @@ const Cart = () => {
                     <div className="shop-cart-empty">
                       <div className="notices-wrapper">
                         <p className="cart-empty">
-                          Your cart is currently empty.
+                          {t('Cart.Your cart is currently empty.')}
                         </p>
                       </div>
                       <div className="return-to-shop">
                         <a className="button" href='/products' >
-                          Return to shop
+                          {t('Cart.Return to shop')}
                         </a>
                       </div>
                     </div>

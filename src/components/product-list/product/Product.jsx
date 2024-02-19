@@ -5,6 +5,7 @@ import apiConfig from "../../../config/apiConfig";
 import { useShoppingCart } from "../../../context/ShoppingCartContext";
 // import { AddToCart } from "../../block/NewArrival";
 import './product.css';
+import { useTranslation } from "react-i18next";
 
 
 const Product = (props) => {
@@ -19,6 +20,7 @@ const Product = (props) => {
     const [image, setImage] = useState();
     const [stock, setStock] = useState();
     const [isInWishlist, setIsInWishlist] = useState(0);
+    const { t } = useTranslation();
 
     useEffect(() => {
         setIsInWishlist(product.InWishlist);
@@ -38,7 +40,7 @@ const Product = (props) => {
                             {
                                 product?.hot_product === 1 ?
                                     <div className="product-lable">
-                                        <div className="hot">Hot</div>
+                                        <div className="hot">{t("Product.Hot")}</div>
                                     </div>
                                     : ''
                             }
@@ -62,17 +64,6 @@ const Product = (props) => {
                                     />
                                 </a>
                             </div>
-                            {/* <span
-                                className="product-quickview"
-                                data-title="Quick View"
-                            >
-                                <a
-                                    href="#"
-                                    className="quickview quickview-button"
-                                >
-                                    Quick View <i className="icon-search"></i>
-                                </a>
-                            </span> */}
                         </div>
                     </div>
                     <div className="col-md-8">
@@ -95,12 +86,12 @@ const Product = (props) => {
                                         starSpacing="1px"
                                     />
                                     <br />
-                                    <span>Rating: {product?.product_rating} out of 5</span>
+                                    <span>{t("Product.Rating")}: {product?.product_rating} {t("Product.out of 5")}</span>
                                 </div>
                                 {
                                     product?.reviews?.length !== 0 ?
                                         <div className="review">
-                                            ({product?.reviews?.length}<span> reviews</span>)
+                                            ({product?.reviews?.length}<span> {t('Product.Reviews')}</span>)
                                         </div> : ''
                                 }
 
@@ -140,7 +131,7 @@ const Product = (props) => {
                                                         }
                                                     });
                                                 }
-                                                else showInfoToastMessage('Out Of Stock')
+                                                else showInfoToastMessage(t('Product.Out Of Stock'))
                                             }
                                             else {
                                                 if (product?.stock > 0) {
@@ -166,13 +157,13 @@ const Product = (props) => {
                                                         }
                                                     });;
                                                 }
-                                                else showInfoToastMessage('Out Of Stock')
+                                                else showInfoToastMessage(t('Product.Out Of Stock'))
                                             }
                                         }
                                         }
                                         className="product-btn button"
                                     >
-                                        {product.stock > 0 ? 'Add to cart' : 'Out of Stock'}
+                                        {product.stock > 0 ? t('Product.Add to Cart') : t('Product.Out Of Stock')}
                                     </a>
                                 </div>
                                 <div
@@ -180,15 +171,8 @@ const Product = (props) => {
                                     data-title="Wishlist"
                                 >
                                     <button className={isInWishlist ? "product-btn-active" : 'product-btn'}
-                                        // style={styles.wishlist}
-                                        // onClick={(e) => {
-                                        //     handleAddRemoveWishlist(e, product);
-                                        //     // document.documentElement.style.setProperty('--wishlist-color', 'white');
-                                        //     // document.documentElement.style.setProperty('--wishlist-bk-color', 'black');
-                                        // }}
+
                                         onClick={(e) => {
-                                            // document.documentElement.style.setProperty('--wishlist-color', 'white');
-                                            // document.documentElement.style.setProperty('--wishlist-bk-color', 'black');
                                             setIsInWishlist(prev => !prev);
                                             let prod = {};
                                             if (product?.type === "simple_product") {
@@ -214,30 +198,17 @@ const Product = (props) => {
                                                 if (result.result) {
                                                     showSuccessToastMessage(result.message);
                                                 }
-                                                // if (result === true) showSuccessToastMessage('Product added in wishlist');
-                                                // else if (result === -1) showSuccessToastMessage('Product removed from wishlist');
                                             })
                                         }}
                                     >
-                                        Add to wishlist
+                                        {t('Product.Add to wishlist')}
                                     </button>
                                     <br />
 
                                 </div>
-
-                                {/* <div
-                                    className="btn-compare"
-                                    data-title="Compare"
-                                >
-                                    <button className="product-btn">
-                                        Compare
-                                    </button>
-                                </div> */}
-
                             </div>
                             <div className="product-description">
                                 <div dangerouslySetInnerHTML={{ __html: product.desc.length > 50 ? product?.desc.slice(0, 50) + '...' : product?.desc }} />
-                                {/* <span>...</span> */}
                             </div>
                         </div>
                     </div>

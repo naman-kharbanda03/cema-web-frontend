@@ -2,10 +2,12 @@ import React, { useEffect, useState } from "react";
 import apiConfig from "../../../config/apiConfig";
 import { useShoppingCart } from "../../../context/ShoppingCartContext";
 import { toast } from "react-toastify";
+import { useTranslation } from "react-i18next";
 
 const AccountDetails = () => {
   const token = localStorage.getItem('accessToken');
   const [profileData, setProfileData] = useState({});
+  const { t } = useTranslation();
   // const { showSuccessToastMessage, showInfoToastMessage } = useShoppingCart();
   const handleChange = (e) => {
     e.preventDefault();
@@ -43,24 +45,24 @@ const AccountDetails = () => {
       }).then(response => response.json())
         .then(data => {
           console.log(data);
-          if(!data?.status){
+          if (!data?.status) {
             toast.success(data.message, {
               position: toast.POSITION.BOTTOM_LEFT,
-          });
-          }else{
+            });
+          } else {
             toast.warning("Some error occurred.", {
               position: toast.POSITION.BOTTOM_LEFT,
-          });
+            });
           }
         })
         .catch(error => console.error(error, "Fetch operation Error"));
     } else {
       toast.warning("Field is empty.", {
         position: toast.POSITION.BOTTOM_LEFT,
-    });
+      });
     }
   }
-  const getUserProfile = () =>{
+  const getUserProfile = () => {
     fetch(apiConfig?.getUserApi, {
       method: "GET",
       headers: {
@@ -71,8 +73,8 @@ const AccountDetails = () => {
         console.log(data);
         setProfileData(
           {
-            name : data?.name,
-            phone : data?.mobile,
+            name: data?.name,
+            phone: data?.mobile,
             email: data?.email,
             // country_id : data?.country_id,
             // state_id : data?.state_id,
@@ -82,15 +84,15 @@ const AccountDetails = () => {
         )
         toast.info(data.message, {
           position: toast.POSITION.BOTTOM_LEFT,
-      });
-        
+        });
+
 
       })
       .catch(error => console.error(error, "Fetch operation Error"));
   }
-  useEffect(()=>{
-    if(Object.keys(profileData).length === 0) getUserProfile()
-  },[profileData])
+  useEffect(() => {
+    if (Object.keys(profileData).length === 0) getUserProfile()
+  }, [profileData])
 
   return (
     <>
@@ -110,7 +112,7 @@ const AccountDetails = () => {
           </p> */}
           <p className="form-row">
             <label>
-              Name <span className="required">*</span>
+              {t("Account.Name")} <span className="required">*</span>
             </label>
             <input
               type="text"
@@ -124,45 +126,10 @@ const AccountDetails = () => {
           <div className="clear"></div>
 
           <div className="clear"></div>
-          {/* <fieldset>
-            <legend>Password change</legend>
-            <p className="form-row">
-              <label>Current password (leave blank to leave unchanged)</label>
-              <input
-                type="password"
-                className="input-text"
-                name="password_current"
-                autocomplete="off"
-                onChange={(e) => handleChange(e)}
 
-              />
-            </p>
-            <p className="form-row">
-              <label>New password (leave blank to leave unchanged)</label>
-              <input
-                type="password"
-                className="input-text"
-                name="password_1"
-                autocomplete="off"
-                onChange={(e) => handleChange(e)}
-
-              />
-            </p>
-            <p className="form-row">
-              <label>Confirm new password</label>
-              <input
-                type="password"
-                className="input-text"
-                name="password_2"
-                autocomplete="off"
-                onChange={(e) => handleChange(e)}
-
-              />
-            </p>
-          </fieldset> */}
           <p className="form-row">
             <label>
-              Mobile Number <span className="required">*</span>
+              {t("Account.Mobile Number")} <span className="required">*</span>
             </label>
             <input
               type="number"
@@ -173,8 +140,7 @@ const AccountDetails = () => {
             />
             <span>
               <em>
-                This will be how your name will be displayed in the account
-                section and in reviews
+                {t("Account.This will be how your name will be displayed in the account section and in reviews")}
               </em>
             </span>
           </p>
@@ -182,7 +148,7 @@ const AccountDetails = () => {
 
           <p className="form-row">
             <label>
-              E-mail <span className="required">*</span>
+              {t("Account.E-mail")} <span className="required">*</span>
             </label>
             <input
               type="email"
@@ -194,8 +160,7 @@ const AccountDetails = () => {
             />
             <span>
               <em>
-                This will be how your name will be displayed in the account
-                section and in reviews
+                {t("Account.This will be how your name will be displayed in the account section and in reviews")}
               </em>
             </span>
           </p>
@@ -209,7 +174,7 @@ const AccountDetails = () => {
               onClick={(e) => onSubmit(e)}
 
             >
-              Save changes
+              {t("Account.Save changes")}
             </button>
           </p>
         </form>
