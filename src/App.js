@@ -27,8 +27,6 @@ import Layout from "./layouts/Layout";
 import OrderDetails from "./pages/order-details/OrderDetails";
 
 function App() {
-  // const [isLoggedIn, setIsLoggedIn] = useState(false);
-  // useEffect(() => console.log(isLoggedIn), [isLoggedIn]);
   const [openDrawer, setOpenDrawer] = useState(false);
   const url = new URL(window.location.href);
   const params = new URLSearchParams(url.search);
@@ -41,70 +39,65 @@ function App() {
       <Suspense>
         <UserContextWrapper>
           <ShoppingCartProvider>
-            <>
-              <Layout OpenDrawer={openDrawer} setOpenDrawer={setOpenDrawer}>
-                <Header setOpenDrawer={setOpenDrawer} />
+            <Layout OpenDrawer={openDrawer} setOpenDrawer={setOpenDrawer}>
+              <Header setOpenDrawer={setOpenDrawer} />
 
-                <Routes>
-                  <Route path="/" element={<Home />} />
-                  <Route
-                    path="/login"
-                    element={
-                      <HiddenPostLogin>
-                        <Login />
-                      </HiddenPostLogin>
-                    }
-                  />
-                  <Route
-                    path="/forgot-password"
-                    element={
-                      <HiddenPostLogin>
-                        <ForgotPassword />
-                      </HiddenPostLogin>
-                    }
-                  />
-                  <Route path="/cart" element={<Cart />} />
-                  <Route path="/contact" element={<Contact />} />
-                  <Route path="/listings" element={<Listing />} />
-                  <Route
-                    path="/account"
-                    element={
-                      <Protected>
-                        <MyAccount />
-                      </Protected>
-                    }
-                  />
-                  <Route path="/products" element={<ProductList />} />
-                  <Route
-                    path="/shop-checkout"
-                    element={
-                      <Protected>
-                        <ShopCheckout />
-                      </Protected>
-                    }
-                  />
-                  <Route path="/wishlist" element={<ShopWishlist />} />
-                  <Route path="/product-details" element={<ShopDetails />} />
-                  <Route path="/edit-address" element={<CreateEditAddress />} />
-                  <Route path="/order-details" element={<OrderDetails />} />
-                  <Route component={<Error />} />
-                </Routes>
-                <CookieConsent
-                  location="bottom"
-                  buttonText="I understand"
-                  cookieName="myCookieConsent"
-                  style={{ background: "#333" }}
-                  buttonStyle={{ background: "#007BFF" }}
-                >
-                  This website uses cookies to ensure you get the best
-                  experience on our website.
-                </CookieConsent>
-                <Footer />
-              </Layout>
-            </>
-
-            {/* <PreLoader /> */}
-            {/* <BackToTop /> */}
+              <Routes>
+                <Route path="/" element={<Home />} />
+                <Route
+                  path="/login"
+                  element={
+                    <HiddenPostLogin>
+                      <Login />
+                    </HiddenPostLogin>
+                  }
+                />
+                <Route
+                  path="/forgot-password"
+                  element={
+                    <HiddenPostLogin>
+                      <ForgotPassword />
+                    </HiddenPostLogin>
+                  }
+                />
+                <Route path="/cart" element={<Cart />} />
+                <Route path="/contact" element={<Contact />} />
+                <Route path="/listings" element={<Listing />} />
+                <Route
+                  path="/account"
+                  element={
+                    <Protected>
+                      <MyAccount />
+                    </Protected>
+                  }
+                />
+                <Route path="/products" element={<ProductList />} />
+                <Route
+                  path="/shop-checkout"
+                  element={
+                    <Protected>
+                      <ShopCheckout />
+                    </Protected>
+                  }
+                />
+                <Route path="/wishlist" element={<ShopWishlist />} />
+                <Route path="/product-details" element={<ShopDetails />} />
+                <Route path="/edit-address" element={<CreateEditAddress />} />
+                <Route path="/order-details" element={<OrderDetails />} />
+                <Route component={<Error />} />
+              </Routes>
+              <CookieConsent
+                location="bottom"
+                buttonText="I understand"
+                cookieName="myCookieConsent"
+                style={{ background: "#333" }}
+                buttonStyle={{ background: "#007BFF" }}
+              >
+                This website uses cookies to ensure you get the best experience
+                on our website.
+              </CookieConsent>
+              <Footer />
+            </Layout>
           </ShoppingCartProvider>
         </UserContextWrapper>
       </Suspense>
