@@ -41,7 +41,6 @@ function App() {
           <ShoppingCartProvider>
             <Layout OpenDrawer={openDrawer} setOpenDrawer={setOpenDrawer}>
               <Header setOpenDrawer={setOpenDrawer} />
-
               <Routes>
                 <Route path="/" element={<Home />} />
                 <Route

@@ -1,5 +1,5 @@
 import React, { useEffect, useState, useTransition } from "react";
-import { Link, useLocation } from "react-router-dom";
+import { Link, useLocation, useNavigate } from "react-router-dom";
 import Button from "../../components/Button";
 import PageTitle from "../../components/page-tittle/PageTitle";
 import PreLoader from "../../components/pre-loader/PreLoader";
@@ -24,12 +24,19 @@ const ProductList = () => {
   const location = useLocation();
   const queryParams = new URLSearchParams(location.search);
   const category = queryParams.get('category');
+  const search = queryParams.get('search') || ''
+
+  const navigate = useNavigate();
 
   const [currentPage, setCurrentPage] = useState(1);
   const [lastPage, setLastpage] = useState(1);
 
   const [categoryList, setCategoryList] = useState([]);
+  const [productData, setProductData] = useState([]);
   const [productList, setProductList] = useState([]);
+  const [searchQuery, setSearchQuery] = useState(search);
+
+  // const []
   const [filteredProductList, setFilteredProductList] = useState([]);
   const [brands, setBrands] = useState([]);
   const [p, setP] = useState([]);
@@ -69,12 +76,14 @@ const ProductList = () => {
   useEffect(() => {
     const queryParams = new URLSearchParams(location.search);
     const categoryID = queryParams.get('id');
+    // const search = queryParams.get('search') || ''
     const query = {
       currency: "INR",
       page: currentPage,
       per_page: 10,
       price_range: `${filter?.minPrice}-${filter?.maxPrice}`,
       brand: filter.brand ? filter.brand : '',
+      search: searchQuery ? searchQuery : search,
     };
     const queryString = new URLSearchParams(query).toString();
     let urlAPI = "";
@@ -97,11 +106,10 @@ const ProductList = () => {
         return response.json();
       })
       .then((datar) => {
-        // console.log(datar);
         if (datar.status) return "";
         else {
           setCategoryName(datar.category?.name?.en);
-          setProductList(datar.products.data);
+          setProductData(datar.products.data);
           setCurrentPage(datar.products.current_page);
           setLastpage(datar.products.last_page);
           return datar;
@@ -110,7 +118,7 @@ const ProductList = () => {
       .catch((error) => console.error("Problem with fetch operations", error));
 
 
-  }, [location.search, currentPage, filterToggle]);
+  }, [location.search, currentPage, filterToggle, searchQuery]);
 
   useEffect(() => {
     const categoryListAPI = apiConfig.categoryListAPI;
@@ -151,8 +159,7 @@ const ProductList = () => {
 
 
   useEffect(() => {
-    // console.log(wishListItems)
-    const products = productList.map(product => {
+    const products = productData.map(product => {
       if (product?.type) {
         const thumbnail = product?.thumbnail_path + '/' + product?.thumbnail;
         const hover = product?.thumbnail_path + '/' + product?.hover_thumbnail;
@@ -171,16 +178,12 @@ const ProductList = () => {
             : 1;
 
         return {
-          // ...product,
           stock: stock,
           address: address,
           image: [thumbnail, hover],
           desc: product?.product_detail.en,
           InWishlist: isInWishlist,
           InCart: InCart,
-          // price: price,
-
-          //Later properties
           id: product.id,
           variant_id: null,
           product_name: { en: product?.product_name?.en },
@@ -214,18 +217,12 @@ const ProductList = () => {
           : cartItems.Items?.findIndex(item => (item.product_id === product?.id && item.type === 'variant')) === -1
             ? 0
             : 1;
-        // console.log(address, InWishlist)
         return {
-          // ...product,
           stock: stock,
           address: address,
           image: [thumbnail, hover],
-          desc: product?.des.en,
+          desc: product?.des?.en,
           InWishlist: InWishlist,
-          InCart: InCart,
-          // price: price,
-
-          //Late properties
           id: product.id,
           variant_id: product.subvariants?.[0]?.id,
           product_name: { en: product?.product_name?.en },
@@ -243,16 +240,21 @@ const ProductList = () => {
           product_rating: product?.product_rating
 
         }
-
       }
     })
-    // console.log(products);
+    setProductList(products);
     setFilteredProductList(products);
     setProductsLoaded(true);
-  }, [productList])
+  }, [productData])
 
   const handlePage = (page) => {
     setCurrentPage(page);
+  }
+  // const onSearch = (e) => {
+  //   navigate('/')
+  // }
+  const handleSearch = (e) => {
+    setSearchQuery(e.target.value);
   }
 
 
@@ -361,17 +363,24 @@ const ProductList = () => {
                   <div className="col-xl-9 col-lg-9 col-md-12 col-12">
                     <div className="products-topbar clearfix">
 
-                      <div className="products-topbar-left" style={{ display: 'flex' }}>
+                      {/* <div className="products-topbar-left" style={{ display: 'flex' }}>
                         <div>
-                          <input placeholder="Search products" style={{ border: '1px solid #e1e1e1', paddingLeft: '10px' }} />
+                          <input placeholder="Search products" value={searchQuery} onChange={handleSearch} style={{ border: '1px solid #e1e1e1', paddingLeft: '10px' }} />
                         </div>
+                        <button
+                          style={{ width: '30%' }}
+                          onClick={() => clearFilter()}
+                        >
+                          {t('List.Go')}
+                        </button> */}
+                      {/* </div> */}
 
-                      </div>
                       <div className="products-topbar-left">
                         <div className="products-count">
                           {t('List.Showing all')}{" "} {filteredProductList.length}{" "}{t('List.results')}
                         </div>
                       </div>
+
                       <div className="products-topbar-right">
                         <ul className="layout-toggle nav nav-tabs">
                           <li className="nav-item" onClick={() => setView('grid')}>

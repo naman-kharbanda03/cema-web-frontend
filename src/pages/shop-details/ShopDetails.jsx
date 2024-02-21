@@ -93,7 +93,6 @@ const ShopDetails = (product) => {
             : wishListItems.Items?.findIndex(item => (item?.product_id === data.data.combinations[0]?.id)) === -1
               ? 0
               : 1;
-          // console.log(isInWishlist, 'wishlist');
           setThumb(A);
           setImage(hover);
           setVariant(0);
@@ -639,9 +638,14 @@ const ShopDetails = (product) => {
                           </div> */}
                         </div>
                         <div className="product-meta">
-                          <span className="sku-wrapper">
-                            SKU: <span className="sku">{data?.sku}</span>
-                          </span>
+                          {data?.sku
+                            ?
+                            (<span className="sku-wrapper">
+                              SKU: <span className="sku">{data.sku}</span>
+                            </span>)
+                            : ''
+                          }
+
                           <span className="posted-in">
                             Category:{" "}
                             <a href={`/products?id=${data?.category_id}`} rel="tag">

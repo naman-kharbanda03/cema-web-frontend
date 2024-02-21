@@ -208,7 +208,7 @@ const Product = (props) => {
                                 </div>
                             </div>
                             <div className="product-description">
-                                <div dangerouslySetInnerHTML={{ __html: product.desc.length > 50 ? product?.desc.slice(0, 50) + '...' : product?.desc }} />
+                                <div dangerouslySetInnerHTML={{ __html: product?.desc?.length > 50 ? product?.desc?.slice(0, 50) + '...' : product?.desc }} />
                             </div>
                         </div>
                     </div>

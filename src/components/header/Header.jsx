@@ -2,12 +2,25 @@ import React, { useContext, useEffect, useState, useTransition } from "react";
 import logo from "../../asset/images/logo.png";
 import product_1 from "../../asset/images/product/1.jpg";
 import product_3 from "../../asset/images/product/3.jpg";
-import { Link, useNavigate } from "react-router-dom";
+import { Link, useLocation, useNavigate } from "react-router-dom";
 import apiConfig from "../../config/apiConfig";
 import { useShoppingCart } from "../../context/ShoppingCartContext";
 import { UserData } from "../../context/UserContext";
 import styles from './Header.module.css'
 import { useTranslation } from "react-i18next";
+import { Translate } from '@google-cloud/translate';
+
+const translateClient = new Translate({ key: 'AIzaSyBcdlNrQoO3pvPrrlS_uebDkU81sY0qj3E' });
+
+function translatePageContent(targetLanguage) {
+  const elements = document.querySelectorAll('body *');
+
+  elements.forEach(async (element) => {
+    const text = element.innerText;
+    const [translation] = await translateClient.translate(text, targetLanguage);
+    element.innerText = translation;
+  });
+}
 
 const Header = ({ setOpenDrawer }) => {
   const navigate = useNavigate();
@@ -22,6 +35,12 @@ const Header = ({ setOpenDrawer }) => {
   const { wishListCount, cartItemsCount } = useShoppingCart(); // Imported Functions from Global Variables or States or Context
   const { t, i18n } = useTranslation();
   const { language } = i18n;
+
+  const location = useLocation();
+  const queryParams = new URLSearchParams(location.search);
+  const search = queryParams.get('search') || ''
+  const [selectedLanguage, setSelectedLanguage] = useState('en');
+
 
   const fetchDetails = () => {
     const apiUrl = apiConfig.navCategoriesAPI;
@@ -79,6 +98,18 @@ const Header = ({ setOpenDrawer }) => {
     i18n.changeLanguage(e.target.value);
 
   }
+  const [query, setQuery] = useState(search);
+  const handleSearch = (e) => {
+    setQuery(e.target.value);
+  }
+  const onSearch = () => {
+    window.location.href = `/products?search=${query}`
+  }
+  const handleLanguageChange = (e) => {
+    const newLanguage = e.target.value;
+    setSelectedLanguage(newLanguage);
+    translatePageContent(newLanguage);
+  };
 
   return (
     <header
@@ -106,15 +137,25 @@ const Header = ({ setOpenDrawer }) => {
                       </select>
                     </div> */}
                     <div className="language has-n-select d-inline-block">
-                      <select name="language" id="language" onChange={onLangChange}>
+                      <select name="language" id="language" onChange={handleLanguageChange} value={selectedLanguage}>
                         <option value="en">English</option>
                         <option value="ar">Arabic</option>
                       </select>
                     </div>
+                    <div id="google_translate_element"></div>
+
                   </div>
                 </div>
                 <div className="col-md-6 topbar-right">
                   <ul id="topbar-menu" className="menu">
+                    <li>
+                      <div class="input-group">
+                        <input type="text" class="form-control" value={query} onChange={handleSearch} placeholder="Search Product" aria-label="Recipient's username" aria-describedby="basic-addon2" />
+                        <span class="input-group-text" id="basic-addon2" onClick={onSearch}>
+                          <i class="fa-solid fa-magnifying-glass" ></i>
+                        </span>
+                      </div>
+                    </li>
                     <li className="menu-item">
                       <Link to="/contact">{t('Header.Contact')}</Link>
                     </li>
